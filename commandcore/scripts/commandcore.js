@@ -280,4 +280,42 @@
 
   docEl.setAttribute('data-platform', platform);
   loadData();
+
+  // ── Hilfe-Modal ──
+  var helpBtn     = document.getElementById('cc-help-btn');
+  var helpModal   = document.getElementById('cc-help-modal');
+  var helpClose   = document.getElementById('cc-help-close');
+  var helpOverlay = document.getElementById('cc-help-overlay');
+  var helpBox     = helpModal ? helpModal.querySelector('.help-modal-box') : null;
+
+  function openHelp() {
+    if (DATA) {
+      var gptEl = document.getElementById('hm-count-gpt');
+      var claEl = document.getElementById('hm-count-cla');
+      var codEl = document.getElementById('hm-count-cod');
+      if (gptEl) gptEl.textContent = (DATA.chatgpt || []).length;
+      if (claEl) claEl.textContent = (DATA.claude  || []).length;
+      if (codEl) codEl.textContent = (DATA.codex   || []).length;
+    }
+    helpModal.removeAttribute('hidden');
+    document.body.style.overflow = 'hidden';
+    if (helpBox) helpBox.focus();
+  }
+
+  function closeHelp() {
+    helpModal.setAttribute('hidden', '');
+    document.body.style.overflow = '';
+    if (helpBtn) helpBtn.focus();
+  }
+
+  if (helpBtn)     helpBtn.addEventListener('click', openHelp);
+  if (helpClose)   helpClose.addEventListener('click', closeHelp);
+  if (helpOverlay) helpOverlay.addEventListener('click', closeHelp);
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && helpModal && !helpModal.hasAttribute('hidden')) {
+      closeHelp();
+    }
+  });
+
 })();

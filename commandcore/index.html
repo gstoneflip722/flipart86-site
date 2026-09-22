@@ -23,6 +23,7 @@
   </a>
   <span class="topbar-sep">›</span>
   <span class="topbar-title">COMMANDCORE</span>
+  <button id="cc-help-btn" class="topbar-help-btn" aria-label="Hilfe und Tastaturkürzel öffnen" aria-haspopup="dialog">Hilfe</button>
 </div>
 
 <header>
@@ -96,6 +97,115 @@
   </div>
   <div class="footer-meta">ChatGPT: 565 &nbsp;·&nbsp; Claude: 368 &nbsp;·&nbsp; Codex: 131 &nbsp;·&nbsp; Gesamt: 1.064 &nbsp;·&nbsp; v1.0.2</div>
 </footer>
+
+<!-- ── Hilfe-Modal ── -->
+<div id="cc-help-modal" class="help-modal" role="dialog" aria-modal="true" aria-labelledby="cc-help-title" hidden>
+  <div class="help-modal-overlay" id="cc-help-overlay"></div>
+  <div class="help-modal-box" tabindex="-1">
+    <div class="help-modal-header">
+      <h2 id="cc-help-title" class="help-modal-title">Hilfe &amp; Tastaturkürzel</h2>
+      <button id="cc-help-close" class="help-modal-close" aria-label="Hilfe schließen">×</button>
+    </div>
+    <div class="help-modal-body">
+
+      <section class="help-section">
+        <div class="help-section-title">Suchen</div>
+        <ul class="help-list">
+          <li>Suchfeld anklicken oder <kbd class="help-kbd">/</kbd> drücken, um die Suche zu fokussieren</li>
+          <li>Suche nach einem einzelnen Begriff – alle Befehle, die ihn im Namen, in der Beschreibung oder in den Such-Tags enthalten, werden angezeigt</li>
+          <li><kbd class="help-kbd">Esc</kbd> im Suchfeld leert die Eingabe</li>
+        </ul>
+      </section>
+
+      <section class="help-section">
+        <div class="help-section-title">Filtern</div>
+        <ul class="help-list">
+          <li>Kategorie-, Status- und Typfilter können unabhängig voneinander oder kombiniert gesetzt werden</li>
+          <li>Alle aktiven Filter schränken die Ergebnisse gemeinsam ein</li>
+          <li><strong>↺ Reset</strong> setzt Suche und alle Filter gleichzeitig zurück</li>
+        </ul>
+      </section>
+
+      <section class="help-section">
+        <div class="help-section-title">Kopieren</div>
+        <ul class="help-list">
+          <li>Auf den farbig hervorgehobenen Befehlstext klicken, um ihn in die Zwischenablage zu kopieren</li>
+          <li>Der Favoriten-Stern ☆/★ links neben dem Befehl kopiert beim Anklicken <em>nicht</em> – er merkt den Befehl nur vor</li>
+          <li>Nach dem Kopieren erscheint kurz eine Bestätigung unten rechts</li>
+        </ul>
+      </section>
+
+      <section class="help-section">
+        <div class="help-section-title">Tastaturnavigation</div>
+        <ul class="help-list">
+          <li><kbd class="help-kbd">/</kbd> — Suchfeld fokussieren</li>
+          <li><kbd class="help-kbd">Esc</kbd> im Suchfeld — Suche leeren</li>
+          <li><kbd class="help-kbd">Esc</kbd> im Hilfe-Fenster — Hilfe schließen</li>
+          <li><kbd class="help-kbd">Enter</kbd> oder <kbd class="help-kbd">Leertaste</kbd> auf einem fokussierten Befehlstext — Befehl kopieren</li>
+          <li><kbd class="help-kbd">Tab</kbd> — zwischen interaktiven Elementen wechseln</li>
+        </ul>
+      </section>
+
+      <section class="help-section">
+        <div class="help-section-title">Plattform wechseln</div>
+        <ul class="help-list">
+          <li>ChatGPT, Claude und Codex haben jeweils eigene Befehlsdatenbanken</li>
+          <li>Beim Wechseln werden Suche und alle Filter automatisch zurückgesetzt</li>
+        </ul>
+        <div class="help-plat-chips">
+          <span class="help-plat-chip gpt">ChatGPT &nbsp;<strong id="hm-count-gpt">565</strong></span>
+          <span class="help-plat-chip cla">Claude &nbsp;<strong id="hm-count-cla">368</strong></span>
+          <span class="help-plat-chip cod">Codex &nbsp;<strong id="hm-count-cod">131</strong></span>
+        </div>
+      </section>
+
+      <section class="help-section">
+        <div class="help-section-title">Favoriten</div>
+        <ul class="help-list">
+          <li>Stern ☆ links neben einem Befehl anklicken, um ihn als Favorit zu speichern</li>
+          <li>Favoriten werden pro Plattform im Browser gespeichert und bleiben beim nächsten Besuch erhalten</li>
+          <li>Mit <strong>★ Favoriten</strong> in der Filterleiste nur gemerkte Befehle anzeigen</li>
+        </ul>
+      </section>
+
+      <section class="help-section">
+        <div class="help-section-title">Ergebnis-Information</div>
+        <ul class="help-list">
+          <li>Die Statuszeile im Header zeigt: <strong>X Treffer</strong> (aktuell gefiltert) · <strong>Gesamt: Y</strong> (alle Einträge der Plattform) · <strong>★ Z</strong> (gemerkte Favoriten)</li>
+        </ul>
+      </section>
+
+      <section class="help-section">
+        <div class="help-section-title">Status-Bezeichnungen</div>
+        <ul class="help-list">
+          <li><strong>OFFIZIELL</strong> — von der Plattform dokumentierter Befehl</li>
+          <li><strong>PROMPT</strong> — freier Textprompt oder Vorlage</li>
+          <li><strong>CLI</strong> — Kommandozeilenbefehl</li>
+          <li><strong>SHORTCUT</strong> — Tastenkürzel oder Schnellzugriff</li>
+          <li><strong>SKILL</strong> — installierbare Erweiterung oder Fähigkeit</li>
+          <li><strong>WORKFLOW</strong> — mehrstufiger Ablauf oder Automatisierung</li>
+          <li><strong>ABHÄNGIG</strong> — funktioniert nur mit bestimmten Voraussetzungen</li>
+          <li><strong>EXPERIMENTELL</strong> — nicht offiziell oder in Entwicklung</li>
+          <li><strong>RISIKO</strong> — potenziell destruktiv oder mit Vorsicht zu verwenden</li>
+          <li><strong>LEGACY</strong> — veraltet, möglicherweise nicht mehr aktiv</li>
+        </ul>
+      </section>
+
+      <section class="help-section">
+        <div class="help-section-title">Typen</div>
+        <ul class="help-list">
+          <li><strong>slash-command</strong> — Slash-Befehl (z. B. /help)</li>
+          <li><strong>prompt</strong> — freier Prompt-Text</li>
+          <li><strong>cli-command</strong> — Kommandozeilenbefehl</li>
+          <li><strong>cli-flag</strong> — Kommandozeilen-Flag oder Option</li>
+          <li><strong>keyboard</strong> — Tastaturkürzel</li>
+          <li><strong>ide-command</strong> — Befehl im Editor oder IDE</li>
+        </ul>
+      </section>
+
+    </div>
+  </div>
+</div>
 
 <script src="scripts/commandcore.js"></script>
 </body>

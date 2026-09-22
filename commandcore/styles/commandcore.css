@@ -395,6 +395,184 @@ main { flex: 1; max-width: 1400px; width: 100%; margin: 0 auto; padding: 20px 24
 
 /* Splash-Block entfernt — Logo jetzt im Header rechts (.header-logo-wrap / .header-logo-img) */
 
+/* ── Hilfe-Button (Topbar) ── */
+.topbar-help-btn {
+  margin-left: auto;
+  background: rgba(7,8,10,0.8);
+  border: 1px solid var(--border-accent);
+  border-radius: var(--radius-sm);
+  color: var(--accent);
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.10em;
+  padding: 5px 13px;
+  cursor: pointer;
+  transition: background var(--transition), box-shadow var(--transition), color var(--transition);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.topbar-help-btn:hover {
+  background: var(--accent-dim);
+  box-shadow: var(--accent-glow);
+}
+
+/* ── Hilfe-Modal ── */
+.help-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.help-modal[hidden] { display: none; }
+
+.help-modal-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(4,5,7,0.82);
+  backdrop-filter: blur(6px);
+}
+
+.help-modal-box {
+  position: relative;
+  z-index: 1;
+  background: rgba(10,12,16,0.99);
+  border: 1px solid var(--border-accent);
+  border-radius: 16px;
+  box-shadow: 0 0 0 1px rgba(47,243,122,0.06), 0 40px 100px rgba(0,0,0,0.9), 0 0 60px rgba(47,243,122,0.07);
+  width: 100%;
+  max-width: 640px;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  outline: none;
+}
+
+.help-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.help-modal-title {
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: -0.2px;
+  background: linear-gradient(135deg, var(--green) 0%, var(--cyan) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.help-modal-close {
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 2px 7px;
+  border-radius: 4px;
+  transition: color var(--transition), background var(--transition);
+  font-family: var(--sans);
+}
+.help-modal-close:hover { color: var(--text); background: rgba(255,255,255,0.06); }
+
+.help-modal-body {
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 20px 24px 28px;
+  flex: 1;
+}
+
+.help-section {
+  margin-bottom: 22px;
+}
+.help-section:last-child { margin-bottom: 0; }
+
+.help-section-title {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--accent-dim);
+  transition: color var(--transition), border-color var(--transition);
+}
+
+.help-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.help-list li {
+  font-size: 12.5px;
+  color: var(--text-sub);
+  line-height: 1.55;
+  padding-left: 14px;
+  position: relative;
+}
+.help-list li::before {
+  content: '›';
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+  opacity: 0.65;
+  font-family: var(--mono);
+  transition: color var(--transition);
+}
+
+.help-kbd {
+  display: inline-block;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text);
+  letter-spacing: 0.04em;
+  line-height: 1.6;
+}
+
+.help-plat-chips {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+.help-plat-chip {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 5px;
+  letter-spacing: 0.06em;
+}
+.help-plat-chip.gpt { background: rgba(47,243,122,0.10); border: 1px solid rgba(47,243,122,0.22); color: var(--green); }
+.help-plat-chip.cla { background: rgba(79,208,224,0.10); border: 1px solid rgba(79,208,224,0.22); color: var(--cyan); }
+.help-plat-chip.cod { background: rgba(255,154,60,0.10); border: 1px solid rgba(255,154,60,0.30); color: var(--orange); }
+
+@media (max-width: 480px) {
+  .help-modal { padding: 12px; }
+  .help-modal-box { max-height: 90vh; }
+  .help-modal-header { padding: 16px 16px 12px; }
+  .help-modal-body { padding: 16px 16px 24px; }
+  .help-list li { font-size: 12px; }
+}
+
 /* Codex-Platform — Orange Akzent */
 :root { --orange: #ff9a3c; }
 [data-platform="codex"] {
