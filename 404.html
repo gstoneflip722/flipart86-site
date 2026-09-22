@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>404 — FlipArt86</title>
+<meta name="robots" content="noindex, follow">
+<link rel="icon" type="image/png" href="assets/logo-tile.png">
+<link rel="apple-touch-icon" href="assets/logo-tile.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=UnifrakturMaguntia&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles/style.css">
+<style>
+  .e404-wrap {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px 20px;
+    position: relative;
+    z-index: 1;
+  }
+  .e404-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 56px;
+    text-decoration: none;
+  }
+  .e404-logo-icon {
+    width: 36px;
+    height: 36px;
+    background: rgba(47,243,122,.12);
+    border: 1px solid rgba(47,243,122,.25);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .e404-logo-icon img { width: 100%; height: 100%; object-fit: contain; }
+  .e404-logo-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -.02em;
+  }
+  .e404-logo-name span { color: var(--green, #2ff37a); }
+  .e404-code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: clamp(96px, 22vw, 180px);
+    font-weight: 700;
+    line-height: 1;
+    color: var(--green, #2ff37a);
+    letter-spacing: -.04em;
+    text-shadow: 0 0 60px rgba(47,243,122,.25), 0 0 120px rgba(47,243,122,.1);
+    margin-bottom: 24px;
+  }
+  .e404-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,.35);
+    margin-bottom: 20px;
+  }
+  .e404-title {
+    font-family: 'Manrope', sans-serif;
+    font-size: clamp(22px, 5vw, 32px);
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: -.04em;
+    margin-bottom: 14px;
+  }
+  .e404-sub {
+    font-family: 'Manrope', sans-serif;
+    font-size: 15px;
+    color: rgba(255,255,255,.45);
+    max-width: 380px;
+    line-height: 1.6;
+    margin-bottom: 40px;
+  }
+  .e404-sub em {
+    color: rgba(255,255,255,.6);
+    font-style: normal;
+  }
+  .e404-actions {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .e404-btn-primary {
+    display: inline-block;
+    background: var(--green, #2ff37a);
+    color: #07080a;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    padding: 13px 28px;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: opacity .15s;
+  }
+  .e404-btn-primary:hover { opacity: .85; }
+  .e404-btn-ghost {
+    display: inline-block;
+    border: 1px solid rgba(255,255,255,.18);
+    color: rgba(255,255,255,.7);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    padding: 13px 28px;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: border-color .15s, color .15s;
+  }
+  .e404-btn-ghost:hover { border-color: rgba(255,255,255,.4); color: #fff; }
+  .e404-divider {
+    width: 40px;
+    height: 1px;
+    background: rgba(47,243,122,.3);
+    margin: 48px auto 0;
+  }
+  .e404-lang {
+    margin-top: 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: .1em;
+    color: rgba(255,255,255,.2);
+  }
+</style>
+</head>
+<body>
+
+<div class="page-glow"></div>
+<div class="page-grid"></div>
+
+<div class="e404-wrap">
+
+  <a href="index.html" class="e404-logo" aria-label="FlipArt86 Startseite">
+    <div class="e404-logo-icon">
+      <img src="assets/logo-tile.png" alt="FlipArt86">
+    </div>
+    <div class="e404-logo-name">Flip<span>Art86</span></div>
+  </a>
+
+  <div class="e404-code" aria-label="Fehlercode 404">404</div>
+  <div class="e404-label">Seite nicht gefunden · Page not found</div>
+
+  <div class="e404-title">Diese Seite existiert nicht.</div>
+  <p class="e404-sub">
+    Die URL wurde möglicherweise geändert oder die Seite wurde entfernt.<br>
+    <em>This page may have moved or no longer exists.</em>
+  </p>
+
+  <div class="e404-actions">
+    <a href="index.html" class="e404-btn-primary">Startseite</a>
+    <a href="galerie.html" class="e404-btn-ghost">Galerie</a>
+  </div>
+
+  <div class="e404-divider"></div>
+  <div class="e404-lang">FA—86 / GStone, AT</div>
+
+</div>
+
+</body>
+</html>

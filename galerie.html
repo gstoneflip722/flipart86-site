@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="FlipArt86 Galerie — Digitale Serien und Prints. GNOM-SERIE, SILENT RESISTANCE, RASTAMAN-SERIE und mehr.">
+<meta name="robots" content="index, follow">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.flipart86.com/galerie.html">
+<meta property="og:title" content="Galerie — FlipArt86">
+<meta property="og:description" content="Digitale Serien und Prints aus der Welt von FlipArt86.">
+<meta property="og:image" content="https://www.flipart86.com/assets/hero-studio.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Galerie — FlipArt86">
+<meta name="twitter:description" content="Digitale Serien und Prints aus der Welt von FlipArt86.">
+<meta name="twitter:image" content="https://www.flipart86.com/assets/hero-studio.png">
+<title>Galerie — FlipArt86</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=UnifrakturMaguntia&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="assets/logo-tile.png">
+<link rel="apple-touch-icon" href="assets/logo-tile.png">
+<link rel="stylesheet" href="styles/style.css">
+<script src="scripts/lang.js" defer></script>
+</head>
+<body>
+
+<a href="#main-content" class="skip-link">Zum Hauptinhalt springen</a>
+<div class="page-glow"></div>
+<div class="page-grid"></div>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <a href="index.html" class="logo-wrap">
+      <div class="logo-icon">
+        <img src="assets/logo-tile.png" alt="FlipArt86">
+      </div>
+      <div class="logo-name">Flip<span>Art86</span></div>
+    </a>
+    <nav class="nav-links">
+      <div class="lang-switcher" id="lang-switcher">
+        <button class="lang-btn" id="lang-btn" aria-haspopup="listbox" aria-expanded="false" aria-label="Sprache wählen">
+          <span id="lang-current">DE</span>
+          <span class="lang-chevron" aria-hidden="true">&#9660;</span>
+        </button>
+        <div class="lang-dropdown" id="lang-dropdown" role="listbox" aria-label="Sprache wählen">
+          <button class="lang-option active" data-lang="de" role="option" aria-selected="true" tabindex="0"><span>DE — Deutsch</span><span class="lang-option-check" aria-hidden="true">&#10003;</span></button>
+          <button class="lang-option" data-lang="en" role="option" aria-selected="false" tabindex="0"><span>EN — English</span><span class="lang-option-check" aria-hidden="true">&#10003;</span></button>
+        </div>
+      </div>
+      <a href="index.html#vorschau" data-i18n="nav_preview">Vorschau</a>
+      <a href="index.html#tools" data-i18n="nav_software">Software</a>
+      <a href="galerie.html" class="nav-active" data-i18n="nav_gallery">Galerie</a>
+      <a href="index.html#open-impressum" data-i18n="nav_imprint">Impressum</a>
+      <a href="index.html#open-kontakt" data-i18n="nav_contact">Kontakt</a>
+    </nav>
+    <a href="index.html#community" class="nav-cta" data-i18n="nav_cta">Community beitreten</a>
+      <button class="mob-btn" id="mob-btn" aria-label="Menü öffnen" aria-expanded="false" aria-controls="mob-menu">
+        <span></span><span></span><span></span>
+      </button>
+  </div>
+</header>
+
+<!-- MOBILE MENU -->
+<div class="mob-menu" id="mob-menu" aria-hidden="true" aria-label="Hauptnavigation">
+  <div class="mob-menu-inner">
+    <div class="mob-lang-row">
+      <button class="mob-lang-btn" data-lang="de" aria-label="Deutsch">DE</button>
+      <span class="mob-lang-sep">/</span>
+      <button class="mob-lang-btn" data-lang="en" aria-label="English">EN</button>
+    </div>
+    <nav class="mob-nav" aria-label="Mobile Navigation">
+      <a href="index.html#vorschau" class="mob-nav-link" data-i18n="nav_preview">Vorschau</a>
+      <a href="index.html#tools" class="mob-nav-link" data-i18n="nav_software">Software</a>
+      <a href="galerie.html" class="mob-nav-link nav-active" data-i18n="nav_gallery">Galerie</a>
+      <a href="index.html#open-impressum" class="mob-nav-link" data-i18n="nav_imprint">Impressum</a>
+      <a href="index.html#open-kontakt" class="mob-nav-link" data-i18n="nav_contact">Kontakt</a>
+    </nav>
+    <a href="index.html#community" class="mob-cta-link" data-i18n="nav_cta">Community beitreten</a>
+  </div>
+</div>
+
+<!-- GALERIE -->
+<main id="main-content" class="gallery-main">
+
+  <!-- WATERMARK -->
+  <img src="assets/mask-alpha.png" alt="" class="gallery-watermark" aria-hidden="true">
+
+  <div class="gallery-header">
+    <div class="section-tag">
+      <div class="section-tag-line"></div>
+      <div class="section-tag-label" data-i18n="gallery_tag">Galerie</div>
+    </div>
+    <h1 class="section-h2 gallery-title" data-i18n="gallery_title">Galerie</h1>
+    <p class="section-sub gallery-intro" data-i18n="gallery_intro">Ausgewählte Arbeiten und Serien aus der Welt von FlipArt86.</p>
+  </div>
+
+  <!-- FILTER -->
+  <div class="filter-bar gallery-filter-wrap">
+    <button class="filter-btn active" onclick="galleryFilter(this,'Digital Art')">DIGITAL ART</button>
+    <button class="filter-btn" onclick="galleryFilter(this,'Gnom-Serie 001')">GNOM-SERIE 001</button>
+    <button class="filter-btn" onclick="galleryFilter(this,'Gnom-Serie 002')">GNOM-SERIE 002</button>
+    <button class="filter-btn" onclick="galleryFilter(this,'Silent Resistance')">SILENT RESISTANCE</button>
+    <button class="filter-btn" onclick="galleryFilter(this,'Rastaman-Serie 001')">RASTAMAN-SERIE 001</button>
+    <button class="filter-btn" onclick="galleryFilter(this,'Prints')">PRINTS</button>
+  </div>
+
+  <!-- GRID -->
+  <div class="gallery-grid" id="gallery-grid"></div>
+
+  <!-- EMPTY STATE -->
+  <div class="gallery-empty" id="gallery-empty">
+    <div class="gallery-empty-inner">
+      <div class="gallery-empty-icon">◻</div>
+      <p data-i18n="gallery_empty">Noch keine Bilder vorhanden.</p>
+      <p class="gallery-empty-sub" data-i18n="gallery_empty_sub">Bilder in <code>assets/gallery/</code> ablegen und in <code>galerie.html</code> im GALLERY-Array eintragen.</p>
+    </div>
+  </div>
+
+</main>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Bildvorschau">
+  <div class="lb-backdrop" id="lb-backdrop"></div>
+  <button class="lb-close" id="lb-close" aria-label="Schließen">&#x2715;</button>
+  <button class="lb-nav lb-prev" id="lb-prev" aria-label="Vorheriges Bild">&#x2039;</button>
+  <button class="lb-nav lb-next" id="lb-next" aria-label="N&#228;chstes Bild">&#x203a;</button>
+  <div class="lb-inner">
+    <div class="lb-img-wrap">
+      <img class="lb-img" id="lb-img" src="" alt="">
+    </div>
+    <div class="lb-info" id="lb-info"></div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer id="kontakt">
+  <div class="footer-inner">
+    <div class="footer-logo-wrap">
+      <div class="footer-logo-icon">
+        <img src="assets/logo-tile.png" alt="FlipArt86">
+      </div>
+      <div class="footer-logo-name">Flip<span>Art86</span></div>
+      <span class="footer-copy">&#169; 2026 &middot; GRIMMENSTEIN, AT</span>
+    </div>
+    <div class="footer-links">
+      <a href="index.html#vorschau" data-i18n="nav_preview">Vorschau</a>
+      <a href="index.html#tools" data-i18n="nav_software">Software</a>
+      <a href="index.html#open-impressum" data-i18n="nav_imprint">Impressum</a>
+      <a href="mailto:gstoneflip722@gmail.com" class="email-link">gstoneflip722@gmail.com</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ============================================================
+   GALERIE DATEN
+   ------------------------------------------------------------
+   Neue Bilder hier im GALLERY-Array ergänzen.
+   Jeder Eintrag ist ein Objekt mit folgenden Feldern:
+
+   src        – Pfad zur Bilddatei, relativ zu galerie.html
+                Beispiel: 'assets/gallery/gnom-001.jpg'
+
+   title      – Bildtitel (wird in Karte + Lightbox angezeigt)
+
+   series     – Serienname, z. B. 'Gnom-Serie' (optional)
+
+   year       – Erscheinungsjahr, z. B. 2025 (optional)
+
+   cat        – Filterkategorie. Erlaubte Werte:
+                'Gnom-Serie 001' | 'Gnom-Serie 002' | 'Silent Resistance'
+                | 'Digital Art' | 'Prints'
+
+   desc       – Kurzbeschreibung (optional, erscheint in der Karte)
+
+   pinterest  – Echte Pinterest-URL oder null
+                Beispiel: 'https://at.pinterest.com/pin/12345'
+   ============================================================ */
+
+var GALLERY = [
+  /* ----------------------------------------------------------
+     GNOM-SERIE
+     Neue Bilder: assets/gallery/Gnom-Serie 001/<dateiname>
+  ---------------------------------------------------------- */
+  {
+    src: 'assets/web/gallery/Gnom-Serie 001/Gnom_Serie_001-000.webp',
+    title: 'Toxic Gnome – Serie01',
+    series: 'Gnom-Serie 001',
+    year: 2025,
+    cat: 'Gnom-Serie 001',
+    desc: 'Düsteres Charakterporträt mit toxischer, erschöpfter Atmosphäre und starkem monochromen Look.',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/Gnom-Serie 001/Gnom_Serie_001-001.webp',
+    title: 'Grey Neon Gnome – Stylized',
+    series: 'Gnom-Serie 001',
+    year: 2025,
+    cat: 'Gnom-Serie 001',
+    desc: 'Stilisierter Gnom in intensivem Neonblau mit dunkler, surrealer und grafischer Ausstrahlung.',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/Gnom-Serie 001/Gnom_Serie_001-002.webp',
+    title: 'Infested Gnome – Serie02',
+    series: 'Gnom-Serie 001',
+    year: 2025,
+    cat: 'Gnom-Serie 001',
+    desc: 'Organisch befallene Kreatur zwischen Mutation, Verfall und düsterer Fantasy.',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/Gnom-Serie 001/Gnom_Serie_001-003.webp',
+    title: 'Cyberpunk Gnome – Serie03',
+    series: 'Gnom-Serie 001',
+    year: 2025,
+    cat: 'Gnom-Serie 001',
+    desc: 'Dunkler Gnom-Charakter mit futuristischen Strukturen, Cyberpunk-Atmosphäre und technischer Mutation.',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/Gnom-Serie 001/Gnom_Serie_001-004.webp',
+    title: 'Glitched Gnome – AI Infection & System Failure - Serie04',
+    series: 'Gnom-Serie 001',
+    year: 2025,
+    cat: 'Gnom-Serie 001',
+    desc: 'Vollständig korrumpierte Kreatur zwischen digitaler Infektion, Systemfehler und Identitätszerfall.',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/Gnom-Serie 001/Gnom_Serie_001-005.webp',
+    title: 'Glitched Entity – Serie05',
+    series: 'Gnom-Serie 001',
+    year: 2025,
+    cat: 'Gnom-Serie 001',
+    desc: 'Fragmentierte Kreatur in einer von Datenrauschen, digitalen Störungen und strukturellem Zerfall geprägten Umgebung.',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/Gnom-Serie 001/Gnom_Serie_001-006.webp',
+    title: 'Deep Sea Survivor – Serie06',
+    series: 'Gnom-Serie 001',
+    year: 2025,
+    cat: 'Gnom-Serie 001',
+    desc: 'Mystischer Tiefsee-Überlebender mit schwerer Ausrüstung und surrealer Unterwasser-Atmosphäre.',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/Gnom-Serie 001/Gnom_Serie_001-007.webp',
+    title: 'Apocalypse Gnome – Serie07',
+    series: 'Gnom-Serie 001',
+    year: 2025,
+    cat: 'Gnom-Serie 001',
+    desc: 'Postapokalyptischer Gnom in einer zerstörten, staubigen und lebensfeindlichen Umgebung.',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/Gnom-Serie 001/Gnom_Serie_001-008.webp',
+    title: 'Mad Scientist Gnome – Serie08',
+    series: 'Gnom-Serie 001',
+    year: 2025,
+    cat: 'Gnom-Serie 001',
+    desc: 'Exzentrischer Gnom zwischen grotesker Wissenschaft, düsterem Experiment und kontrolliertem Wahnsinn.',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/Gnom-Serie 001/Gnom_Serie_001-009.webp',
+    title: 'Dark Nature Gnome – Power Beyond - Serie09',
+    series: 'Gnom-Serie 001',
+    year: 2025,
+    cat: 'Gnom-Serie 001',
+    desc: 'Dunkle Naturfantasie mit organischer Mutation, erdigen Strukturen und dominanter übernatürlicher Energie.',
+    pinterest: null
+  },
+
+  /* ----------------------------------------------------------
+     SILENT RESISTANCE
+  ---------------------------------------------------------- */
+  {
+    src: 'assets/web/gallery/Silent Resistance-Serie/SILENT RESISTANCE-Serie-001-FlipArt86.webp',
+    title: 'Silent Resistance – 001',
+    series: 'Silent Resistance',
+    year: 2025,
+    cat: 'Silent Resistance',
+    desc: '',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/Silent Resistance-Serie/SILENT RESISTANCE-Serie-002-FlipArt86.webp',
+    title: 'Silent Resistance – 002',
+    series: 'Silent Resistance',
+    year: 2025,
+    cat: 'Silent Resistance',
+    desc: '',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/Silent Resistance-Serie/SILENT RESISTANCE-Serie-003-FlipArt86.webp',
+    title: 'Silent Resistance – 003',
+    series: 'Silent Resistance',
+    year: 2025,
+    cat: 'Silent Resistance',
+    desc: '',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/Silent Resistance-Serie/SILENT RESISTANCE-Serie-004-FlipArt86.webp',
+    title: 'Silent Resistance – 004',
+    series: 'Silent Resistance',
+    year: 2025,
+    cat: 'Silent Resistance',
+    desc: '',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/Silent Resistance-Serie/SILENT RESISTANCE-Serie-005-FlipArt86.webp',
+    title: 'Silent Resistance – 005',
+    series: 'Silent Resistance',
+    year: 2025,
+    cat: 'Silent Resistance',
+    desc: '',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/Silent Resistance-Serie/SILENT RESISTANCE-Serie-006-FlipArt86.webp',
+    title: 'Silent Resistance – 006',
+    series: 'Silent Resistance',
+    year: 2025,
+    cat: 'Silent Resistance',
+    desc: '',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/Silent Resistance-Serie/SILENT RESISTANCE-Serie-007-FlipArt86.webp',
+    title: 'Silent Resistance – 007',
+    series: 'Silent Resistance',
+    year: 2025,
+    cat: 'Silent Resistance',
+    desc: '',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/Silent Resistance-Serie/SILENT RESISTANCE-Serie-008-FlipArt86.webp',
+    title: 'Silent Resistance – 008',
+    series: 'Silent Resistance',
+    year: 2025,
+    cat: 'Silent Resistance',
+    desc: '',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/Silent Resistance-Serie/SILENT RESISTANCE-Serie-009-FlipArt86.webp',
+    title: 'Silent Resistance – 009',
+    series: 'Silent Resistance',
+    year: 2025,
+    cat: 'Silent Resistance',
+    desc: '',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/Silent Resistance-Serie/SILENT RESISTANCE-Serie-010-FlipArt86.webp',
+    title: 'Silent Resistance – 010',
+    series: 'Silent Resistance',
+    year: 2025,
+    cat: 'Silent Resistance',
+    desc: '',
+    pinterest: null
+  },
+
+  /* ----------------------------------------------------------
+     PRINTS
+  ---------------------------------------------------------- */
+  {
+    src: 'assets/web/gallery/Prints/FlipArt86-Logo-001.webp',
+    title: 'FlipArt86 Logo – 001',
+    series: 'FlipArt86-Logo-Print',
+    year: 2025,
+    cat: 'Prints',
+    desc: '',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/Prints/FlipArt86-Logo-002.webp',
+    title: 'FlipArt86 Logo – 002',
+    series: 'FlipArt86-Logo-Print',
+    year: 2025,
+    cat: 'Prints',
+    desc: '',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/Prints/Flügelheld-001.webp',
+    title: 'Flügelheld – 001',
+    series: 'Print',
+    year: 2025,
+    cat: 'Prints',
+    desc: '',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/Prints/GutDingBrauchtWeile-001.webp',
+    title: 'Gut Ding Braucht Weile – 001',
+    series: 'Print',
+    year: 2025,
+    cat: 'Prints',
+    desc: '',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/Prints/Midnight Smile-001.webp',
+    title: 'Midnight Smile – 001',
+    series: 'Print',
+    year: 2025,
+    cat: 'Prints',
+    desc: '',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/Prints/Pinterest-001.webp',
+    title: 'Pinterest – 001',
+    series: 'Print',
+    year: 2025,
+    cat: 'Prints',
+    desc: '',
+    pinterest: null
+  },
+
+  /* ----------------------------------------------------------
+     RASTAMAN-SERIE 001
+  ---------------------------------------------------------- */
+  {
+    src: 'assets/web/gallery/Rastaman-Serie 001/Rastaman-001.webp',
+    title: 'Rastaman – 001',
+    series: 'Rastaman-Serie 001',
+    year: 2025,
+    cat: 'Rastaman-Serie 001',
+    desc: '',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/Rastaman-Serie 001/Rastaman-002.webp',
+    title: 'Rastaman – 002',
+    series: 'Rastaman-Serie 001',
+    year: 2025,
+    cat: 'Rastaman-Serie 001',
+    desc: '',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/Rastaman-Serie 001/Rastaman-003.webp',
+    title: 'Rastaman – 003',
+    series: 'Rastaman-Serie 001',
+    year: 2025,
+    cat: 'Rastaman-Serie 001',
+    desc: '',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/Rastaman-Serie 001/Rastaman-004.webp',
+    title: 'Rastaman – 004',
+    series: 'Rastaman-Serie 001',
+    year: 2025,
+    cat: 'Rastaman-Serie 001',
+    desc: '',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/Rastaman-Serie 001/Rastaman-005.webp',
+    title: 'Rastaman – 005',
+    series: 'Rastaman-Serie 001',
+    year: 2025,
+    cat: 'Rastaman-Serie 001',
+    desc: '',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/Rastaman-Serie 001/Rastaman-006.webp',
+    title: 'Rastaman – 006',
+    series: 'Rastaman-Serie 001',
+    year: 2025,
+    cat: 'Rastaman-Serie 001',
+    desc: '',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/Rastaman-Serie 001/Rastaman-007.webp',
+    title: 'Rastaman – 007',
+    series: 'Rastaman-Serie 001',
+    year: 2025,
+    cat: 'Rastaman-Serie 001',
+    desc: '',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/Rastaman-Serie 001/Rastaman-008.webp',
+    title: 'Rastaman – 008',
+    series: 'Rastaman-Serie 001',
+    year: 2025,
+    cat: 'Rastaman-Serie 001',
+    desc: '',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/Rastaman-Serie 001/Rastaman-009.webp',
+    title: 'Rastaman – 009',
+    series: 'Rastaman-Serie 001',
+    year: 2025,
+    cat: 'Rastaman-Serie 001',
+    desc: '',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/Rastaman-Serie 001/Rastaman-010.webp',
+    title: 'Rastaman – 010',
+    series: 'Rastaman-Serie 001',
+    year: 2025,
+    cat: 'Rastaman-Serie 001',
+    desc: '',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/Prints/GStone-001.webp',
+    title: 'GStone – 001',
+    series: 'Print',
+    year: 2025,
+    cat: 'Prints',
+    desc: '',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/Prints/GStone-002.webp',
+    title: 'GStone – 002',
+    series: 'Print',
+    year: 2025,
+    cat: 'Prints',
+    desc: '',
+    pinterest: null
+  },
+
+  /* ----------------------------------------------------------
+     DIGITAL ART
+  ---------------------------------------------------------- */
+  {
+    src: 'assets/web/gallery/DigitalArt/FlipArt86-El Camino Verde-001.webp',
+    title: 'El Camino Verde',
+    series: 'Digital Art',
+    year: 2025,
+    cat: 'Digital Art',
+    desc: '',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/DigitalArt/FlipArt86-Moon-Forest-001.webp',
+    title: 'Moon Forest',
+    series: 'Digital Art',
+    year: 2025,
+    cat: 'Digital Art',
+    desc: '',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/DigitalArt/FlipArt86-Epic Picture-City-001.webp',
+    title: 'Epic Picture – City',
+    series: 'Digital Art',
+    year: 2025,
+    cat: 'Digital Art',
+    desc: '',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/DigitalArt/FlipArt86-Feuer im Kopf-001.webp',
+    title: 'Feuer im Kopf',
+    series: 'Digital Art',
+    year: 2025,
+    cat: 'Digital Art',
+    desc: '',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/DigitalArt/FlipArt86-Snow-Forest-001.webp',
+    title: 'Snow Forest',
+    series: 'Digital Art',
+    year: 2025,
+    cat: 'Digital Art',
+    desc: '',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/DigitalArt/FlipArt86-Epic Picture-Berg Meer-001-.webp',
+    title: 'Epic Picture – Berg & Meer',
+    series: 'Digital Art',
+    year: 2025,
+    cat: 'Digital Art',
+    desc: '',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/DigitalArt/FlipArt86-Apocalypse - Flames of Survival-001.webp',
+    title: 'Apocalypse – Flames of Survival',
+    series: 'Digital Art',
+    year: 2025,
+    cat: 'Digital Art',
+    desc: '',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/DigitalArt/FlipArt86-Epic Warzone Portrait-001.webp',
+    title: 'Epic Warzone Portrait',
+    series: 'Digital Art',
+    year: 2025,
+    cat: 'Digital Art',
+    desc: '',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/DigitalArt/FlipArt86-War Lord-Hero in Flames-001.webp',
+    title: 'War Lord – Hero in Flames',
+    series: 'Digital Art',
+    year: 2025,
+    cat: 'Digital Art',
+    desc: '',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/DigitalArt/FlipArt86-Gamingroom-001.webp',
+    title: 'Gamingroom',
+    series: 'Digital Art',
+    year: 2025,
+    cat: 'Digital Art',
+    desc: '',
+    pinterest: null
+  },
+
+  /* ----------------------------------------------------------
+     GNOM-SERIE 002
+  ---------------------------------------------------------- */
+  {
+    src: 'assets/web/gallery/Gnom-Serie 002/Gnom-002 Blue Spirit Stil.webp',
+    title: 'Gnom 002 – Blue Spirit',
+    series: 'Gnom-Serie 002',
+    year: 2025,
+    cat: 'Gnom-Serie 002',
+    desc: '',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/Gnom-Serie 002/Gnom-002-Cinematic Stil.webp',
+    title: 'Gnom 002 – Cinematic',
+    series: 'Gnom-Serie 002',
+    year: 2025,
+    cat: 'Gnom-Serie 002',
+    desc: '',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/Gnom-Serie 002/Gnom-002-CyberStil.webp',
+    title: 'Gnom 002 – Cyber',
+    series: 'Gnom-Serie 002',
+    year: 2025,
+    cat: 'Gnom-Serie 002',
+    desc: '',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/Gnom-Serie 002/Gnom-002-Dark Smoke Stil.webp',
+    title: 'Gnom 002 – Dark Smoke',
+    series: 'Gnom-Serie 002',
+    year: 2025,
+    cat: 'Gnom-Serie 002',
+    desc: '',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/Gnom-Serie 002/Gnom-002-Film Stil.webp',
+    title: 'Gnom 002 – Film',
+    series: 'Gnom-Serie 002',
+    year: 2025,
+    cat: 'Gnom-Serie 002',
+    desc: '',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/Gnom-Serie 002/Gnom-002-Graffiti Stil.webp',
+    title: 'Gnom 002 – Graffiti',
+    series: 'Gnom-Serie 002',
+    year: 2025,
+    cat: 'Gnom-Serie 002',
+    desc: '',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/Gnom-Serie 002/Gnom-002-Grumpy Gnom Stil.webp',
+    title: 'Gnom 002 – Grumpy Gnom',
+    series: 'Gnom-Serie 002',
+    year: 2025,
+    cat: 'Gnom-Serie 002',
+    desc: '',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/Gnom-Serie 002/Gnom-002-Karikatur Stil.webp',
+    title: 'Gnom 002 – Karikatur',
+    series: 'Gnom-Serie 002',
+    year: 2025,
+    cat: 'Gnom-Serie 002',
+    desc: '',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/Gnom-Serie 002/Gnom-002-Rapper Stil.webp',
+    title: 'Gnom 002 – Rapper',
+    series: 'Gnom-Serie 002',
+    year: 2025,
+    cat: 'Gnom-Serie 002',
+    desc: '',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/Gnom-Serie 002/Gnom-002-3d Stil.webp',
+    title: 'Gnom 002 – 3D',
+    series: 'Gnom-Serie 002',
+    year: 2025,
+    cat: 'Gnom-Serie 002',
+    desc: '',
+    pinterest: null
+  },
+];
+
+/* ---- Interner State ---- */
+var currentFiltered = [];
+var currentIndex    = 0;
+
+/* ---- Galerie rendern ---- */
+function renderGallery(items) {
+  var grid  = document.getElementById('gallery-grid');
+  var empty = document.getElementById('gallery-empty');
+  grid.innerHTML = '';
+
+  if (!items.length) {
+    empty.style.display = '';
+    return;
+  }
+  empty.style.display = 'none';
+
+  items.forEach(function(item, i) {
+    var card = document.createElement('div');
+    card.className = 'gallery-card';
+    card.setAttribute('tabindex', '0');
+    card.setAttribute('role', 'button');
+    card.setAttribute('aria-label', item.title || 'Galeriebild');
+
+    /* Bild */
+    var imgWrap = document.createElement('div');
+    imgWrap.className = 'gallery-card-img';
+    var img = document.createElement('img');
+    img.src = item.src;
+    img.alt = item.title || '';
+    img.loading = 'lazy';
+    imgWrap.appendChild(img);
+    card.appendChild(imgWrap);
+
+    /* Info */
+    var info = document.createElement('div');
+    info.className = 'gallery-card-info';
+    var metaHtml = '<div class="gc-meta">';
+    if (item.cat)  metaHtml += '<span class="gc-cat">'  + item.cat  + '</span>';
+    if (item.year) metaHtml += '<span class="gc-year">' + item.year + '</span>';
+    metaHtml += '</div>';
+    var bodyHtml = '';
+    if (item.title) bodyHtml += '<div class="gc-title">' + item.title + '</div>';
+    if (item.desc)  bodyHtml += '<div class="gc-desc">'  + item.desc  + '</div>';
+    var pinHtml = '';
+    if (item.pinterest) {
+      pinHtml = '<a class="gc-pinterest" href="' + item.pinterest +
+        '" target="_blank" rel="noopener" onclick="event.stopPropagation()">Auf Pinterest ansehen &#x2192;</a>';
+    }
+    info.innerHTML = metaHtml + bodyHtml + pinHtml;
+    card.appendChild(info);
+
+    /* Events */
+    (function(idx) {
+      card.addEventListener('click', function() { openLightbox(idx); });
+      card.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openLightbox(idx); }
+      });
+    }(i));
+
+    grid.appendChild(card);
+  });
+}
+
+/* ---- Filter ---- */
+function galleryFilter(btn, cat) {
+  document.querySelectorAll('.filter-btn').forEach(function(b) { b.classList.remove('active'); });
+  btn.classList.add('active');
+  currentFiltered = GALLERY.filter(function(i) { return i.cat === cat; });
+  renderGallery(currentFiltered);
+}
+
+/* ---- Lightbox ---- */
+function openLightbox(idx) {
+  currentIndex = idx;
+  showLightboxItem(idx);
+  document.getElementById('lightbox').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function showLightboxItem(idx) {
+  var item = currentFiltered[idx];
+  if (!item) return;
+  var lbImg = document.getElementById('lb-img');
+  lbImg.src = item.src;
+  lbImg.alt = item.title || '';
+
+  var sub = [];
+  if (item.series) sub.push(item.series);
+  if (item.year)   sub.push(item.year);
+  var infoHtml = '';
+  if (item.title) infoHtml += '<div class="lb-title">' + item.title + '</div>';
+  if (sub.length) infoHtml += '<div class="lb-sub">'   + sub.join(' · ') + '</div>';
+  if (item.pinterest) {
+    infoHtml += '<a class="lb-pinterest" href="' + item.pinterest +
+      '" target="_blank" rel="noopener">Auf Pinterest ansehen &#x2192;</a>';
+  }
+  document.getElementById('lb-info').innerHTML = infoHtml;
+
+  var prev = document.getElementById('lb-prev');
+  var next = document.getElementById('lb-next');
+  prev.style.opacity = idx > 0 ? '1' : '0.18';
+  prev.disabled = idx <= 0;
+  next.style.opacity = idx < currentFiltered.length - 1 ? '1' : '0.18';
+  next.disabled = idx >= currentFiltered.length - 1;
+}
+
+document.getElementById('lb-close').addEventListener('click', closeLightbox);
+document.getElementById('lb-backdrop').addEventListener('click', closeLightbox);
+document.getElementById('lb-prev').addEventListener('click', function() {
+  if (currentIndex > 0) { currentIndex--; showLightboxItem(currentIndex); }
+});
+document.getElementById('lb-next').addEventListener('click', function() {
+  if (currentIndex < currentFiltered.length - 1) { currentIndex++; showLightboxItem(currentIndex); }
+});
+document.addEventListener('keydown', function(e) {
+  if (!document.getElementById('lightbox').classList.contains('open')) return;
+  if (e.key === 'Escape')      closeLightbox();
+  if (e.key === 'ArrowLeft'  && currentIndex > 0)                           { currentIndex--; showLightboxItem(currentIndex); }
+  if (e.key === 'ArrowRight' && currentIndex < currentFiltered.length - 1)  { currentIndex++; showLightboxItem(currentIndex); }
+});
+
+/* ---- Init ---- */
+currentFiltered = GALLERY.filter(function(i) { return i.cat === 'Digital Art'; });
+renderGallery(currentFiltered);
+
+/* ============================================================
+   MOBILE MENU
+   ============================================================ */
+var _mobOpen = false;
+
+function openMobMenu() {
+  _mobOpen = true;
+  var menu = document.getElementById('mob-menu');
+  var btn  = document.getElementById('mob-btn');
+  if (!menu || !btn) return;
+  menu.classList.add('open');
+  menu.setAttribute('aria-hidden', 'false');
+  btn.classList.add('open');
+  btn.setAttribute('aria-expanded', 'true');
+  btn.setAttribute('aria-label', 'Menü schließen');
+  document.body.style.overflow = 'hidden';
+  syncMobLang();
+  var first = menu.querySelector('.mob-nav-link');
+  if (first) setTimeout(function() { first.focus(); }, 50);
+}
+
+function closeMobMenu() {
+  if (!_mobOpen) return;
+  _mobOpen = false;
+  var menu = document.getElementById('mob-menu');
+  var btn  = document.getElementById('mob-btn');
+  if (!menu || !btn) return;
+  menu.classList.remove('open');
+  menu.setAttribute('aria-hidden', 'true');
+  btn.classList.remove('open');
+  btn.setAttribute('aria-expanded', 'false');
+  btn.setAttribute('aria-label', 'Menü öffnen');
+  document.body.style.overflow = '';
+}
+
+function syncMobLang() {
+  var lang = window.FLIPART86_LANG || 'de';
+  document.querySelectorAll('.mob-lang-btn').forEach(function(b) {
+    b.classList.toggle('active', b.dataset.lang === lang);
+  });
+}
+
+(function() {
+  var btn = document.getElementById('mob-btn');
+  if (btn) {
+    btn.addEventListener('click', function() {
+      _mobOpen ? closeMobMenu() : openMobMenu();
+    });
+  }
+  document.querySelectorAll('.mob-nav-link[href]').forEach(function(a) {
+    a.addEventListener('click', function() { closeMobMenu(); });
+  });
+  document.querySelectorAll('.mob-lang-btn').forEach(function(b) {
+    b.addEventListener('click', function() {
+      if (typeof flipLangApply === 'function') flipLangApply(b.dataset.lang);
+      syncMobLang();
+    });
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && _mobOpen) {
+      closeMobMenu();
+      var b2 = document.getElementById('mob-btn');
+      if (b2) b2.focus();
+    }
+  });
+  document.addEventListener('click', function(e) {
+    if (!_mobOpen) return;
+    var menu = document.getElementById('mob-menu');
+    var btn2 = document.getElementById('mob-btn');
+    if (menu && !menu.contains(e.target) && btn2 && !btn2.contains(e.target)) {
+      closeMobMenu();
+    }
+  });
+})();
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="de" data-platform="chatgpt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FlipAI CommandCore — FlipArt86</title>
+<meta name="description" content="Durchsuchbare Command Library für ChatGPT, Claude und Codex. 565 ChatGPT · 368 Claude · 131 Codex-Befehle — suchen, filtern, kopieren. FlipAICommandCore v1.0.2">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://www.flipart86.com/commandcore/">
+<link rel="icon" type="image/png" href="../assets/logo-tile.png">
+<link rel="apple-touch-icon" href="../assets/logo-tile.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles/commandcore.css">
+</head>
+<body>
+
+<div class="topbar">
+  <a href="../" class="topbar-back" aria-label="Zurück zu FlipArt86">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    FlipArt86
+  </a>
+  <span class="topbar-sep">›</span>
+  <span class="topbar-title">COMMANDCORE</span>
+</div>
+
+<header>
+  <div class="header-brand">
+    <div class="header-logo-mark" aria-hidden="true">CC</div>
+    <div>
+      <div class="header-text-name">FlipAI CommandCore</div>
+      <div class="header-text-sub">Command Library · ChatGPT &amp; Claude</div>
+    </div>
+  </div>
+  <div class="platform-switch" role="group" aria-label="Platform wählen">
+    <button class="plat-btn active" data-p="chatgpt">ChatGPT</button>
+    <button class="plat-btn" data-p="claude">Claude</button>
+    <button class="plat-btn" data-p="codex">Codex</button>
+  </div>
+  <div class="stats" aria-live="polite" aria-atomic="true">
+    <span><strong id="stat-match">0</strong> Treffer</span>
+    <span class="stat-chip">Gesamt: <strong id="stat-total">0</strong></span>
+    <span class="stat-chip">★ <strong id="stat-fav">0</strong></span>
+  </div>
+  <div class="header-logo-wrap">
+    <img class="header-logo-img" src="../assets/web/commandcore/flipai-commandcore-splash.webp" alt="FlipAICommandCore Logo" width="1588" height="996">
+  </div>
+</header>
+
+<div class="toolbar" role="search">
+  <div class="search-wrap">
+    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="search" id="cc-search" class="search-input" placeholder="Befehl oder Beschreibung suchen … (Taste /)" aria-label="Befehle durchsuchen" autocomplete="off" spellcheck="false">
+    <button id="cc-search-clear" class="search-clear" aria-label="Suche leeren" title="Suche leeren">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="filter-group">
+    <select id="cc-cat"    class="filter-select" aria-label="Kategorie filtern"><option value="">Alle Kategorien</option></select>
+    <select id="cc-status" class="filter-select" aria-label="Status filtern"><option value="">Alle Status</option></select>
+    <select id="cc-type"   class="filter-select" aria-label="Typ filtern"><option value="">Alle Typen</option></select>
+    <button id="cc-fav-toggle" class="fav-toggle" aria-pressed="false" title="Nur Favoriten anzeigen">
+      <span class="fav-star" aria-hidden="true">★</span> Favoriten
+    </button>
+    <button id="cc-reset" class="btn-reset" aria-label="Alle Filter zurücksetzen">↺ Reset</button>
+  </div>
+</div>
+
+<main id="main-content">
+  <div class="cmd-table-wrap">
+    <div class="cmd-thead" role="row" aria-hidden="true">
+      <div class="th">Befehl</div>
+      <div class="th">Beschreibung</div>
+      <div class="th">Kategorie</div>
+      <div class="th">Status</div>
+      <div class="th">Typ</div>
+      <div class="th"></div>
+    </div>
+    <div id="cc-list" class="cmd-list" role="list" aria-label="Befehlsliste"></div>
+    <div id="cc-empty" class="empty-state" role="status" aria-live="polite">
+      <div class="empty-icon" aria-hidden="true">⌕</div>
+      <div class="empty-title">Keine Treffer</div>
+      <div class="empty-sub">Andere Suchbegriffe oder Filter ausprobieren</div>
+      <button id="cc-empty-reset" class="empty-reset">↺ Alle Filter zurücksetzen</button>
+    </div>
+  </div>
+</main>
+
+<div id="cc-toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+
+<footer class="page-footer">
+  <div class="footer-brand">
+    <a href="../">← FlipArt86.com</a>
+    &nbsp;·&nbsp; FlipAI CommandCore &nbsp;·&nbsp; © 2026 GStone City, AT
+  </div>
+  <div class="footer-meta">ChatGPT: 565 &nbsp;·&nbsp; Claude: 368 &nbsp;·&nbsp; Codex: 131 &nbsp;·&nbsp; Gesamt: 1.064 &nbsp;·&nbsp; v1.0.2</div>
+</footer>
+
+<script src="scripts/commandcore.js"></script>
+</body>
+</html>
