@@ -1,1 +1,7 @@
 .claude/
+
+# Lokale Projektdateien (nicht fuer GitHub Pages)
+/CLAUDE.md
+/Design/
+/Website_FlipArt86.zip
+/assets/_to_delete/
