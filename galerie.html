@@ -804,12 +804,12 @@ function openLightbox(idx) {
   currentIndex = idx;
   showLightboxItem(idx);
   document.getElementById('lightbox').classList.add('open');
-  document.body.style.overflow = 'hidden';
+  lockPageScroll('lightbox');
 }
 
 function closeLightbox() {
   document.getElementById('lightbox').classList.remove('open');
-  document.body.style.overflow = '';
+  unlockPageScroll('lightbox');
 }
 
 function showLightboxItem(idx) {
@@ -854,9 +854,79 @@ document.addEventListener('keydown', function(e) {
   if (e.key === 'ArrowRight' && currentIndex < currentFiltered.length - 1)  { currentIndex++; showLightboxItem(currentIndex); }
 });
 
+/* ---- Lightbox: Wischgeste (mobil, Pfeile sind dort ausgeblendet) ---- */
+var swipeStartX = null, swipeStartY = null;
+var lightboxEl = document.getElementById('lightbox');
+lightboxEl.addEventListener('touchstart', function(e) {
+  if (e.touches.length !== 1) { swipeStartX = null; return; }
+  swipeStartX = e.touches[0].clientX;
+  swipeStartY = e.touches[0].clientY;
+}, { passive: true });
+lightboxEl.addEventListener('touchend', function(e) {
+  if (swipeStartX === null) return;
+  var t  = e.changedTouches[0];
+  var dx = t.clientX - swipeStartX;
+  var dy = t.clientY - swipeStartY;
+  swipeStartX = null;
+  if (Math.abs(dx) < 50 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+  if (dx < 0 && currentIndex < currentFiltered.length - 1) { currentIndex++; showLightboxItem(currentIndex); }
+  if (dx > 0 && currentIndex > 0)                          { currentIndex--; showLightboxItem(currentIndex); }
+}, { passive: true });
+
 /* ---- Init ---- */
 currentFiltered = GALLERY.filter(function(i) { return i.cat === 'Digital Art'; });
 renderGallery(currentFiltered);
+
+/* ============================================================
+   SCROLL-LOCK (mobiles Menü + Lightbox)
+   Sperrt das Scrollen über <html> (nicht über <body>): ein
+   overflow auf <body> macht den Body zum Scroll-Container und
+   hebt dadurch position:sticky des Headers auf.
+   ============================================================ */
+var _scrollLockReasons = {};
+var _scrollLockY = 0;
+
+function _scrollLockActive() {
+  for (var k in _scrollLockReasons) {
+    if (_scrollLockReasons[k]) return true;
+  }
+  return false;
+}
+
+function lockPageScroll(reason) {
+  var wasLocked = _scrollLockActive();
+  _scrollLockReasons[reason] = true;
+  if (wasLocked) return;
+  var de = document.documentElement;
+  _scrollLockY = window.pageYOffset || de.scrollTop || 0;
+  var sbw = window.innerWidth - de.clientWidth; /* Breite einer klassischen Scrollleiste */
+  de.style.overflow = 'hidden';
+  if (sbw > 0) de.style.paddingRight = sbw + 'px'; /* verhindert Layout-Sprung */
+}
+
+function unlockPageScroll(reason) {
+  if (!_scrollLockReasons[reason]) return;
+  _scrollLockReasons[reason] = false;
+  if (_scrollLockActive()) return;
+  var de = document.documentElement;
+  de.style.overflow = '';
+  de.style.paddingRight = '';
+  if ((window.pageYOffset || de.scrollTop || 0) !== _scrollLockY) window.scrollTo(0, _scrollLockY);
+}
+
+/* Touch-Geräte (z. B. ältere iOS-Versionen): Ein-Finger-Scrollen im Hintergrund unterbinden */
+document.addEventListener('touchmove', function(e) {
+  if (_scrollLockActive() && e.touches.length === 1 && e.cancelable) e.preventDefault();
+}, { passive: false });
+
+/* Menü automatisch schließen (und Sperre lösen), wenn die Breite das Hamburger-Menü verlässt */
+(function() {
+  if (!window.matchMedia) return;
+  var mq = window.matchMedia('(min-width: 981px)');
+  var onChange = function(e) { if (e.matches && typeof closeMobMenu === 'function') closeMobMenu(); };
+  if (mq.addEventListener) mq.addEventListener('change', onChange);
+  else if (mq.addListener) mq.addListener(onChange);
+})();
 
 /* ============================================================
    MOBILE MENU
@@ -873,7 +943,7 @@ function openMobMenu() {
   btn.classList.add('open');
   btn.setAttribute('aria-expanded', 'true');
   btn.setAttribute('aria-label', 'Menü schließen');
-  document.body.style.overflow = 'hidden';
+  lockPageScroll('menu');
   syncMobLang();
   var first = menu.querySelector('.mob-nav-link');
   if (first) setTimeout(function() { first.focus(); }, 50);
@@ -890,7 +960,7 @@ function closeMobMenu() {
   btn.classList.remove('open');
   btn.setAttribute('aria-expanded', 'false');
   btn.setAttribute('aria-label', 'Menü öffnen');
-  document.body.style.overflow = '';
+  unlockPageScroll('menu');
 }
 
 function syncMobLang() {

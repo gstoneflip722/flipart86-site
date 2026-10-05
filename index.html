@@ -576,6 +576,57 @@ document.addEventListener('keydown', function(e) {
 })();
 
 /* ============================================================
+   SCROLL-LOCK (mobiles Menü + Lightbox)
+   Sperrt das Scrollen über <html> (nicht über <body>): ein
+   overflow auf <body> macht den Body zum Scroll-Container und
+   hebt dadurch position:sticky des Headers auf.
+   ============================================================ */
+var _scrollLockReasons = {};
+var _scrollLockY = 0;
+
+function _scrollLockActive() {
+  for (var k in _scrollLockReasons) {
+    if (_scrollLockReasons[k]) return true;
+  }
+  return false;
+}
+
+function lockPageScroll(reason) {
+  var wasLocked = _scrollLockActive();
+  _scrollLockReasons[reason] = true;
+  if (wasLocked) return;
+  var de = document.documentElement;
+  _scrollLockY = window.pageYOffset || de.scrollTop || 0;
+  var sbw = window.innerWidth - de.clientWidth; /* Breite einer klassischen Scrollleiste */
+  de.style.overflow = 'hidden';
+  if (sbw > 0) de.style.paddingRight = sbw + 'px'; /* verhindert Layout-Sprung */
+}
+
+function unlockPageScroll(reason) {
+  if (!_scrollLockReasons[reason]) return;
+  _scrollLockReasons[reason] = false;
+  if (_scrollLockActive()) return;
+  var de = document.documentElement;
+  de.style.overflow = '';
+  de.style.paddingRight = '';
+  if ((window.pageYOffset || de.scrollTop || 0) !== _scrollLockY) window.scrollTo(0, _scrollLockY);
+}
+
+/* Touch-Geräte (z. B. ältere iOS-Versionen): Ein-Finger-Scrollen im Hintergrund unterbinden */
+document.addEventListener('touchmove', function(e) {
+  if (_scrollLockActive() && e.touches.length === 1 && e.cancelable) e.preventDefault();
+}, { passive: false });
+
+/* Menü automatisch schließen (und Sperre lösen), wenn die Breite das Hamburger-Menü verlässt */
+(function() {
+  if (!window.matchMedia) return;
+  var mq = window.matchMedia('(min-width: 981px)');
+  var onChange = function(e) { if (e.matches && typeof closeMobMenu === 'function') closeMobMenu(); };
+  if (mq.addEventListener) mq.addEventListener('change', onChange);
+  else if (mq.addListener) mq.addListener(onChange);
+})();
+
+/* ============================================================
    MOBILE MENU
    ============================================================ */
 var _mobOpen = false;
@@ -590,7 +641,7 @@ function openMobMenu() {
   btn.classList.add('open');
   btn.setAttribute('aria-expanded', 'true');
   btn.setAttribute('aria-label', 'Menü schließen');
-  document.body.style.overflow = 'hidden';
+  lockPageScroll('menu');
   syncMobLang();
   // focus first nav link
   var first = menu.querySelector('.mob-nav-link');
@@ -608,7 +659,7 @@ function closeMobMenu() {
   btn.classList.remove('open');
   btn.setAttribute('aria-expanded', 'false');
   btn.setAttribute('aria-label', 'Menü öffnen');
-  document.body.style.overflow = '';
+  unlockPageScroll('menu');
 }
 
 function syncMobLang() {
