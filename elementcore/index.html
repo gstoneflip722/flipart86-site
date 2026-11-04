@@ -1,0 +1,1489 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ElementCore — FlipArt86</title>
+  <meta name="description" content="Interaktives Periodensystem der Elemente — alle 118 Elemente, Suche, Filter, Detailansicht und Vergleich. Direkt im Browser.">
+  <meta property="og:title" content="ElementCore — FlipArt86">
+  <meta property="og:description" content="Interaktives Periodensystem der Elemente — alle 118 Elemente, Suche, Filter, Detailansicht und Vergleich. Direkt im Browser.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://flipart86.com/elementcore/">
+  <link rel="icon" href="assets/logo.ico">
+<!-- UnifrakturMaguntia: lokal unter ASSETS/fonts/UnifrakturMaguntia.woff2 ablegen fuer volle Darstellung -->
+<style>
+  /* ══════════════════════════════════════════
+     ELEMENTCORE — MASTERWORK DESIGN v2.0
+     FlipArt86 · Cyan/Noir Cyberpunk Glass
+  ══════════════════════════════════════════ */
+
+  /* ── LOCAL FONT (offline-fähig) ──────────────────
+     UnifrakturMaguntia.woff2 → ASSETS/fonts/ ablegen
+  ─────────────────────────────────────────────── */
+  @font-face {
+    font-family: 'UnifrakturMaguntia';
+    src: url('assets/fonts/UnifrakturMaguntia.woff2') format('woff2');
+    font-display: swap;
+  }
+
+  :root {
+    --bg-base:       #020208;
+    --bg-glass:      rgba(5,5,18,0.78);
+    --bg-glass-light:rgba(12,12,32,0.72);
+    --bg-card:       rgba(15,15,35,0.85);
+    --accent:        #00f5ff;
+    --accent-dim:    rgba(0,245,255,0.10);
+    --accent-glow:   rgba(0,245,255,0.45);
+    --accent2:       #bf5fff;
+    --text-primary:  #eef6ff;
+    --text-secondary:#a0c0d8;
+    --text-muted:    #5c85a8;
+    --border:        rgba(0,245,255,0.09);
+    --border-bright: rgba(0,245,255,0.28);
+    --font:          'Segoe UI', system-ui, sans-serif;
+
+    --c-alkali:        #ff4d6d;
+    --c-alkalierde:    #ffb347;
+    --c-ubergang:      #00c8e8;
+    --c-nachtubergang: #5ce0ff;
+    --c-halbmetall:    #7fffcf;
+    --c-nichtmetall:   #d4ff33;
+    --c-halogen:       #ff2d78;
+    --c-edelgas:       #9b30ff;
+    --c-lanthanoid:    #ff9500;
+    --c-actinoid:      #ff3a4a;
+  }
+
+  @keyframes fadeUp {
+    from { transform: translateY(6px); }
+    to   { transform: translateY(0); }
+  }
+  @keyframes glowPulse {
+    0%, 100% { opacity: 0.6; }
+    50%       { opacity: 1; }
+  }
+  @keyframes scanline {
+    0%   { transform: translateX(-100%); }
+    100% { transform: translateX(200%); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+  border: 0;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg-base) url('assets/bg.jpg') center/cover no-repeat fixed;
+    color: var(--text-primary);
+    font-family: var(--font);
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Dark overlay over background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse at 60% 40%, rgba(0,30,50,0.55) 0%, rgba(2,2,10,0.80) 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Subtle animated top accent line */
+  body::after {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, var(--accent) 50%, transparent 100%);
+    opacity: 0.6;
+    z-index: 200;
+    pointer-events: none;
+    animation: glowPulse 3s ease-in-out infinite;
+  }
+
+  #titlebar, #toolbar, #content, #legend, #compare-bar, #brand-footer {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── TITLEBAR ───────────────────────────── */
+
+  .back-link {
+    color: #00f5ff;
+    text-decoration: none;
+    font-family: 'Courier New', monospace;
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+    opacity: 0.75;
+    transition: opacity 0.2s;
+    white-space: nowrap;
+  }
+  .back-link:hover { opacity: 1; }
+  #titlebar {
+    height: 38px;
+    background: rgba(2,2,10,0.82);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(0,245,255,0.12);
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+    flex-shrink: 0;
+    gap: 10px;
+    box-shadow: 0 1px 20px rgba(0,245,255,0.06);
+  }
+  #titlebar .logo {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.28em;
+    color: var(--accent);
+    text-transform: uppercase;
+    text-shadow: 0 0 12px var(--accent-glow);
+  }
+  #titlebar .ver {
+    font-size: 9px;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+  }
+  #titlebar .brand {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  #titlebar .brand img {
+    width: 26px;
+    height: 26px;
+    object-fit: contain;
+    mix-blend-mode: screen;
+    opacity: 0.80;
+  }
+  #titlebar .brand-name {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    color: rgba(0,245,255,0.60);
+    text-transform: uppercase;
+    text-shadow: 0 0 10px rgba(0,245,255,0.3);
+  }
+
+  /* ── TOOLBAR ───────────────────────────── */
+  #toolbar {
+    padding: 7px 14px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    background: rgba(5,5,16,0.70);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    flex-shrink: 0;
+  }
+
+  #search-wrap {
+    position: relative;
+    flex: 1;
+    min-width: 180px;
+    max-width: 260px;
+  }
+  #search-wrap svg {
+    position: absolute;
+    left: 9px; top: 50%;
+    transform: translateY(-50%);
+    width: 13px; height: 13px;
+    stroke: var(--text-muted);
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+  }
+  #search {
+    width: 100%;
+    padding: 5px 10px 5px 30px;
+    background: rgba(0,245,255,0.04);
+    border: 1px solid rgba(0,245,255,0.12);
+    border-radius: 6px;
+    color: var(--text-primary);
+    font-size: 12px;
+    outline: none;
+    transition: border-color 0.25s, box-shadow 0.25s;
+  }
+  #search:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(0,245,255,0.08), 0 0 12px rgba(0,245,255,0.15);
+  }
+  #search::placeholder { color: var(--text-muted); }
+
+  /* ── CUSTOM DROPDOWN ──────────────────── */
+  .cdd {
+    position: relative;
+    display: inline-block;
+  }
+  .cdd-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    background: rgba(0,245,255,0.04);
+    border: 1px solid rgba(0,245,255,0.14);
+    border-radius: 6px;
+    color: var(--text-secondary);
+    font-size: 12px;
+    font-family: var(--font);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.18s ease;
+    min-width: 130px;
+    justify-content: space-between;
+  }
+  .cdd-btn:hover, .cdd.open .cdd-btn {
+    border-color: var(--accent);
+    color: #ffffff;
+    background: rgba(0,245,255,0.16);
+    box-shadow: 0 0 16px rgba(0,245,255,0.38), inset 0 0 8px rgba(0,245,255,0.07);
+    text-shadow: 0 0 8px rgba(0,245,255,0.7);
+    transform: translateY(-1px);
+  }
+  .cdd-btn .cdd-arrow {
+    font-size: 9px;
+    opacity: 0.6;
+    transition: transform 0.2s;
+  }
+  .cdd.open .cdd-arrow { transform: rotate(180deg); }
+  .cdd-btn.active-filter {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(0,245,255,0.10);
+    box-shadow: 0 0 10px rgba(0,245,255,0.15);
+  }
+
+  .cdd-list {
+    display: none;
+    position: fixed;
+    min-width: 160px;
+    background: rgba(6,6,22,0.98);
+    border: 1px solid rgba(0,245,255,0.22);
+    border-radius: 8px;
+    overflow: hidden;
+    z-index: 50;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.85), 0 0 24px rgba(0,245,255,0.10);
+    animation: fadeUp 0.15s ease;
+  }
+
+  .cdd-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.80);
+    cursor: pointer;
+    transition: background 0.12s, color 0.12s;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    white-space: nowrap;
+  }
+  .cdd-option:last-child { border-bottom: none; }
+  .cdd-option:hover {
+    background: rgba(0,245,255,0.08);
+    color: #ffffff;
+  }
+  .cdd-option.selected {
+    background: rgba(0,245,255,0.12);
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .cdd-option .cdd-dot {
+    width: 8px; height: 8px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+  .cdd-option.reset-opt {
+    color: var(--text-muted);
+    font-style: italic;
+    border-bottom: 1px solid rgba(0,245,255,0.08);
+  }
+  .cdd-option.reset-opt:hover { color: rgba(255,255,255,0.6); }
+
+  .tb-sep { width: 1px; height: 20px; background: var(--border); margin: 0 2px; }
+
+  .tb-btn {
+    padding: 4px 12px;
+    background: transparent;
+    border: 1px solid rgba(0,245,255,0.14);
+    border-radius: 6px;
+    color: var(--text-secondary);
+    font-size: 11px;
+    font-family: var(--font);
+    cursor: pointer;
+    transition: all 0.18s ease;
+    letter-spacing: 0.06em;
+  }
+  .tb-btn:hover {
+    border-color: var(--accent);
+    color: #ffffff;
+    background: rgba(0,245,255,0.18);
+    box-shadow: 0 0 18px rgba(0,245,255,0.45), inset 0 0 10px rgba(0,245,255,0.08);
+    text-shadow: 0 0 10px rgba(0,245,255,0.9);
+    transform: translateY(-1px);
+  }
+  .tb-btn.active {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(0,245,255,0.12);
+    box-shadow: 0 0 16px rgba(0,245,255,0.25);
+  }
+  .tb-btn.active:hover {
+    color: #ffffff;
+    background: rgba(0,245,255,0.22);
+    box-shadow: 0 0 22px rgba(0,245,255,0.55), inset 0 0 12px rgba(0,245,255,0.10);
+    text-shadow: 0 0 10px rgba(0,245,255,0.9);
+    transform: translateY(-1px);
+  }
+
+  /* ── LAYOUT ────────────────────────────── */
+  #content {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  #table-area {
+    flex: 1;
+    overflow: auto;
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background: transparent;
+  }
+
+  /* ── PERIODIC TABLE GRID ────────────────── */
+  #pt-grid {
+    display: grid;
+    grid-template-columns: repeat(18, minmax(70px, 1fr));
+    gap: 3px;
+    min-width: 1320px;
+  }
+
+  .el {
+    border-radius: 7px;
+    cursor: pointer;
+    padding: 3px 5px 5px;
+    text-align: center;
+    border: 1px solid rgba(255,255,255,0.07);
+    border-top: 3px solid var(--el-color, rgba(0,245,255,0.3));
+    transition: transform 0.18s cubic-bezier(.34,1.56,.64,1),
+                border-color 0.15s, box-shadow 0.18s, opacity 0.2s,
+                background 0.15s;
+    position: relative;
+    background: rgba(6,6,20,0.78);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    user-select: none;
+    overflow: hidden;
+    animation: fadeUp 0.4s ease;
+  }
+  /* shimmer overlay on hover */
+  .el::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+    border-radius: inherit;
+  }
+  .el:hover::after { opacity: 1; }
+  .el:hover {
+    transform: scale(1.20) translateY(-2px);
+    z-index: 20;
+    border-color: var(--el-color, var(--accent));
+    border-top-color: var(--el-color, var(--accent));
+    box-shadow:
+      0 0 0 1px var(--el-color, var(--accent)),
+      0 0 20px var(--el-glow, rgba(0,245,255,0.5)),
+      0 8px 24px rgba(0,0,0,0.5);
+    background: rgba(12,12,35,0.92);
+  }
+  .el.selected {
+    border-color: var(--el-color, var(--accent));
+    border-top-color: var(--el-color, var(--accent));
+    box-shadow:
+      0 0 0 1px var(--el-color, var(--accent)),
+      0 0 22px var(--el-glow, rgba(0,245,255,0.55)),
+      0 4px 16px rgba(0,0,0,0.4);
+    transform: scale(1.10);
+    z-index: 15;
+    background: rgba(12,12,38,0.92);
+  }
+  .el.dimmed { opacity: 0.08; pointer-events: none; }
+.el:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  z-index: 25;
+}
+
+
+  .el-num {
+    font-size: 12px;
+    color: rgba(255,255,255,0.85);
+    line-height: 1;
+    padding-top: 2px;
+    font-weight: 500;
+    text-align: left;
+  }
+  .el-sym {
+    font-size: 24px;
+    font-weight: 800;
+    line-height: 1.1;
+    margin-top: 1px;
+    letter-spacing: -0.02em;
+    text-shadow: 0 0 10px var(--el-glow, rgba(0,245,255,0.4));
+  }
+  .el-name {
+    font-size: 12px;
+    color: rgba(255,255,255,0.90);
+    line-height: 1;
+    margin-top: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .el-mass {
+    font-size: 10px;
+    color: rgba(255,255,255,0.60);
+    line-height: 1;
+    margin-top: 2px;
+  }
+
+  .gap { background: transparent !important; border: none !important; cursor: default; }
+  .gap:hover { transform: none !important; box-shadow: none !important; }
+  .gap::after { display: none; }
+
+  /* ── LANTHANOID / ACTINOID LABELS ─────── */
+  .series-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    color: var(--text-muted);
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  /* ── LEGEND ─────────────────────────────── */
+  #legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    padding: 7px 14px;
+    border-top: 1px solid var(--border);
+    background: rgba(3,3,12,0.75);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    flex-shrink: 0;
+  }
+  .leg-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 10px;
+    color: rgba(255,255,255,0.85);
+    cursor: pointer;
+    padding: 3px 8px;
+    border-radius: 20px;
+    border: 1px solid transparent;
+    transition: all 0.18s;
+    letter-spacing: 0.03em;
+  }
+  .leg-item:hover {
+    border-color: var(--li-color);
+    background: rgba(255,255,255,0.05);
+    box-shadow: 0 0 10px rgba(255,255,255,0.06);
+  }
+  .leg-item.active {
+    border-color: var(--li-color);
+    color: var(--li-color);
+    background: rgba(255,255,255,0.06);
+    box-shadow: 0 0 12px var(--li-color, transparent), inset 0 0 6px rgba(255,255,255,0.03);
+    text-shadow: 0 0 8px var(--li-color);
+  }
+  .leg-dot { width: 9px; height: 9px; border-radius: 3px; flex-shrink: 0; }
+
+  /* ── BRAND FOOTER ───────────────────────── */
+  #brand-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 4px 20px 8px 16px;
+    background: rgba(2,2,8,0.65);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-top: 1px solid rgba(0,245,255,0.06);
+    flex-shrink: 0;
+    pointer-events: none;
+  }
+  #brand-footer .bf-text {
+    font-family: 'UnifrakturMaguntia', 'Palatino Linotype', 'Book Antiqua', Georgia, serif;
+    font-size: 46px;
+    color: #ffffff;
+    line-height: 1;
+    text-shadow:
+      0 0 30px rgba(0,245,255,0.35),
+      0 0 60px rgba(0,245,255,0.12),
+      2px 3px 6px rgba(0,0,0,0.9);
+    letter-spacing: 0.01em;
+  }
+  #brand-footer .bf-logo {
+    width: 88px;
+    height: 88px;
+    object-fit: contain;
+    mix-blend-mode: screen;
+    opacity: 0.88;
+    filter: drop-shadow(0 0 12px rgba(0,245,255,0.25));
+  }
+
+  /* ── SIDE PANEL ─────────────────────────── */
+  #panel {
+    width: 300px;
+    min-width: 300px;
+    border-left: 1px solid rgba(0,245,255,0.10);
+    background: rgba(4,4,16,0.82);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    transition: width 0.3s ease;
+    box-shadow: -4px 0 30px rgba(0,0,0,0.4);
+  }
+  #panel.hidden { width: 0; min-width: 0; border: none; overflow: hidden; }
+
+  #panel-header {
+    padding: 22px 20px 16px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  #panel-header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(0,245,255,0.05) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .panel-symbol {
+    font-size: 64px;
+    font-weight: 900;
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+    text-shadow: 0 0 30px var(--el-glow, rgba(0,245,255,0.5)), 0 0 60px var(--el-glow, rgba(0,245,255,0.2));
+    position: relative;
+  }
+  .panel-name {
+    font-size: 20px;
+    font-weight: 700;
+    margin-top: 8px;
+    letter-spacing: 0.02em;
+  }
+  .panel-cat {
+    font-size: 10px;
+    color: rgba(255,255,255,0.55);
+    margin-top: 4px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  #panel-body { padding: 16px 20px; flex: 1; }
+
+  .stat-group { margin-bottom: 18px; }
+  .stat-group-title {
+    font-size: 8px;
+    letter-spacing: 0.20em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid rgba(0,245,255,0.12);
+    text-shadow: 0 0 8px rgba(0,245,255,0.4);
+  }
+  .stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 8px;
+    font-size: 12px;
+    border-radius: 5px;
+    transition: background 0.15s;
+  }
+  .stat-row:hover { background: rgba(0,245,255,0.04); }
+  .stat-row .slabel { color: rgba(255,255,255,0.70); font-size: 11px; }
+  .stat-row .sval {
+    font-weight: 700;
+    font-size: 13px;
+    color: #ffffff;
+    text-shadow: 0 0 6px rgba(255,255,255,0.15);
+  }
+
+  .config-box {
+    background: rgba(0,245,255,0.05);
+    border: 1px solid rgba(0,245,255,0.15);
+    border-radius: 7px;
+    padding: 9px 12px;
+    font-size: 13px;
+    font-family: 'Consolas', monospace;
+    color: var(--accent);
+    word-break: break-all;
+    margin-top: 4px;
+    letter-spacing: 0.05em;
+    text-shadow: 0 0 10px rgba(0,245,255,0.4);
+    box-shadow: inset 0 0 10px rgba(0,245,255,0.04);
+  }
+
+  .en-bar-wrap { margin-top: 6px; }
+  .en-bar-bg {
+    height: 5px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .en-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.7s cubic-bezier(.22,1,.36,1);
+    box-shadow: 0 0 8px var(--el-glow, rgba(0,245,255,0.5));
+  }
+
+  /* ── COMPARE BAR ────────────────────────── */
+  #compare-bar {
+    display: none;
+    padding: 7px 14px;
+    background: rgba(5,5,18,0.85);
+    backdrop-filter: blur(12px);
+    border-top: 1px solid var(--border);
+    gap: 8px;
+    align-items: center;
+    font-size: 12px;
+    flex-shrink: 0;
+  }
+  #compare-bar.visible { display: flex; }
+  .cmp-slot {
+    flex: 1;
+    background: rgba(0,245,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 5px 10px;
+    font-size: 12px;
+    color: var(--text-muted);
+    text-align: center;
+  }
+  .cmp-slot.filled { border-color: var(--accent); color: var(--text-primary); }
+  .cmp-btn {
+    padding: 5px 14px;
+    background: rgba(0,245,255,0.08);
+    border: 1px solid var(--accent);
+    border-radius: 6px;
+    color: var(--accent);
+    font-size: 11px;
+    cursor: pointer;
+    font-family: var(--font);
+    transition: all 0.2s;
+    letter-spacing: 0.05em;
+  }
+  .cmp-btn:hover {
+    background: var(--accent);
+    color: #000;
+    box-shadow: 0 0 24px rgba(0,245,255,0.65), 0 0 8px rgba(0,245,255,0.4);
+    transform: translateY(-1px);
+    font-weight: 700;
+  }
+
+  /* ── COMPARE TABLE ──────────────────────── */
+  #cmp-table { display: none; padding: 14px 18px; overflow-y: auto; }
+  #cmp-table.visible { display: block; }
+  .cmp-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .cmp-cell {
+    padding: 7px 10px;
+    font-size: 11px;
+    border-bottom: 1px solid var(--border);
+    color: #ffffff;
+  }
+  .cmp-cell.header { color: var(--accent); font-size: 10px; letter-spacing: 0.08em; background: rgba(0,245,255,0.05); }
+  .cmp-cell.label { color: rgba(255,255,255,0.6); background: rgba(0,0,0,0.2); }
+  .cmp-cell:not(:nth-child(3n)) { border-right: 1px solid var(--border); }
+
+  /* ── SCROLLBAR ──────────────────────────── */
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(0,245,255,0.25);
+    border-radius: 2px;
+  }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(0,245,255,0.45); }
+
+  /* ── PANEL PLACEHOLDER ──────────────────── */
+  #panel-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    gap: 12px;
+    color: var(--text-muted);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 20px;
+    text-align: center;
+  }
+
+  /* ===== Web: Mobile Responsive ===== */
+  @media (max-width: 1024px) {
+    #app { flex-direction: column; overflow: auto; }
+    #panel { width: 100%; max-height: 320px; overflow-y: auto; border-left: none; border-top: 1px solid #0a0a1e; }
+    #table-area { min-width: 0; overflow-x: auto; }
+  }
+  @media (max-width: 600px) {
+    #titlebar { padding: 0 8px; }
+    .back-link { font-size: 0.7rem; }
+    .search-row { flex-wrap: wrap; gap: 6px; }
+    .search-row input, .search-row select { font-size: 0.75rem; }
+    #panel { max-height: 260px; }
+  }
+
+</style>
+</head>
+<body>
+
+<div id="titlebar">
+  <a class="back-link" href="../">← FlipArt86</a>
+    <div class="logo">&#9632; ElementCore</div>
+  <div class="ver">v1.0</div>
+  <div class="brand">
+    <img src="assets/logo_small.png" alt="" onerror="this.style.display='none'">
+    <span class="brand-name">FlipArt86</span>
+  </div>
+</div>
+
+<div id="toolbar">
+  <div id="search-wrap">
+    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <label for="search" class="visually-hidden">Element suchen</label>
+          <input id="search" type="text" placeholder="Element, Symbol, Ordnungszahl…" oninput="onSearch(this.value)">
+  </div>
+
+  <!-- Kategorie Dropdown -->
+  <div class="cdd" id="cdd-cat">
+    <button class="cdd-btn" onclick="toggleCDD('cdd-cat')" aria-expanded="false" aria-label="Kategorie-Filter">
+      <span id="cdd-cat-label">— Kategorie —</span>
+      <span class="cdd-arrow">▼</span>
+    </button>
+    <div class="cdd-list">
+      <div class="cdd-option reset-opt" onclick="setCat('')">— Kategorie —</div>
+      <div class="cdd-option" onclick="setCat('alkali')"><span class="cdd-dot" style="background:#ff4d6d"></span>Alkalimetalle</div>
+      <div class="cdd-option" onclick="setCat('alkalierde')"><span class="cdd-dot" style="background:#ffb347"></span>Erdalkalimetalle</div>
+      <div class="cdd-option" onclick="setCat('ubergang')"><span class="cdd-dot" style="background:#00c8e8"></span>Übergangsmetalle</div>
+      <div class="cdd-option" onclick="setCat('nachtubergang')"><span class="cdd-dot" style="background:#5ce0ff"></span>Nachübergangsmetalle</div>
+      <div class="cdd-option" onclick="setCat('halbmetall')"><span class="cdd-dot" style="background:#7fffcf"></span>Halbmetalle</div>
+      <div class="cdd-option" onclick="setCat('nichtmetall')"><span class="cdd-dot" style="background:#d4ff33"></span>Nichtmetalle</div>
+      <div class="cdd-option" onclick="setCat('halogen')"><span class="cdd-dot" style="background:#ff2d78"></span>Halogene</div>
+      <div class="cdd-option" onclick="setCat('edelgas')"><span class="cdd-dot" style="background:#9b30ff"></span>Edelgase</div>
+      <div class="cdd-option" onclick="setCat('lanthanoid')"><span class="cdd-dot" style="background:#ff9500"></span>Lanthanoide</div>
+      <div class="cdd-option" onclick="setCat('actinoid')"><span class="cdd-dot" style="background:#ff3a4a"></span>Actinoide</div>
+    </div>
+  </div>
+
+  <!-- Periode Dropdown -->
+  <div class="cdd" id="cdd-per">
+    <button class="cdd-btn" onclick="toggleCDD('cdd-per')" aria-expanded="false" aria-label="Perioden-Filter">
+      <span id="cdd-per-label">— Periode —</span>
+      <span class="cdd-arrow">▼</span>
+    </button>
+    <div class="cdd-list">
+      <div class="cdd-option reset-opt" onclick="setPer('')">— Periode —</div>
+      <div class="cdd-option" onclick="setPer('1')">Periode 1</div>
+      <div class="cdd-option" onclick="setPer('2')">Periode 2</div>
+      <div class="cdd-option" onclick="setPer('3')">Periode 3</div>
+      <div class="cdd-option" onclick="setPer('4')">Periode 4</div>
+      <div class="cdd-option" onclick="setPer('5')">Periode 5</div>
+      <div class="cdd-option" onclick="setPer('6')">Periode 6</div>
+      <div class="cdd-option" onclick="setPer('7')">Periode 7</div>
+    </div>
+  </div>
+
+  <div class="tb-sep"></div>
+
+  <button class="tb-btn active" id="btn-de" onclick="setLang('de')">DE</button>
+  <button class="tb-btn" id="btn-en" onclick="setLang('en')">EN</button>
+
+  <div class="tb-sep"></div>
+
+  <button class="tb-btn" id="btn-cmp" onclick="toggleCompare()">⊕ Vergleich</button>
+  <button class="tb-btn" onclick="resetAll()">↺ Reset</button>
+</div>
+
+<div id="content">
+  <div id="table-area">
+    <div id="pt-grid"></div>
+    <div id="legend"></div>
+  </div>
+
+  <div id="panel">
+    <div id="panel-placeholder" style="display:flex;flex:1;align-items:center;justify-content:center;flex-direction:column;gap:8px;padding:20px;text-align:center;">
+      <div style="font-size:32px;opacity:0.15;">⬡</div>
+      <div style="font-size:11px;color:var(--text-muted);" id="ph-text">Element anklicken</div>
+    </div>
+    <div id="panel-detail" style="display:none;flex-direction:column;flex:1;">
+      <div id="panel-header">
+        <div class="panel-symbol" id="p-sym"></div>
+        <div class="panel-name" id="p-name"></div>
+        <div class="panel-cat" id="p-cat"></div>
+      </div>
+      <div id="panel-body">
+        <div class="stat-group">
+          <div class="stat-group-title" id="sg-identity">Identität</div>
+          <div class="stat-row"><span class="slabel" id="sl-nr">Ordnungszahl</span><span class="sval" id="p-nr"></span></div>
+          <div class="stat-row"><span class="slabel" id="sl-mass">Atommasse</span><span class="sval" id="p-mass"></span></div>
+          <div class="stat-row"><span class="slabel" id="sl-per">Periode</span><span class="sval" id="p-per"></span></div>
+          <div class="stat-row"><span class="slabel" id="sl-grp">Gruppe</span><span class="sval" id="p-grp"></span></div>
+        </div>
+        <div class="stat-group">
+          <div class="stat-group-title" id="sg-props">Eigenschaften</div>
+          <div class="stat-row"><span class="slabel" id="sl-en">Elektronegativität</span><span class="sval" id="p-en"></span></div>
+          <div class="en-bar-wrap">
+            <div class="en-bar-bg"><div class="en-bar-fill" id="p-en-bar"></div></div>
+          </div>
+          <div class="stat-row" style="margin-top:8px"><span class="slabel" id="sl-bp">Siedepunkt</span><span class="sval" id="p-bp"></span></div>
+          <div class="stat-row"><span class="slabel" id="sl-mp">Schmelzpunkt</span><span class="sval" id="p-mp"></span></div>
+        </div>
+        <div class="stat-group">
+          <div class="stat-group-title" id="sg-electron">Elektronenkonfiguration</div>
+          <div class="config-box" id="p-config"></div>
+        </div>
+        <div class="stat-group">
+          <div class="stat-group-title" id="sg-fact">Wissenswertes</div>
+          <div style="font-size:11px;color:#ffffff;line-height:1.6;" id="p-fact"></div>
+        </div>
+      </div>
+      <div id="cmp-table"></div>
+    </div>
+  </div>
+</div>
+
+<div id="compare-bar">
+  <div class="cmp-slot" id="cmp-a">—</div>
+  <div style="color:var(--text-muted);font-size:11px;">vs</div>
+  <div class="cmp-slot" id="cmp-b">—</div>
+  <button class="cmp-btn" onclick="runCompare()" id="cmp-go">Vergleichen</button>
+  <button class="cmp-btn" onclick="clearCompare()" style="border-color:var(--border);background:transparent;color:var(--text-muted)">✕</button>
+</div>
+
+<div id="brand-footer">
+  <div class="bf-text">Flip Art86</div>
+  <img class="bf-logo" src="assets/logo.png" alt="" onerror="this.style.display='none'">
+</div>
+
+<script>
+const LANG = {
+  de: {
+    search: "Element, Symbol, Ordnungszahl…",
+    clickEl: "Element anklicken",
+    identity: "Identität",
+    props: "Eigenschaften",
+    electron: "Elektronenkonfiguration",
+    fact: "Wissenswertes",
+    ordnungszahl: "Ordnungszahl",
+    masse: "Atommasse",
+    periode: "Periode",
+    gruppe: "Gruppe",
+    en: "Elektronegativität",
+    bp: "Siedepunkt",
+    mp: "Schmelzpunkt",
+    compareBtn: "⊕ Vergleich",
+    reset: "↺ Reset",
+    periode_filter: "— Periode —",
+    cat_filter: "— Kategorie —",
+    none: "—",
+    cmpTitle: "Vergleich",
+    property: "Eigenschaft",
+  },
+  en: {
+    search: "Element, symbol, atomic number…",
+    clickEl: "Click an element",
+    identity: "Identity",
+    props: "Properties",
+    electron: "Electron configuration",
+    fact: "Did you know",
+    ordnungszahl: "Atomic number",
+    masse: "Atomic mass",
+    periode: "Period",
+    gruppe: "Group",
+    en: "Electronegativity",
+    bp: "Boiling point",
+    mp: "Melting point",
+    compareBtn: "⊕ Compare",
+    reset: "↺ Reset",
+    periode_filter: "— Period —",
+    cat_filter: "— Category —",
+    none: "—",
+    cmpTitle: "Comparison",
+    property: "Property",
+  }
+};
+
+const CAT_COLORS = {
+  alkali:"#ff4d6d", alkalierde:"#ffb347", ubergang:"#00c8e8",
+  nachtubergang:"#5ce0ff", halbmetall:"#7fffcf", nichtmetall:"#d4ff33",
+  halogen:"#ff2d78", edelgas:"#9b30ff", lanthanoid:"#ff9500", actinoid:"#ff3a4a"
+};
+const CAT_LABEL_DE = {
+  alkali:"Alkalimetalle", alkalierde:"Erdalkalimetalle", ubergang:"Übergangsmetalle",
+  nachtubergang:"Nachübergangsmetalle", halbmetall:"Halbmetalle", nichtmetall:"Nichtmetalle",
+  halogen:"Halogene", edelgas:"Edelgase", lanthanoid:"Lanthanoide", actinoid:"Actinoide"
+};
+const CAT_LABEL_EN = {
+  alkali:"Alkali metals", alkalierde:"Alkaline earth metals", ubergang:"Transition metals",
+  nachtubergang:"Post-transition metals", halbmetall:"Metalloids", nichtmetall:"Nonmetals",
+  halogen:"Halogens", edelgas:"Noble gases", lanthanoid:"Lanthanides", actinoid:"Actinides"
+};
+
+const ELEMENTS = [
+  {n:1,sym:"H",de:"Wasserstoff",en:"Hydrogen",cat:"nichtmetall",masse:1.008,gruppe:1,periode:1,elNeg:2.20,bp:-252.9,mp:-259.1,config:"1s¹",factDe:"Häufigstes Element im Universum – macht ca. 75% der normalen Materie aus.",factEn:"Most abundant element in the universe, making up about 75% of normal matter."},
+  {n:2,sym:"He",de:"Helium",en:"Helium",cat:"edelgas",masse:4.003,gruppe:18,periode:1,elNeg:null,bp:-268.9,mp:-272.2,config:"1s²",factDe:"Hat den niedrigsten Siedepunkt aller Elemente und kann bei Normaldruck nicht erstarren.",factEn:"Has the lowest boiling point of all elements and cannot solidify at normal pressure."},
+  {n:3,sym:"Li",de:"Lithium",en:"Lithium",cat:"alkali",masse:6.941,gruppe:1,periode:2,elNeg:0.98,bp:1342,mp:180.5,config:"[He] 2s¹",factDe:"Das leichteste Metall – es schwimmt auf Wasser und reagiert dabei heftig.",factEn:"The lightest metal – it floats on water and reacts vigorously with it."},
+  {n:4,sym:"Be",de:"Beryllium",en:"Beryllium",cat:"alkalierde",masse:9.012,gruppe:2,periode:2,elNeg:1.57,bp:2470,mp:1287,config:"[He] 2s²",factDe:"Extrem starres Leichtmetall, das in Röntgenfenstern und Raumfahrtkomponenten verwendet wird.",factEn:"Extremely rigid lightweight metal used in X-ray windows and aerospace components."},
+  {n:5,sym:"B",de:"Bor",en:"Boron",cat:"halbmetall",masse:10.81,gruppe:13,periode:2,elNeg:2.04,bp:2550,mp:2075,config:"[He] 2s² 2p¹",factDe:"Reines Bor ist ein schlechter Leiter, aber Borverbindungen sind industriell unverzichtbar.",factEn:"Pure boron is a poor conductor, but boron compounds are essential in industry."},
+  {n:6,sym:"C",de:"Kohlenstoff",en:"Carbon",cat:"nichtmetall",masse:12.011,gruppe:14,periode:2,elNeg:2.55,bp:3825,mp:3550,config:"[He] 2s² 2p²",factDe:"Grundlage allen bekannten Lebens – existiert als Graphit, Diamant und Fulleren.",factEn:"Basis of all known life – exists as graphite, diamond, and fullerene."},
+  {n:7,sym:"N",de:"Stickstoff",en:"Nitrogen",cat:"nichtmetall",masse:14.007,gruppe:15,periode:2,elNeg:3.04,bp:-195.8,mp:-210.0,config:"[He] 2s² 2p³",factDe:"Macht 78% der Erdatmosphäre aus. Flüssiger Stickstoff wird zum Schockfrosten genutzt.",factEn:"Makes up 78% of Earth's atmosphere. Liquid nitrogen is used for flash freezing."},
+  {n:8,sym:"O",de:"Sauerstoff",en:"Oxygen",cat:"nichtmetall",masse:15.999,gruppe:16,periode:2,elNeg:3.44,bp:-183.0,mp:-218.8,config:"[He] 2s² 2p⁴",factDe:"Das häufigste Element in der Erdkruste – und lebensnotwendig für Aerobier.",factEn:"The most abundant element in Earth's crust – and vital for aerobic life."},
+  {n:9,sym:"F",de:"Fluor",en:"Fluorine",cat:"halogen",masse:18.998,gruppe:17,periode:2,elNeg:3.98,bp:-188.1,mp:-219.7,config:"[He] 2s² 2p⁵",factDe:"Das reaktivste aller Elemente – greift sogar Glas und Edelsteine an.",factEn:"The most reactive of all elements – it even attacks glass and gemstones."},
+  {n:10,sym:"Ne",de:"Neon",en:"Neon",cat:"edelgas",masse:20.180,gruppe:18,periode:2,elNeg:null,bp:-246.1,mp:-248.6,config:"[He] 2s² 2p⁶",factDe:"Berühmt für sein orangerotes Leuchten in Leuchtreklamen.",factEn:"Famous for its orange-red glow in neon signs."},
+  {n:11,sym:"Na",de:"Natrium",en:"Sodium",cat:"alkali",masse:22.990,gruppe:1,periode:3,elNeg:0.93,bp:883,mp:97.8,config:"[Ne] 3s¹",factDe:"Natriumchlorid (Kochsalz) ist eine der wichtigsten chemischen Verbindungen.",factEn:"Sodium chloride (table salt) is one of the most important chemical compounds."},
+  {n:12,sym:"Mg",de:"Magnesium",en:"Magnesium",cat:"alkalierde",masse:24.305,gruppe:2,periode:3,elNeg:1.31,bp:1090,mp:650,config:"[Ne] 3s²",factDe:"Zentralatom des Chlorophylls – ohne Magnesium keine Photosynthese.",factEn:"Central atom of chlorophyll – without magnesium, no photosynthesis."},
+  {n:13,sym:"Al",de:"Aluminium",en:"Aluminum",cat:"nachtubergang",masse:26.982,gruppe:13,periode:3,elNeg:1.61,bp:2519,mp:660,config:"[Ne] 3s² 3p¹",factDe:"Das häufigste Metall in der Erdkruste. Leicht, korrosionsbeständig und recycelbar.",factEn:"The most abundant metal in Earth's crust. Lightweight, corrosion-resistant and recyclable."},
+  {n:14,sym:"Si",de:"Silizium",en:"Silicon",cat:"halbmetall",masse:28.085,gruppe:14,periode:3,elNeg:1.90,bp:2355,mp:1414,config:"[Ne] 3s² 3p²",factDe:"Grundlage der modernen Halbleiterindustrie und Computerchips.",factEn:"Foundation of the modern semiconductor industry and computer chips."},
+  {n:15,sym:"P",de:"Phosphor",en:"Phosphorus",cat:"nichtmetall",masse:30.974,gruppe:15,periode:3,elNeg:2.19,bp:280,mp:44.2,config:"[Ne] 3s² 3p³",factDe:"Weißer Phosphor leuchtet im Dunkeln durch langsame Oxidation – Phosphoreszenz.",factEn:"White phosphorus glows in the dark through slow oxidation – phosphorescence."},
+  {n:16,sym:"S",de:"Schwefel",en:"Sulfur",cat:"nichtmetall",masse:32.06,gruppe:16,periode:3,elNeg:2.58,bp:444.6,mp:113,config:"[Ne] 3s² 3p⁴",factDe:"Seit der Antike bekannt – wurde als 'brennender Stein' bezeichnet.",factEn:"Known since antiquity – referred to as 'burning stone'."},
+  {n:17,sym:"Cl",de:"Chlor",en:"Chlorine",cat:"halogen",masse:35.45,gruppe:17,periode:3,elNeg:3.16,bp:-34.0,mp:-101.0,config:"[Ne] 3s² 3p⁵",factDe:"Wird zur Trinkwasserdesinfektion weltweit eingesetzt.",factEn:"Used worldwide for drinking water disinfection."},
+  {n:18,sym:"Ar",de:"Argon",en:"Argon",cat:"edelgas",masse:39.948,gruppe:18,periode:3,elNeg:null,bp:-185.8,mp:-189.4,config:"[Ne] 3s² 3p⁶",factDe:"Macht ca. 1% der Erdatmosphäre aus – drittes häufigste Gas der Luft.",factEn:"Makes up about 1% of Earth's atmosphere – third most common gas in air."},
+  {n:19,sym:"K",de:"Kalium",en:"Potassium",cat:"alkali",masse:39.098,gruppe:1,periode:4,elNeg:0.82,bp:759,mp:63.7,config:"[Ar] 4s¹",factDe:"Essentieller Mineralstoff für die Nervenfunktion im menschlichen Körper.",factEn:"Essential mineral for nerve function in the human body."},
+  {n:20,sym:"Ca",de:"Calcium",en:"Calcium",cat:"alkalierde",masse:40.078,gruppe:2,periode:4,elNeg:1.00,bp:1484,mp:842,config:"[Ar] 4s²",factDe:"Hauptbestandteil von Knochen, Zähnen und Kalkstein.",factEn:"Main component of bones, teeth, and limestone."},
+  {n:21,sym:"Sc",de:"Scandium",en:"Scandium",cat:"ubergang",masse:44.956,gruppe:3,periode:4,elNeg:1.36,bp:2836,mp:1541,config:"[Ar] 3d¹ 4s²",factDe:"Wird Aluminium-Legierungen beigemischt, um Sportgeräte und Flugzeugteile zu verbessern.",factEn:"Added to aluminum alloys to improve sporting equipment and aircraft parts."},
+  {n:22,sym:"Ti",de:"Titan",en:"Titanium",cat:"ubergang",masse:47.867,gruppe:4,periode:4,elNeg:1.54,bp:3287,mp:1668,config:"[Ar] 3d² 4s²",factDe:"Extrem fest und dabei leicht – das Metall der Wahl für Implantate und Raumfahrt.",factEn:"Extremely strong and light – the metal of choice for implants and aerospace."},
+  {n:23,sym:"V",de:"Vanadium",en:"Vanadium",cat:"ubergang",masse:50.942,gruppe:5,periode:4,elNeg:1.63,bp:3407,mp:1910,config:"[Ar] 3d³ 4s²",factDe:"Vanadiumstahl ist besonders zäh und wird in Werkzeug und Federn verwendet.",factEn:"Vanadium steel is particularly tough and used in tools and springs."},
+  {n:24,sym:"Cr",de:"Chrom",en:"Chromium",cat:"ubergang",masse:51.996,gruppe:6,periode:4,elNeg:1.66,bp:2671,mp:1907,config:"[Ar] 3d⁵ 4s¹",factDe:"Verleiht Edelstahl seine Korrosionsbeständigkeit – und Rubinen ihre rote Farbe.",factEn:"Gives stainless steel its corrosion resistance – and rubies their red color."},
+  {n:25,sym:"Mn",de:"Mangan",en:"Manganese",cat:"ubergang",masse:54.938,gruppe:7,periode:4,elNeg:1.55,bp:2061,mp:1246,config:"[Ar] 3d⁵ 4s²",factDe:"Unverzichtbarer Bestandteil von Stahllegierungen für Schienen und Brücken.",factEn:"Indispensable component of steel alloys used in rails and bridges."},
+  {n:26,sym:"Fe",de:"Eisen",en:"Iron",cat:"ubergang",masse:55.845,gruppe:8,periode:4,elNeg:1.83,bp:2861,mp:1538,config:"[Ar] 3d⁶ 4s²",factDe:"Das meistproduzierte Metall der Welt – Grundlage der modernen Zivilisation.",factEn:"The most produced metal in the world – foundation of modern civilization."},
+  {n:27,sym:"Co",de:"Cobalt",en:"Cobalt",cat:"ubergang",masse:58.933,gruppe:9,periode:4,elNeg:1.88,bp:2927,mp:1495,config:"[Ar] 3d⁷ 4s²",factDe:"Gab dem Blau in mittelalterlichem Glas und Keramik seine charakteristische Farbe.",factEn:"Gave the blue in medieval glass and ceramics its characteristic color."},
+  {n:28,sym:"Ni",de:"Nickel",en:"Nickel",cat:"ubergang",masse:58.693,gruppe:10,periode:4,elNeg:1.91,bp:2913,mp:1455,config:"[Ar] 3d⁸ 4s²",factDe:"In den meisten Euromünzen enthalten – und häufiger Auslöser von Kontaktallergien.",factEn:"Found in most Euro coins – and a common cause of contact allergies."},
+  {n:29,sym:"Cu",de:"Kupfer",en:"Copper",cat:"ubergang",masse:63.546,gruppe:11,periode:4,elNeg:1.90,bp:2562,mp:1085,config:"[Ar] 3d¹⁰ 4s¹",factDe:"Erstes vom Menschen bearbeitetes Metall – gibt der Freiheitsstatue ihre Farbe.",factEn:"First metal worked by humans – gives the Statue of Liberty its color."},
+  {n:30,sym:"Zn",de:"Zink",en:"Zinc",cat:"ubergang",masse:65.38,gruppe:12,periode:4,elNeg:1.65,bp:907,mp:420,config:"[Ar] 3d¹⁰ 4s²",factDe:"Schützt Stahl vor Rost durch Galvanisierung und ist essentiell für das Immunsystem.",factEn:"Protects steel from rust by galvanization and is essential for the immune system."},
+  {n:31,sym:"Ga",de:"Gallium",en:"Gallium",cat:"nachtubergang",masse:69.723,gruppe:13,periode:4,elNeg:1.81,bp:2229,mp:29.8,config:"[Ar] 3d¹⁰ 4s² 4p¹",factDe:"Schmilzt bereits bei Körpertemperatur – ein faszinierend flüssiges Metall in der Hand.",factEn:"Melts at body temperature – a fascinatingly liquid metal in the palm."},
+  {n:32,sym:"Ge",de:"Germanium",en:"Germanium",cat:"halbmetall",masse:72.63,gruppe:14,periode:4,elNeg:2.01,bp:2833,mp:938,config:"[Ar] 3d¹⁰ 4s² 4p²",factDe:"Von Mendeleev 1871 vorhergesagt, bevor es 1886 entdeckt wurde.",factEn:"Predicted by Mendeleev in 1871 before it was discovered in 1886."},
+  {n:33,sym:"As",de:"Arsen",en:"Arsenic",cat:"halbmetall",masse:74.922,gruppe:15,periode:4,elNeg:2.18,bp:887,mp:817,config:"[Ar] 3d¹⁰ 4s² 4p³",factDe:"Berüchtigtes Gift der Geschichte – heute in der Halbleitertechnik eingesetzt.",factEn:"Infamous poison of history – today used in semiconductor technology."},
+  {n:34,sym:"Se",de:"Selen",en:"Selenium",cat:"nichtmetall",masse:78.971,gruppe:16,periode:4,elNeg:2.55,bp:685,mp:221,config:"[Ar] 3d¹⁰ 4s² 4p⁴",factDe:"Essenzielles Spurenelement – und Bestandteil von Antischuppenshampoos.",factEn:"Essential trace element – and a component of anti-dandruff shampoos."},
+  {n:35,sym:"Br",de:"Brom",en:"Bromine",cat:"halogen",masse:79.904,gruppe:17,periode:4,elNeg:2.96,bp:58.8,mp:-7.3,config:"[Ar] 3d¹⁰ 4s² 4p⁵",factDe:"Eines von nur zwei Elementen, die bei Raumtemperatur flüssig sind.",factEn:"One of only two elements that are liquid at room temperature."},
+  {n:36,sym:"Kr",de:"Krypton",en:"Krypton",cat:"edelgas",masse:83.798,gruppe:18,periode:4,elNeg:3.00,bp:-153.2,mp:-157.4,config:"[Ar] 3d¹⁰ 4s² 4p⁶",factDe:"Wurde einst zur Definition des Meters verwendet (1960–1983).",factEn:"Once used to define the metre (1960–1983)."},
+  {n:37,sym:"Rb",de:"Rubidium",en:"Rubidium",cat:"alkali",masse:85.468,gruppe:1,periode:5,elNeg:0.82,bp:688,mp:39.3,config:"[Kr] 5s¹",factDe:"Wird in Atomuhren eingesetzt, die auf seine charakteristische Frequenz kalibriert sind.",factEn:"Used in atomic clocks calibrated to its characteristic frequency."},
+  {n:38,sym:"Sr",de:"Strontium",en:"Strontium",cat:"alkalierde",masse:87.62,gruppe:2,periode:5,elNeg:0.95,bp:1382,mp:777,config:"[Kr] 5s²",factDe:"Strontiumsalze erzeugen das charakteristische Rot bei Feuerwerkskörpern.",factEn:"Strontium salts create the characteristic red color in fireworks."},
+  {n:39,sym:"Y",de:"Yttrium",en:"Yttrium",cat:"ubergang",masse:88.906,gruppe:3,periode:5,elNeg:1.22,bp:3345,mp:1522,config:"[Kr] 4d¹ 5s²",factDe:"Wird in LED-Leuchtstoffen und Supraleitern verwendet.",factEn:"Used in LED phosphors and superconductors."},
+  {n:40,sym:"Zr",de:"Zirconium",en:"Zirconium",cat:"ubergang",masse:91.224,gruppe:4,periode:5,elNeg:1.33,bp:4409,mp:1855,config:"[Kr] 4d² 5s²",factDe:"Hüllt Brennstäbe in Kernkraftwerken ein – extrem neutronentransparent.",factEn:"Clads fuel rods in nuclear reactors – extremely transparent to neutrons."},
+  {n:41,sym:"Nb",de:"Niob",en:"Niobium",cat:"ubergang",masse:92.906,gruppe:5,periode:5,elNeg:1.6,bp:4744,mp:2477,config:"[Kr] 4d⁴ 5s¹",factDe:"Supraleitend bei sehr tiefen Temperaturen – eingesetzt in Teilchenbeschleunigern.",factEn:"Superconducting at very low temperatures – used in particle accelerators."},
+  {n:42,sym:"Mo",de:"Molybdän",en:"Molybdenum",cat:"ubergang",masse:95.96,gruppe:6,periode:5,elNeg:2.16,bp:4639,mp:2623,config:"[Kr] 4d⁵ 5s¹",factDe:"Hat einen der höchsten Schmelzpunkte aller Elemente – unverzichtbar in Hochtemperaturstählen.",factEn:"Has one of the highest melting points of all elements – essential in high-temperature steels."},
+  {n:43,sym:"Tc",de:"Technetium",en:"Technetium",cat:"ubergang",masse:98,gruppe:7,periode:5,elNeg:1.9,bp:4265,mp:2157,config:"[Kr] 4d⁵ 5s²",factDe:"Erstes künstlich hergestelltes Element – alle seine Isotope sind radioaktiv.",factEn:"First artificially produced element – all its isotopes are radioactive."},
+  {n:44,sym:"Ru",de:"Ruthenium",en:"Ruthenium",cat:"ubergang",masse:101.07,gruppe:8,periode:5,elNeg:2.2,bp:4150,mp:2334,config:"[Kr] 4d⁷ 5s¹",factDe:"Einer der härtesten Platinmetalle – dient als Katalysator in der chemischen Industrie.",factEn:"One of the hardest platinum metals – serves as a catalyst in the chemical industry."},
+  {n:45,sym:"Rh",de:"Rhodium",en:"Rhodium",cat:"ubergang",masse:102.906,gruppe:9,periode:5,elNeg:2.28,bp:3695,mp:1964,config:"[Kr] 4d⁸ 5s¹",factDe:"Eines der seltensten und teuersten Metalle – unverzichtbar in Autokatalysatoren.",factEn:"One of the rarest and most expensive metals – essential in automotive catalysts."},
+  {n:46,sym:"Pd",de:"Palladium",en:"Palladium",cat:"ubergang",masse:106.42,gruppe:10,periode:5,elNeg:2.20,bp:2963,mp:1555,config:"[Kr] 4d¹⁰",factDe:"Kann das 900-fache seines Volumens an Wasserstoff aufnehmen.",factEn:"Can absorb up to 900 times its volume in hydrogen."},
+  {n:47,sym:"Ag",de:"Silber",en:"Silver",cat:"ubergang",masse:107.868,gruppe:11,periode:5,elNeg:1.93,bp:2162,mp:962,config:"[Kr] 4d¹⁰ 5s¹",factDe:"Bester elektrischer Leiter aller Elemente – und seit Jahrtausenden als Währung genutzt.",factEn:"Best electrical conductor of all elements – and used as currency for millennia."},
+  {n:48,sym:"Cd",de:"Cadmium",en:"Cadmium",cat:"ubergang",masse:112.411,gruppe:12,periode:5,elNeg:1.69,bp:767,mp:321,config:"[Kr] 4d¹⁰ 5s²",factDe:"Hochtoxisch und in Akkumulatoren enthalten – streng reguliert in der EU.",factEn:"Highly toxic and found in rechargeable batteries – strictly regulated in the EU."},
+  {n:49,sym:"In",de:"Indium",en:"Indium",cat:"nachtubergang",masse:114.818,gruppe:13,periode:5,elNeg:1.78,bp:2072,mp:157,config:"[Kr] 4d¹⁰ 5s² 5p¹",factDe:"Indiumzinnoxid macht Touchscreens und Flatscreens möglich.",factEn:"Indium tin oxide makes touchscreens and flat screens possible."},
+  {n:50,sym:"Sn",de:"Zinn",en:"Tin",cat:"nachtubergang",masse:118.710,gruppe:14,periode:5,elNeg:1.96,bp:2602,mp:232,config:"[Kr] 4d¹⁰ 5s² 5p²",factDe:"Bronze = Kupfer + Zinn – begründete eine ganze Epoche der Menschheitsgeschichte.",factEn:"Bronze = copper + tin – ushered in an entire epoch of human history."},
+  {n:51,sym:"Sb",de:"Antimon",en:"Antimony",cat:"halbmetall",masse:121.760,gruppe:15,periode:5,elNeg:2.05,bp:1587,mp:631,config:"[Kr] 4d¹⁰ 5s² 5p³",factDe:"Im alten Ägypten als schwarzes Augenschminkmittel (Kohl) verwendet.",factEn:"Used in ancient Egypt as black eye makeup (kohl)."},
+  {n:52,sym:"Te",de:"Tellur",en:"Tellurium",cat:"halbmetall",masse:127.60,gruppe:16,periode:5,elNeg:2.1,bp:988,mp:450,config:"[Kr] 4d¹⁰ 5s² 5p⁴",factDe:"Tellur-Verbindungen werden in Solarzellen der nächsten Generation eingesetzt.",factEn:"Tellurium compounds are used in next-generation solar cells."},
+  {n:53,sym:"I",de:"Iod",en:"Iodine",cat:"halogen",masse:126.904,gruppe:17,periode:5,elNeg:2.66,bp:184.3,mp:113.7,config:"[Kr] 4d¹⁰ 5s² 5p⁵",factDe:"Essentiell für die Schilddrüsenhormone – Jodmangel verursacht Kropf.",factEn:"Essential for thyroid hormones – iodine deficiency causes goiter."},
+  {n:54,sym:"Xe",de:"Xenon",en:"Xenon",cat:"edelgas",masse:131.293,gruppe:18,periode:5,elNeg:2.6,bp:-108.1,mp:-111.9,config:"[Kr] 4d¹⁰ 5s² 5p⁶",factDe:"In Xenon-Scheinwerfern und als Anästhetikum in der Medizin verwendet.",factEn:"Used in xenon headlights and as an anesthetic in medicine."},
+  {n:55,sym:"Cs",de:"Caesium",en:"Cesium",cat:"alkali",masse:132.905,gruppe:1,periode:6,elNeg:0.79,bp:671,mp:28.4,config:"[Xe] 6s¹",factDe:"Bildet die Grundlage der genauesten Atomuhren der Welt.",factEn:"Forms the basis of the most accurate atomic clocks in the world."},
+  {n:56,sym:"Ba",de:"Barium",en:"Barium",cat:"alkalierde",masse:137.327,gruppe:2,periode:6,elNeg:0.89,bp:1845,mp:729,config:"[Xe] 6s²",factDe:"Bariumsulfat ist für den Magen-Darm-Röntgen als Kontrastmittel unverzichtbar.",factEn:"Barium sulfate is essential as a contrast agent for gastrointestinal X-rays."},
+  {n:57,sym:"La",de:"Lanthan",en:"Lanthanum",cat:"lanthanoid",masse:138.905,gruppe:3,periode:6,elNeg:1.10,bp:3464,mp:920,config:"[Xe] 5d¹ 6s²",factDe:"Namensgebend für die Lanthanoiden-Gruppe – in Kameralinsen verwendet.",factEn:"Namesake of the lanthanide group – used in camera lenses."},
+  {n:58,sym:"Ce",de:"Cer",en:"Cerium",cat:"lanthanoid",masse:140.116,gruppe:null,periode:6,elNeg:1.12,bp:3443,mp:798,config:"[Xe] 4f¹ 5d¹ 6s²",factDe:"Das häufigste Seltenerdmetall – in Katalysatoren und Selbstreinigungsöfen.",factEn:"The most abundant rare earth metal – in catalysts and self-cleaning ovens."},
+  {n:59,sym:"Pr",de:"Praseodym",en:"Praseodymium",cat:"lanthanoid",masse:140.908,gruppe:null,periode:6,elNeg:1.13,bp:3520,mp:931,config:"[Xe] 4f³ 6s²",factDe:"Verleiht Glas eine gelblich-grüne Farbe und wird in Hochleistungsmagneten verwendet.",factEn:"Gives glass a yellowish-green color and is used in high-performance magnets."},
+  {n:60,sym:"Nd",de:"Neodym",en:"Neodymium",cat:"lanthanoid",masse:144.242,gruppe:null,periode:6,elNeg:1.14,bp:3074,mp:1021,config:"[Xe] 4f⁴ 6s²",factDe:"Neodym-Magnete sind die stärksten Permanentmagnete – in jedem Elektromotor.",factEn:"Neodymium magnets are the strongest permanent magnets – in every electric motor."},
+  {n:61,sym:"Pm",de:"Promethium",en:"Promethium",cat:"lanthanoid",masse:145,gruppe:null,periode:6,elNeg:1.13,bp:3000,mp:1042,config:"[Xe] 4f⁵ 6s²",factDe:"Das einzige radioaktive Lanthanoid – in der Natur kaum vorhanden.",factEn:"The only radioactive lanthanide – barely found in nature."},
+  {n:62,sym:"Sm",de:"Samarium",en:"Samarium",cat:"lanthanoid",masse:150.36,gruppe:null,periode:6,elNeg:1.17,bp:1794,mp:1072,config:"[Xe] 4f⁶ 6s²",factDe:"Samarium-Cobalt-Magnete sind extrem hitzebeständig – eingesetzt in Turbinen.",factEn:"Samarium-cobalt magnets are extremely heat-resistant – used in turbines."},
+  {n:63,sym:"Eu",de:"Europium",en:"Europium",cat:"lanthanoid",masse:151.964,gruppe:null,periode:6,elNeg:1.2,bp:1529,mp:822,config:"[Xe] 4f⁷ 6s²",factDe:"Erzeugt das rote und blaue Leuchten in Fernsehbildschirmen und Euro-Banknoten.",factEn:"Produces the red and blue glow in TV screens and Euro banknotes."},
+  {n:64,sym:"Gd",de:"Gadolinium",en:"Gadolinium",cat:"lanthanoid",masse:157.25,gruppe:null,periode:6,elNeg:1.20,bp:3273,mp:1313,config:"[Xe] 4f⁷ 5d¹ 6s²",factDe:"Als Kontrastmittel in der MRT-Diagnostik weltweit eingesetzt.",factEn:"Used worldwide as a contrast agent in MRI diagnostics."},
+  {n:65,sym:"Tb",de:"Terbium",en:"Terbium",cat:"lanthanoid",masse:158.925,gruppe:null,periode:6,elNeg:1.1,bp:3230,mp:1356,config:"[Xe] 4f⁹ 6s²",factDe:"In grünen Leuchtstoffen für Energiesparlampen und Displays enthalten.",factEn:"Found in green phosphors for energy-saving lamps and displays."},
+  {n:66,sym:"Dy",de:"Dysprosium",en:"Dysprosium",cat:"lanthanoid",masse:162.500,gruppe:null,periode:6,elNeg:1.22,bp:2567,mp:1412,config:"[Xe] 4f¹⁰ 6s²",factDe:"Unverzichtbar in Elektromotoren für Elektrofahrzeuge.",factEn:"Indispensable in electric motors for electric vehicles."},
+  {n:67,sym:"Ho",de:"Holmium",en:"Holmium",cat:"lanthanoid",masse:164.930,gruppe:null,periode:6,elNeg:1.23,bp:2700,mp:1474,config:"[Xe] 4f¹¹ 6s²",factDe:"Hat die stärksten magnetischen Eigenschaften aller Elemente bei tiefen Temperaturen.",factEn:"Has the strongest magnetic properties of all elements at low temperatures."},
+  {n:68,sym:"Er",de:"Erbium",en:"Erbium",cat:"lanthanoid",masse:167.259,gruppe:null,periode:6,elNeg:1.24,bp:2868,mp:1529,config:"[Xe] 4f¹² 6s²",factDe:"In Glasfaserkabeln als Signalverstärker unverzichtbar für die Datenkommunikation.",factEn:"Indispensable as a signal amplifier in fiber optic cables for data communication."},
+  {n:69,sym:"Tm",de:"Thulium",en:"Thulium",cat:"lanthanoid",masse:168.934,gruppe:null,periode:6,elNeg:1.25,bp:1950,mp:1545,config:"[Xe] 4f¹³ 6s²",factDe:"Thulium-Laser werden in der Medizin für präzise Gewebeschnitte eingesetzt.",factEn:"Thulium lasers are used in medicine for precise tissue cutting."},
+  {n:70,sym:"Yb",de:"Ytterbium",en:"Ytterbium",cat:"lanthanoid",masse:173.045,gruppe:null,periode:6,elNeg:1.1,bp:1196,mp:824,config:"[Xe] 4f¹⁴ 6s²",factDe:"In den präzisesten optischen Atomuhren der Welt als Referenz genutzt.",factEn:"Used as a reference in the world's most precise optical atomic clocks."},
+  {n:71,sym:"Lu",de:"Lutetium",en:"Lutetium",cat:"lanthanoid",masse:174.967,gruppe:3,periode:6,elNeg:1.27,bp:3402,mp:1663,config:"[Xe] 4f¹⁴ 5d¹ 6s²",factDe:"Das schwerste und härteste Lanthanoid – in PET-Scannern eingesetzt.",factEn:"The heaviest and hardest lanthanide – used in PET scanners."},
+  {n:72,sym:"Hf",de:"Hafnium",en:"Hafnium",cat:"ubergang",masse:178.49,gruppe:4,periode:6,elNeg:1.3,bp:4603,mp:2233,config:"[Xe] 4f¹⁴ 5d² 6s²",factDe:"In modernen Computerchips als Gatedielektrikum für höhere Leistungsdichte eingesetzt.",factEn:"Used in modern computer chips as gate dielectric for higher power density."},
+  {n:73,sym:"Ta",de:"Tantal",en:"Tantalum",cat:"ubergang",masse:180.948,gruppe:5,periode:6,elNeg:1.5,bp:5458,mp:3017,config:"[Xe] 4f¹⁴ 5d³ 6s²",factDe:"In jedem Mobiltelefon als Kondensator-Material enthalten.",factEn:"Found in every mobile phone as capacitor material."},
+  {n:74,sym:"W",de:"Wolfram",en:"Tungsten",cat:"ubergang",masse:183.84,gruppe:6,periode:6,elNeg:2.36,bp:5555,mp:3422,config:"[Xe] 4f¹⁴ 5d⁴ 6s²",factDe:"Hat den höchsten Schmelzpunkt aller Metalle – daher in Glühlampendrähten.",factEn:"Has the highest melting point of all metals – hence used in incandescent lamp filaments."},
+  {n:75,sym:"Re",de:"Rhenium",en:"Rhenium",cat:"ubergang",masse:186.207,gruppe:7,periode:6,elNeg:1.9,bp:5596,mp:3186,config:"[Xe] 4f¹⁴ 5d⁵ 6s²",factDe:"In Turbinenschaufeln von Strahltriebwerken enthalten – extrem hitzebeständig.",factEn:"Found in jet engine turbine blades – extremely heat resistant."},
+  {n:76,sym:"Os",de:"Osmium",en:"Osmium",cat:"ubergang",masse:190.23,gruppe:8,periode:6,elNeg:2.2,bp:5012,mp:3033,config:"[Xe] 4f¹⁴ 5d⁶ 6s²",factDe:"Das dichteste natürlich vorkommende Element – fast doppelt so schwer wie Blei.",factEn:"The densest naturally occurring element – almost twice as heavy as lead."},
+  {n:77,sym:"Ir",de:"Iridium",en:"Iridium",cat:"ubergang",masse:192.217,gruppe:9,periode:6,elNeg:2.20,bp:4428,mp:2466,config:"[Xe] 4f¹⁴ 5d⁷ 6s²",factDe:"Eine erhöhte Iridiumschicht in der Erdkruste ist Beweis für den Asteroideneinschlag vor 66 Millionen Jahren.",factEn:"An elevated iridium layer in Earth's crust is evidence for the asteroid impact 66 million years ago."},
+  {n:78,sym:"Pt",de:"Platin",en:"Platinum",cat:"ubergang",masse:195.084,gruppe:10,periode:6,elNeg:2.28,bp:3825,mp:1768,config:"[Xe] 4f¹⁴ 5d⁹ 6s¹",factDe:"Katalysiert Reaktionen ohne sich selbst zu verbrauchen – unverzichtbar für die Chemieindustrie.",factEn:"Catalyzes reactions without being consumed – indispensable for the chemical industry."},
+  {n:79,sym:"Au",de:"Gold",en:"Gold",cat:"ubergang",masse:196.967,gruppe:11,periode:6,elNeg:2.54,bp:2856,mp:1064,config:"[Xe] 4f¹⁴ 5d¹⁰ 6s¹",factDe:"Korrodiert nicht und leitet Elektrizität hervorragend – daher in Elektroniksteckern allgegenwärtig.",factEn:"Does not corrode and conducts electricity excellently – hence ubiquitous in electronic connectors."},
+  {n:80,sym:"Hg",de:"Quecksilber",en:"Mercury",cat:"ubergang",masse:200.59,gruppe:12,periode:6,elNeg:2.00,bp:356.7,mp:-38.8,config:"[Xe] 4f¹⁴ 5d¹⁰ 6s²",factDe:"Das einzige Metall, das bei Raumtemperatur flüssig ist – extrem giftig.",factEn:"The only metal that is liquid at room temperature – extremely toxic."},
+  {n:81,sym:"Tl",de:"Thallium",en:"Thallium",cat:"nachtubergang",masse:204.38,gruppe:13,periode:6,elNeg:1.62,bp:1473,mp:304,config:"[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p¹",factDe:"Hochtoxisches Schwermetall – wurde historisch als Rattengift und Mordmittel missbraucht.",factEn:"Highly toxic heavy metal – historically misused as rat poison and murder weapon."},
+  {n:82,sym:"Pb",de:"Blei",en:"Lead",cat:"nachtubergang",masse:207.2,gruppe:14,periode:6,elNeg:2.33,bp:1749,mp:327,config:"[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p²",factDe:"Schützt vor ionisierender Strahlung – in Röntgenschürzen und Reaktorabschirmungen.",factEn:"Protects against ionizing radiation – in X-ray aprons and reactor shielding."},
+  {n:83,sym:"Bi",de:"Bismut",en:"Bismuth",cat:"nachtubergang",masse:208.980,gruppe:15,periode:6,elNeg:2.02,bp:1564,mp:271,config:"[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p³",factDe:"Das schwerste stabile Element – bildet prachtvolle regenbogenfarbene Kristalle.",factEn:"The heaviest stable element – forms spectacular rainbow-colored crystals."},
+  {n:84,sym:"Po",de:"Polonium",en:"Polonium",cat:"halbmetall",masse:209,gruppe:16,periode:6,elNeg:2.0,bp:962,mp:254,config:"[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p⁴",factDe:"Von Marie Curie entdeckt und nach ihrer Heimat Polen benannt.",factEn:"Discovered by Marie Curie and named after her homeland Poland."},
+  {n:85,sym:"At",de:"Astat",en:"Astatine",cat:"halogen",masse:210,gruppe:17,periode:6,elNeg:2.2,bp:337,mp:302,config:"[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p⁵",factDe:"Das seltenste natürliche Element auf der Erde – zu keinem Zeitpunkt mehr als 45 mg in der gesamten Erdkruste.",factEn:"The rarest naturally occurring element – never more than 45 mg in the entire Earth's crust at any time."},
+  {n:86,sym:"Rn",de:"Radon",en:"Radon",cat:"edelgas",masse:222,gruppe:18,periode:6,elNeg:2.2,bp:-61.7,mp:-71.0,config:"[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p⁶",factDe:"Radioaktives Edelgas – zweithäufigste Ursache für Lungenkrebs nach Rauchen.",factEn:"Radioactive noble gas – second leading cause of lung cancer after smoking."},
+  {n:87,sym:"Fr",de:"Francium",en:"Francium",cat:"alkali",masse:223,gruppe:1,periode:7,elNeg:0.7,bp:677,mp:27,config:"[Rn] 7s¹",factDe:"Das instabilste natürliche Element – zu jedem Zeitpunkt existieren weniger als 30 g auf der Erde.",factEn:"The most unstable natural element – less than 30 g exist on Earth at any given time."},
+  {n:88,sym:"Ra",de:"Radium",en:"Radium",cat:"alkalierde",masse:226,gruppe:2,periode:7,elNeg:0.9,bp:1737,mp:700,config:"[Rn] 7s²",factDe:"Von Marie Curie entdeckt – wurde irrtümlicherweise für heilsam gehalten und in Kosmetika verwendet.",factEn:"Discovered by Marie Curie – mistakenly believed to be healthful and used in cosmetics."},
+  {n:89,sym:"Ac",de:"Actinium",en:"Actinium",cat:"actinoid",masse:227,gruppe:3,periode:7,elNeg:1.1,bp:3198,mp:1050,config:"[Rn] 6d¹ 7s²",factDe:"Namensgebend für die Actinoidengruppe – leuchtet im Dunkeln durch seine Radioaktivität.",factEn:"Namesake of the actinide group – glows in the dark due to its radioactivity."},
+  {n:90,sym:"Th",de:"Thorium",en:"Thorium",cat:"actinoid",masse:232.038,gruppe:null,periode:7,elNeg:1.3,bp:4788,mp:1750,config:"[Rn] 6d² 7s²",factDe:"Möglicher Brennstoff für die Kernkraft der nächsten Generation – sicherer als Uran.",factEn:"Possible fuel for next-generation nuclear power – safer than uranium."},
+  {n:91,sym:"Pa",de:"Protactinium",en:"Protactinium",cat:"actinoid",masse:231.036,gruppe:null,periode:7,elNeg:1.5,bp:4027,mp:1572,config:"[Rn] 5f² 6d¹ 7s²",factDe:"Extrem selten und radioaktiv – kaum praktische Anwendungen bekannt.",factEn:"Extremely rare and radioactive – hardly any practical applications known."},
+  {n:92,sym:"U",de:"Uran",en:"Uranium",cat:"actinoid",masse:238.029,gruppe:null,periode:7,elNeg:1.38,bp:4131,mp:1135,config:"[Rn] 5f³ 6d¹ 7s²",factDe:"Kraftstoff der Kernkraftwerke – eine Tonne Uran ersetzt ca. 16.000 Tonnen Kohle.",factEn:"Fuel for nuclear power plants – one ton of uranium replaces about 16,000 tons of coal."},
+  {n:93,sym:"Np",de:"Neptunium",en:"Neptunium",cat:"actinoid",masse:237,gruppe:null,periode:7,elNeg:1.36,bp:4000,mp:644,config:"[Rn] 5f⁴ 6d¹ 7s²",factDe:"Erstes Transuran – 1940 synthetisch hergestellt, nach Neptun benannt.",factEn:"First transuranium element – synthetically produced in 1940, named after Neptune."},
+  {n:94,sym:"Pu",de:"Plutonium",en:"Plutonium",cat:"actinoid",masse:244,gruppe:null,periode:7,elNeg:1.28,bp:3228,mp:640,config:"[Rn] 5f⁶ 7s²",factDe:"Kernbrennstoff und Material für Kernwaffen – eines der gefährlichsten Elemente.",factEn:"Nuclear fuel and material for nuclear weapons – one of the most dangerous elements."},
+  {n:95,sym:"Am",de:"Americium",en:"Americium",cat:"actinoid",masse:243,gruppe:null,periode:7,elNeg:1.13,bp:2607,mp:1176,config:"[Rn] 5f⁷ 7s²",factDe:"In praktisch jedem Rauchmelder weltweit als winzige radioaktive Quelle vorhanden.",factEn:"Present in virtually every smoke detector worldwide as a tiny radioactive source."},
+  {n:96,sym:"Cm",de:"Curium",en:"Curium",cat:"actinoid",masse:247,gruppe:null,periode:7,elNeg:1.28,bp:3110,mp:1345,config:"[Rn] 5f⁷ 6d¹ 7s²",factDe:"Nach Marie und Pierre Curie benannt – erzeugt Wärme durch radioaktiven Zerfall.",factEn:"Named after Marie and Pierre Curie – generates heat through radioactive decay."},
+  {n:97,sym:"Bk",de:"Berkelium",en:"Berkelium",cat:"actinoid",masse:247,gruppe:null,periode:7,elNeg:1.3,bp:2627,mp:986,config:"[Rn] 5f⁹ 7s²",factDe:"Nach Berkeley, Kalifornien benannt – nur wenige Mikrogramm je hergestellt.",factEn:"Named after Berkeley, California – only a few micrograms ever produced."},
+  {n:98,sym:"Cf",de:"Californium",en:"Californium",cat:"actinoid",masse:251,gruppe:null,periode:7,elNeg:1.3,bp:1743,mp:900,config:"[Rn] 5f¹⁰ 7s²",factDe:"Wird zur Neutronenquelle in der Krebstherapie und bei der Sprengstoffsuche eingesetzt.",factEn:"Used as a neutron source in cancer therapy and explosive detection."},
+  {n:99,sym:"Es",de:"Einsteinium",en:"Einsteinium",cat:"actinoid",masse:252,gruppe:null,periode:7,elNeg:1.3,bp:996,mp:860,config:"[Rn] 5f¹¹ 7s²",factDe:"Nach Albert Einstein benannt – erstmals 1952 in den Trümmern eines Wasserstoffbombenversuchs gefunden.",factEn:"Named after Albert Einstein – first found in the debris of a hydrogen bomb test in 1952."},
+  {n:100,sym:"Fm",de:"Fermium",en:"Fermium",cat:"actinoid",masse:257,gruppe:null,periode:7,elNeg:1.3,bp:null,mp:1527,config:"[Rn] 5f¹² 7s²",factDe:"Nach Enrico Fermi benannt – nur in winzigen Mengen synthetisierbar.",factEn:"Named after Enrico Fermi – can only be synthesized in tiny amounts."},
+  {n:101,sym:"Md",de:"Mendelevium",en:"Mendelevium",cat:"actinoid",masse:258,gruppe:null,periode:7,elNeg:1.3,bp:null,mp:827,config:"[Rn] 5f¹³ 7s²",factDe:"Nach Dmitri Mendeleev, dem Erfinder des Periodensystems, benannt.",factEn:"Named after Dmitri Mendeleev, the inventor of the periodic table."},
+  {n:102,sym:"No",de:"Nobelium",en:"Nobelium",cat:"actinoid",masse:259,gruppe:null,periode:7,elNeg:1.3,bp:null,mp:827,config:"[Rn] 5f¹⁴ 7s²",factDe:"Nach Alfred Nobel benannt – extrem kurzlebig und nur in minimalen Mengen erzeugt.",factEn:"Named after Alfred Nobel – extremely short-lived and only produced in minimal amounts."},
+  {n:103,sym:"Lr",de:"Lawrencium",en:"Lawrencium",cat:"actinoid",masse:266,gruppe:3,periode:7,elNeg:1.3,bp:null,mp:1627,config:"[Rn] 5f¹⁴ 7s² 7p¹",factDe:"Nach Ernest Lawrence, dem Erfinder des Zyklotrons, benannt.",factEn:"Named after Ernest Lawrence, the inventor of the cyclotron."},
+  {n:104,sym:"Rf",de:"Rutherfordium",en:"Rutherfordium",cat:"ubergang",masse:267,gruppe:4,periode:7,elNeg:null,bp:null,mp:null,config:"[Rn] 5f¹⁴ 6d² 7s²",factDe:"Erstes Transactinoid – nach Ernest Rutherford benannt.",factEn:"First transactinide – named after Ernest Rutherford."},
+  {n:105,sym:"Db",de:"Dubnium",en:"Dubnium",cat:"ubergang",masse:268,gruppe:5,periode:7,elNeg:null,bp:null,mp:null,config:"[Rn] 5f¹⁴ 6d³ 7s²",factDe:"Nach dem russischen Forschungszentrum Dubna benannt.",factEn:"Named after the Russian research center Dubna."},
+  {n:106,sym:"Sg",de:"Seaborgium",en:"Seaborgium",cat:"ubergang",masse:269,gruppe:6,periode:7,elNeg:null,bp:null,mp:null,config:"[Rn] 5f¹⁴ 6d⁴ 7s²",factDe:"Nach Glenn T. Seaborg benannt – erstes Element, das nach einer noch lebenden Person benannt wurde.",factEn:"Named after Glenn T. Seaborg – first element named after a living person."},
+  {n:107,sym:"Bh",de:"Bohrium",en:"Bohrium",cat:"ubergang",masse:270,gruppe:7,periode:7,elNeg:null,bp:null,mp:null,config:"[Rn] 5f¹⁴ 6d⁵ 7s²",factDe:"Nach Niels Bohr benannt – Halbwertszeit der stabilsten Isotope beträgt nur Sekunden.",factEn:"Named after Niels Bohr – half-life of the most stable isotopes is only seconds."},
+  {n:108,sym:"Hs",de:"Hassium",en:"Hassium",cat:"ubergang",masse:269,gruppe:8,periode:7,elNeg:null,bp:null,mp:null,config:"[Rn] 5f¹⁴ 6d⁶ 7s²",factDe:"Nach dem deutschen Bundesland Hessen benannt – am GSI in Darmstadt erstmals erzeugt.",factEn:"Named after the German state of Hesse – first produced at GSI in Darmstadt."},
+  {n:109,sym:"Mt",de:"Meitnerium",en:"Meitnerium",cat:"ubergang",masse:278,gruppe:9,periode:7,elNeg:null,bp:null,mp:null,config:"[Rn] 5f¹⁴ 6d⁷ 7s²",factDe:"Nach Lise Meitner benannt – Mitentdeckerin der Kernspaltung.",factEn:"Named after Lise Meitner – co-discoverer of nuclear fission."},
+  {n:110,sym:"Ds",de:"Darmstadtium",en:"Darmstadtium",cat:"ubergang",masse:281,gruppe:10,periode:7,elNeg:null,bp:null,mp:null,config:"[Rn] 5f¹⁴ 6d⁸ 7s²",factDe:"Nach Darmstadt benannt – dort am GSI Helmholtzzentrum erstmals synthetisiert.",factEn:"Named after Darmstadt – first synthesized there at the GSI Helmholtz Centre."},
+  {n:111,sym:"Rg",de:"Roentgenium",en:"Roentgenium",cat:"ubergang",masse:282,gruppe:11,periode:7,elNeg:null,bp:null,mp:null,config:"[Rn] 5f¹⁴ 6d⁹ 7s²",factDe:"Nach Wilhelm Conrad Röntgen, dem Entdecker der Röntgenstrahlung, benannt.",factEn:"Named after Wilhelm Conrad Röntgen, the discoverer of X-rays."},
+  {n:112,sym:"Cn",de:"Copernicium",en:"Copernicium",cat:"ubergang",masse:285,gruppe:12,periode:7,elNeg:null,bp:null,mp:null,config:"[Rn] 5f¹⁴ 6d¹⁰ 7s²",factDe:"Nach Nikolaus Kopernikus benannt – flüchtigstes Schwermetall, möglicherweise gasförmig bei Raumtemperatur.",factEn:"Named after Nicolaus Copernicus – most volatile heavy metal, possibly gaseous at room temperature."},
+  {n:113,sym:"Nh",de:"Nihonium",en:"Nihonium",cat:"nachtubergang",masse:286,gruppe:13,periode:7,elNeg:null,bp:null,mp:null,config:"[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p¹",factDe:"Nach Japan (Nihon) benannt – erstes Element, das von einem asiatischen Team entdeckt wurde.",factEn:"Named after Japan (Nihon) – first element discovered by an Asian team."},
+  {n:114,sym:"Fl",de:"Flerovium",en:"Flerovium",cat:"nachtubergang",masse:289,gruppe:14,periode:7,elNeg:null,bp:null,mp:null,config:"[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p²",factDe:"Nach dem Flerov-Labor für Kernreaktionen in Dubna benannt.",factEn:"Named after the Flerov Laboratory of Nuclear Reactions in Dubna."},
+  {n:115,sym:"Mc",de:"Moscovium",en:"Moscovium",cat:"nachtubergang",masse:290,gruppe:15,periode:7,elNeg:null,bp:null,mp:null,config:"[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p³",factDe:"Nach Moskau (Oblast Moskau) benannt – Halbwertszeit nur Millisekunden.",factEn:"Named after Moscow (Moscow Oblast) – half-life only milliseconds."},
+  {n:116,sym:"Lv",de:"Livermorium",en:"Livermorium",cat:"nachtubergang",masse:293,gruppe:16,periode:7,elNeg:null,bp:null,mp:null,config:"[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p⁴",factDe:"Nach dem Lawrence Livermore National Laboratory in Kalifornien benannt.",factEn:"Named after Lawrence Livermore National Laboratory in California."},
+  {n:117,sym:"Ts",de:"Tennessin",en:"Tennessine",cat:"halogen",masse:294,gruppe:17,periode:7,elNeg:null,bp:null,mp:null,config:"[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p⁵",factDe:"Nach Tennessee, USA benannt – 2010 synthetisiert, 2016 offiziell benannt.",factEn:"Named after Tennessee, USA – synthesized in 2010, officially named in 2016."},
+  {n:118,sym:"Og",de:"Oganesson",en:"Oganesson",cat:"edelgas",masse:294,gruppe:18,periode:7,elNeg:null,bp:null,mp:null,config:"[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p⁶",factDe:"Schwerste bekannte Element – nach Physiker Yuri Oganessian benannt.",factEn:"Heaviest known element – named after physicist Yuri Oganessian."},
+];
+
+function getPos(el) {
+  if (el.gruppe && el.cat !== "lanthanoid" && el.cat !== "actinoid") {
+    return { col: el.gruppe, row: el.periode };
+  }
+  if (el.cat === "lanthanoid") {
+    const lans = [58,59,60,61,62,63,64,65,66,67,68,69,70];
+    const idx = lans.indexOf(el.n);
+    if (idx >= 0) return { col: 4 + idx, row: 9 };
+    if (el.n === 57) return { col: 3, row: 6 };
+    if (el.n === 71) return { col: 17, row: 9 };
+  }
+  if (el.cat === "actinoid") {
+    const acts = [90,91,92,93,94,95,96,97,98,99,100,101,102];
+    const idx = acts.indexOf(el.n);
+    if (idx >= 0) return { col: 4 + idx, row: 10 };
+    if (el.n === 89) return { col: 3, row: 7 };
+    if (el.n === 103) return { col: 17, row: 10 };
+  }
+  return null;
+}
+
+let lang = 'de';
+let currentFilter = '';
+let currentPeriod = '';
+let currentSearch = '';
+let compareMode = false;
+let compareList = [];
+let selectedEl = null;
+const cells = {};
+
+function setLang(l) {
+  lang = l;
+  document.getElementById('btn-de').classList.toggle('active', l === 'de');
+  document.getElementById('btn-en').classList.toggle('active', l === 'en');
+  document.getElementById('search').placeholder = LANG[l].search;
+  document.getElementById('ph-text').textContent = LANG[l].clickEl;
+  document.getElementById('btn-cmp').textContent = LANG[l].compareBtn;
+  document.querySelectorAll('.el-name').forEach(el => {
+    const n = parseInt(el.closest('.el').dataset.n);
+    const e = ELEMENTS.find(x => x.n === n);
+    if (e) el.textContent = l === 'de' ? e.de : e.en;
+  });
+  // Update dropdown button labels
+  const catLbl = document.getElementById('cdd-cat-label');
+  if (currentFilter) {
+    const labels = l === 'de' ? CAT_LABEL_DE : CAT_LABEL_EN;
+    catLbl.textContent = labels[currentFilter] || currentFilter;
+  } else {
+    catLbl.textContent = l === 'de' ? '— Kategorie —' : '— Category —';
+  }
+  const perLbl = document.getElementById('cdd-per-label');
+  if (currentPeriod) {
+    perLbl.textContent = (l === 'de' ? 'Periode ' : 'Period ') + currentPeriod;
+  } else {
+    perLbl.textContent = l === 'de' ? '— Periode —' : '— Period —';
+  }
+  if (selectedEl) showPanel(selectedEl);
+  buildLegend();
+}
+
+function buildGrid() {
+  const grid = document.getElementById('pt-grid');
+  grid.innerHTML = '';
+  const map = {};
+  ELEMENTS.forEach(el => {
+    const p = getPos(el);
+    if (p) map[`${p.row}-${p.col}`] = el;
+  });
+  const rows = 10, cols = 18;
+  for (let r = 1; r <= rows; r++) {
+    if (r === 8) {
+      for (let c = 1; c <= 18; c++) {
+        const d = document.createElement('div');
+        d.className = 'gap';
+        grid.appendChild(d);
+      }
+      continue;
+    }
+    for (let c = 1; c <= cols; c++) {
+      const el = map[`${r}-${c}`];
+      if (el) {
+        const color = CAT_COLORS[el.cat] || '#888';
+        const d = document.createElement('div');
+        d.className = 'el';
+        d.dataset.n = el.n;
+        d.style.setProperty('--el-color', color);
+        d.style.setProperty('--el-glow', color + '55');
+        d.innerHTML = `
+          <div class="el-num">${el.n}</div>
+          <div class="el-sym" style="color:${color}">${el.sym}</div>
+          <div class="el-name">${el.de}</div>
+          <div class="el-mass">${el.masse}</div>
+        `;
+        d.onclick = () => onClickEl(el);
+    d.setAttribute('tabindex', '0');
+    d.setAttribute('role', 'button');
+    d.setAttribute('aria-label', el.name + ', Ordnungszahl ' + el.n);
+    d.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClickEl(el); }
+    });
+        cells[el.n] = d;
+        grid.appendChild(d);
+      } else {
+        const d = document.createElement('div');
+        d.className = 'gap';
+        grid.appendChild(d);
+      }
+    }
+  }
+}
+
+function buildLegend() {
+  const leg = document.getElementById('legend');
+  leg.innerHTML = '';
+  const labels = lang === 'de' ? CAT_LABEL_DE : CAT_LABEL_EN;
+  Object.keys(CAT_COLORS).forEach(k => {
+    const d = document.createElement('div');
+    d.className = 'leg-item';
+    d.style.setProperty('--li-color', CAT_COLORS[k]);
+    d.innerHTML = `<div class="leg-dot" style="background:${CAT_COLORS[k]}"></div>${labels[k]}`;
+    d.dataset.cat = k;
+    d.onclick = () => {
+      const wasActive = d.classList.contains('active');
+      setCat(wasActive ? '' : k);
+    };
+    leg.appendChild(d);
+  });
+}
+
+function onClickEl(el) {
+  if (compareMode) {
+    if (compareList.find(e => e.n === el.n)) return;
+    if (compareList.length < 2) {
+      compareList.push(el);
+      updateCompareBar();
+    }
+    return;
+  }
+  selectedEl = el;
+  Object.values(cells).forEach(c => c.classList.remove('selected'));
+  if (cells[el.n]) cells[el.n].classList.add('selected');
+  showPanel(el);
+}
+
+function showPanel(el) {
+  document.getElementById('panel-placeholder').style.display = 'none';
+  const pd = document.getElementById('panel-detail');
+  pd.style.display = 'flex';
+  const color = CAT_COLORS[el.cat] || '#888';
+  const labels = lang === 'de' ? CAT_LABEL_DE : CAT_LABEL_EN;
+  const L = LANG[lang];
+  document.getElementById('p-sym').textContent = el.sym;
+  document.getElementById('p-sym').style.color = color;
+  document.getElementById('p-name').textContent = lang === 'de' ? el.de : el.en;
+  document.getElementById('p-cat').textContent = labels[el.cat] + ' · ' + (lang === 'de' ? 'Periode' : 'Period') + ' ' + el.periode + (el.gruppe ? ' · ' + (lang === 'de' ? 'Gruppe' : 'Group') + ' ' + el.gruppe : '');
+  document.getElementById('p-nr').textContent = el.n;
+  document.getElementById('p-mass').textContent = el.masse + ' u';
+  document.getElementById('p-per').textContent = el.periode;
+  document.getElementById('p-grp').textContent = el.gruppe || L.none;
+  document.getElementById('p-en').textContent = el.elNeg !== null ? el.elNeg : L.none;
+  const enPct = el.elNeg !== null ? (el.elNeg / 3.98 * 100) : 0;
+  document.getElementById('p-en-bar').style.width = enPct + '%';
+  document.getElementById('p-en-bar').style.background = color;
+  document.getElementById('p-bp').textContent = el.bp !== null ? el.bp + ' °C' : L.none;
+  document.getElementById('p-mp').textContent = el.mp !== null ? el.mp + ' °C' : L.none;
+  document.getElementById('p-config').textContent = el.config;
+  document.getElementById('p-fact').textContent = lang === 'de' ? el.factDe : el.factEn;
+  document.getElementById('sg-identity').textContent = L.identity;
+  document.getElementById('sg-props').textContent = L.props;
+  document.getElementById('sg-electron').textContent = L.electron;
+  document.getElementById('sg-fact').textContent = L.fact;
+  document.getElementById('sl-nr').textContent = L.ordnungszahl;
+  document.getElementById('sl-mass').textContent = L.masse;
+  document.getElementById('sl-per').textContent = L.periode;
+  document.getElementById('sl-grp').textContent = L.gruppe;
+  document.getElementById('sl-en').textContent = L.en;
+  document.getElementById('sl-bp').textContent = L.bp;
+  document.getElementById('sl-mp').textContent = L.mp;
+  document.getElementById('cmp-table').style.display = 'none';
+  document.getElementById('cmp-table').classList.remove('visible');
+}
+
+function applyFilters() {
+  Object.values(cells).forEach(c => {
+    const n = parseInt(c.dataset.n);
+    const el = ELEMENTS.find(e => e.n === n);
+    const catOk = !currentFilter || el.cat === currentFilter;
+    const perOk = !currentPeriod || String(el.periode) === currentPeriod;
+    const q = currentSearch.toLowerCase();
+    const srchOk = !q || el.de.toLowerCase().includes(q) || el.en.toLowerCase().includes(q) || el.sym.toLowerCase().includes(q) || String(el.n).includes(q);
+    c.classList.toggle('dimmed', !(catOk && perOk && srchOk));
+  });
+}
+
+function onSearch(v) {
+  currentSearch = v.trim();
+  applyFilters();
+}
+
+/* ── Custom Dropdown Logic ── */
+// Move lists to body IMMEDIATELY (script runs after DOM is parsed)
+function initDropdowns() {
+  document.querySelectorAll('.cdd').forEach(cdd => {
+    const list = cdd.querySelector('.cdd-list');
+    if (list) {
+      list._ownerId = cdd.id;
+      document.body.appendChild(list);
+    }
+  });
+}
+
+function closeCDDs(exceptId) {
+  document.querySelectorAll('.cdd').forEach(d => {
+    if (d.id !== exceptId) {
+      d.classList.remove('open');
+      const b = d.querySelector('.cdd-btn');
+      if (b) b.setAttribute('aria-expanded', 'false');
+    }
+  });
+  document.querySelectorAll('.cdd-list').forEach(l => {
+    if (l._ownerId !== exceptId) l.style.display = 'none';
+  });
+}
+
+function toggleCDD(id) {
+  const cdd = document.getElementById(id);
+  const list = getList(id);
+  if (!list) return;
+  const isOpen = list.style.display === 'block';
+  closeCDDs(id);
+  const btn = cdd.querySelector('.cdd-btn');
+  if (!isOpen) {
+    const rect = btn.getBoundingClientRect();
+    list.style.top  = (rect.bottom + 5) + 'px';
+    list.style.left = rect.left + 'px';
+    list.style.display = 'block';
+    cdd.classList.add('open');
+    btn.setAttribute('aria-expanded', 'true');
+  } else {
+    list.style.display = 'none';
+    cdd.classList.remove('open');
+    btn.setAttribute('aria-expanded', 'false');
+  }
+}
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('.cdd') && !e.target.closest('.cdd-list')) {
+    closeCDDs(null);
+  }
+});
+
+function getList(ownerId) {
+  return [...document.querySelectorAll('.cdd-list')].find(l => l._ownerId === ownerId);
+}
+
+function setCat(v) {
+  currentFilter = v;
+  const lbl = document.getElementById('cdd-cat-label');
+  const btn = document.getElementById('cdd-cat').querySelector('.cdd-btn');
+  const list = getList('cdd-cat');
+  if (list) list.querySelectorAll('.cdd-option').forEach(o => o.classList.remove('selected'));
+  if (v) {
+    const labels = lang === 'de' ? CAT_LABEL_DE : CAT_LABEL_EN;
+    lbl.textContent = labels[v] || v;
+    btn.classList.add('active-filter');
+    if (list) list.querySelectorAll('.cdd-option').forEach(o => {
+      if (o.getAttribute('onclick') === `setCat('${v}')`) o.classList.add('selected');
+    });
+  } else {
+    lbl.textContent = lang === 'de' ? '— Kategorie —' : '— Category —';
+    btn.classList.remove('active-filter');
+  }
+  closeCDDs(null);
+  document.querySelectorAll('.leg-item').forEach(i => i.classList.toggle('active', i.dataset.cat === v));
+  applyFilters();
+}
+
+function setPer(v) {
+  currentPeriod = v;
+  const lbl = document.getElementById('cdd-per-label');
+  const btn = document.getElementById('cdd-per').querySelector('.cdd-btn');
+  const list = getList('cdd-per');
+  if (list) list.querySelectorAll('.cdd-option').forEach(o => o.classList.remove('selected'));
+  if (v) {
+    lbl.textContent = (lang === 'de' ? 'Periode ' : 'Period ') + v;
+    btn.classList.add('active-filter');
+    if (list) list.querySelectorAll('.cdd-option').forEach(o => {
+      if (o.getAttribute('onclick') === `setPer('${v}')`) o.classList.add('selected');
+    });
+  } else {
+    lbl.textContent = lang === 'de' ? '— Periode —' : '— Period —';
+    btn.classList.remove('active-filter');
+  }
+  closeCDDs(null);
+  applyFilters();
+}
+
+function onCatFilter(v) { setCat(v); }
+function onPeriodFilter(v) { setPer(v); }
+
+function resetAll() {
+  currentSearch = '';
+  document.getElementById('search').value = '';
+  setCat('');
+  setPer('');
+  Object.values(cells).forEach(c => c.classList.remove('selected'));
+  selectedEl = null;
+  document.getElementById('panel-placeholder').style.display = 'flex';
+  document.getElementById('panel-detail').style.display = 'none';
+  clearCompare();
+}
+
+function toggleCompare() {
+  compareMode = !compareMode;
+  document.getElementById('btn-cmp').classList.toggle('active', compareMode);
+  document.getElementById('compare-bar').classList.toggle('visible', compareMode);
+  if (!compareMode) clearCompare();
+}
+
+function updateCompareBar() {
+  const L = LANG[lang];
+  const a = compareList[0];
+  const b = compareList[1];
+  const sa = document.getElementById('cmp-a');
+  const sb = document.getElementById('cmp-b');
+  sa.textContent = a ? `${a.sym} – ${lang === 'de' ? a.de : a.en}` : '—';
+  sa.classList.toggle('filled', !!a);
+  sb.textContent = b ? `${b.sym} – ${lang === 'de' ? b.de : b.en}` : '—';
+  sb.classList.toggle('filled', !!b);
+}
+
+function runCompare() {
+  if (compareList.length < 2) return;
+  const [a, b] = compareList;
+  const L = LANG[lang];
+  const labels = lang === 'de' ? CAT_LABEL_DE : CAT_LABEL_EN;
+  const fmt = v => v !== null && v !== undefined ? v : L.none;
+  const rows = [
+    [L.ordnungszahl, a.n, b.n],
+    [L.masse, a.masse + ' u', b.masse + ' u'],
+    [L.periode, a.periode, b.periode],
+    [L.gruppe, fmt(a.gruppe), fmt(b.gruppe)],
+    [L.en, fmt(a.elNeg), fmt(b.elNeg)],
+    [L.bp, a.bp !== null ? a.bp + ' °C' : L.none, b.bp !== null ? b.bp + ' °C' : L.none],
+    [L.mp, a.mp !== null ? a.mp + ' °C' : L.none, b.mp !== null ? b.mp + ' °C' : L.none],
+  ];
+  const ca = CAT_COLORS[a.cat];
+  const cb = CAT_COLORS[b.cat];
+  const table = document.getElementById('cmp-table');
+  table.innerHTML = `
+    <div class="stat-group-title" style="margin-bottom:8px">${L.cmpTitle}</div>
+    <div class="cmp-grid">
+      <div class="cmp-cell header">${L.property}</div>
+      <div class="cmp-cell header" style="color:${ca}">${lang === 'de' ? a.de : a.en}</div>
+      <div class="cmp-cell header" style="color:${cb}">${lang === 'de' ? b.de : b.en}</div>
+      ${rows.map(([l, va, vb]) => `
+        <div class="cmp-cell label">${l}</div>
+        <div class="cmp-cell">${va}</div>
+        <div class="cmp-cell">${vb}</div>
+      `).join('')}
+    </div>
+  `;
+  table.style.display = 'block';
+  document.getElementById('panel-placeholder').style.display = 'none';
+  document.getElementById('panel-detail').style.display = 'flex';
+  document.getElementById('panel-body').style.display = 'none';
+  document.getElementById('panel-header').style.display = 'none';
+}
+
+function clearCompare() {
+  compareList = [];
+  compareMode = false;
+  document.getElementById('btn-cmp').classList.remove('active');
+  document.getElementById('compare-bar').classList.remove('visible');
+  updateCompareBar();
+  document.getElementById('panel-body').style.display = 'block';
+  document.getElementById('panel-header').style.display = 'block';
+  if (selectedEl) {
+    showPanel(selectedEl);
+  } else {
+    document.getElementById('panel-detail').style.display = 'none';
+    document.getElementById('panel-placeholder').style.display = 'flex';
+  }
+}
+
+buildGrid();
+buildLegend();
+initDropdowns();
+</script>
+</body>
+</html>
