@@ -22,7 +22,7 @@
 <link rel="icon" type="image/png" href="assets/logo-tile.png">
 <link rel="apple-touch-icon" href="assets/logo-tile.png">
 <link rel="stylesheet" href="styles/style.css">
-<link rel="preload" as="image" href="assets/web/hero-studio.webp">
+<link rel="preload" as="image" href="assets/web/hero-bg-001.webp" fetchpriority="high">
 <script src="scripts/lang.js" defer></script>
 </head>
 <body>
@@ -83,105 +83,37 @@
   </div>
 </div>
 
-<!-- HERO -->
-<section id="main-content" style="position:relative;z-index:1">
-  <!-- HERO BACKGROUND GLOW LAYERS -->
-  <div class="hero-glow-layer hero-glow-1" aria-hidden="true"></div>
-  <div class="hero-glow-layer hero-glow-2" aria-hidden="true"></div>
-  <div class="hero-glow-layer hero-glow-3" aria-hidden="true"></div>
-  <!-- HERO MASK ANIMATION -->
-  <div class="hero-mask-bg" aria-hidden="true">
-    <img src="assets/web/mask-alpha.webp" alt="" class="hero-mask-img">
-  </div>
-  <div class="hero-img-wrap">
-    <img src="assets/web/hero-studio.webp" alt="FlipArt86 Studio">
-    <div class="hero-img-grad-v"></div>
-    <div class="hero-img-grad-h"></div>
-    <div class="hero-img-glow"></div>
-  </div>
-  <div class="hero-content">
-    <!-- Left -->
-    <div class="hero-left">
-      <div class="hero-badge">
-        <span class="hero-badge-dot"></span>
-        <span class="hero-badge-text" data-i18n="hero_badge">Kreativ · Authentisch · In Kürze</span>
-      </div>
-      <h1 class="hero-h1" data-i18n="hero_h1">Du bist<br>von Anfang an<br><span class="accent">dabei.</span></h1>
-      <p class="hero-sub" data-i18n="hero_sub">FlipArt86 — kreativ, direkt, ohne Hochglanz-Fassade. Sei von Anfang an dabei und werde Teil der Community.</p>
-      <div class="hero-actions">
-        <a href="#community" class="btn-primary" data-i18n="hero_btn_primary">Community entdecken</a>
-        <a href="#vorschau" class="btn-ghost" data-i18n="hero_btn_ghost">Vorschau ansehen</a>
-      </div>
-      <div class="hero-stats">
-        <div>
-          <div class="stat-num">2</div>
-          <div class="stat-label" data-i18n="hero_stat_bereiche">Bereiche</div>
-        </div>
-        <div>
-          <div class="stat-num muted">AT/EN</div>
-          <div class="stat-label" data-i18n="hero_stat_community">Community</div>
-        </div>
-        <div>
-          <div class="stat-num muted">2025</div>
-          <div class="stat-label" data-i18n="hero_stat_founded">Gegründet</div>
-        </div>
-      </div>
-      <div class="hero-galerie-wrap">
-        <div class="section-tag">
-          <span class="section-tag-line"></span>
-          <span class="section-tag-label" data-i18n="hero_galerie_label">Galerie</span>
-        </div>
-        <a href="galerie.html" class="hero-galerie-btn" data-i18n="hero_galerie_btn">Galerie</a>
-        <p class="hero-galerie-desc" data-i18n="hero_galerie_desc">Entdecke Serien, Digital Art, Prints und Experimente aus der Welt von FlipArt86 &ndash; direkt aus laufenden Ideen, visuellen Konzepten und fertigen Arbeiten.</p>
-      </div>
+<!-- HERO (V2.1 Cinematic Art) -->
+<section id="main-content" class="hx-hero" aria-labelledby="hx-title">
+  <div class="hx-scene">
+    <div class="hx-frame">
+      <img src="assets/web/hero-bg-001.webp" width="1672" height="941" fetchpriority="high" alt="Neonbeleuchteter schwarz-grüner Gaming-PC mit Glasgehäuse auf einer spiegelnden Fläche, darauf eine Platte mit Gasmasken-Motiv, im Hintergrund grün leuchtende Totenköpfe und Lichtstrahlen.">
+      <img class="hx-bloom" src="assets/web/hero-bg-001.webp" width="1672" height="941" alt="" aria-hidden="true">
     </div>
-
-    <!-- Right: Studio Card -->
-    <div class="hero-right">
-      <div class="bip-badge">
-        <span class="bip-dot"></span>
-        <span class="bip-text" data-i18n="bip_text">BUILDING IN PUBLIC</span>
-      </div>
-      <div class="studio-card">
-        <img class="studio-card-mask" src="assets/web/mask-alpha.webp" alt="">
-        <div class="studio-card-inner">
-          <div class="studio-logo-row">
-            <div class="studio-logo-img">
-              <img src="assets/web/logo-tile.webp" alt="FlipArt86 Logo">
-            </div>
-            <div>
-              <div class="studio-title">Flip<span>Art86</span></div>
-              <div class="studio-subtitle" data-i18n="studio_subtitle">Digitale Kunst · Projekte · Community</div>
-            </div>
-          </div>
-          <div class="card-divider"></div>
-          <div class="studio-desc" data-i18n="studio_desc">Studio in GStone City, Österreich. Jedes Projekt entsteht öffentlich — vom ersten Entwurf bis zum Drop.</div>
-          <div class="studio-card-footer">
-            <div class="studio-live">
-              <span class="live-dot"></span>
-              <span class="live-label" data-i18n="studio_live">STUDIO · LIVE AUFBAU</span>
-            </div>
-            <span class="studio-id">FA—86 / 001</span>
-          </div>
-        </div>
-      </div>
-      <div class="studio-meta">
-        <div class="meta-item">
-          <div class="meta-key" data-i18n="meta_base">Basis</div>
-          <div class="meta-val">GStone, AT</div>
-        </div>
-        <div class="meta-item">
-          <div class="meta-key" data-i18n="meta_status">Status</div>
-          <div class="meta-val">Pre-Launch</div>
-        </div>
-        <div class="meta-item">
-          <div class="meta-key" data-i18n="meta_lang">Sprachen</div>
-          <div class="meta-val">DE / EN</div>
-        </div>
-      </div>
+  </div>
+  <div class="hx-shade" aria-hidden="true"></div>
+  <div class="hx-copy">
+    <h1 class="hx-title" id="hx-title">Flip<b>Art86</b></h1>
+    <p class="hx-lead" data-i18n="hero_lead">Digitale Kunst, Serien und eigene Tools aus einer Werkstatt.</p>
+    <div class="hx-acts">
+      <a href="galerie.html" class="btn-primary" data-i18n="hero_btn_gallery">Galerie ansehen</a>
+      <a href="#tools" class="btn-ghost" data-i18n="hero_btn_tools">Tools entdecken</a>
     </div>
   </div>
 </section>
+<script>
+/* Hero-Animationen pausieren, wenn der Hero nicht sichtbar oder der Tab verborgen ist. */
+(function () {
+  var hero = document.getElementById('main-content');
+  if (!hero) return;
+  var inView = true;
+  function update() { hero.classList.toggle('hx-off', !inView || document.hidden); }
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function (e) { inView = e[0].isIntersecting; update(); }).observe(hero);
+  }
+  document.addEventListener('visibilitychange', update);
+})();
+</script>
 
 <div class="section-divider"><div class="section-divider-line"></div></div>
 
