@@ -88,7 +88,7 @@ const FLIPART86_I18N = {
     tools_footer_text:  'Weitere Tools folgen — Zugang zuerst für die Community.',
     tools_footer_cta:   'Beta anfragen →',
     ec_card_count:      '118 Elemente',
-    ec_card_sub:        'Interaktives Periodensystem der Elemente',
+    ec_card_sub:        'INTERAKTIVES PERIODENSYSTEM',
     ec_card_desc:       'Alle 118 Elemente — Echtzeit-Suche, Kategoriefilter, Detailansicht und Vergleichsmodus. Direkt im Browser.',
     ec_card_btn:        'Öffnen →',
     // FOOTER
@@ -214,7 +214,7 @@ const FLIPART86_I18N = {
     tools_footer_text:  'More tools on the way — community members get early access.',
     tools_footer_cta:   'Request Beta →',
     ec_card_count:      '118 Elements',
-    ec_card_sub:        'Interactive Periodic Table of Elements',
+    ec_card_sub:        'INTERACTIVE PERIODIC TABLE',
     ec_card_desc:       'All 118 elements — real-time search, category filter, detail view and compare mode. Directly in the browser.',
     ec_card_btn:        'Open →',
     // FOOTER

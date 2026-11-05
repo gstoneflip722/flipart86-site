@@ -87,10 +87,14 @@
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
+  html { margin: 0; padding: 0; height: 100%; box-sizing: border-box; }
+
   body {
     background: var(--bg-base) url('assets/bg.jpg') center/cover no-repeat fixed;
     color: var(--text-primary);
     font-family: var(--font);
+    margin: 0;
+    padding: 0;
     height: 100vh;
     overflow: hidden;
     display: flex;
@@ -363,11 +367,13 @@
   #content {
     display: flex;
     flex: 1;
+    min-height: 0;
     overflow: hidden;
   }
 
   #table-area {
     flex: 1;
+    min-height: 0;
     overflow: auto;
     padding: 12px 14px;
     display: flex;
@@ -766,6 +772,12 @@
   }
 
   /* ===== Web: Mobile Responsive ===== */
+
+  /* ── Small viewport: page scrolling ───────── */
+  @media (max-height: 720px) {
+    body { height: auto; min-height: 100vh; overflow-y: auto; }
+    #content { min-height: 500px; }
+  }
   @media (max-width: 1024px) {
     #app { flex-direction: column; overflow: auto; }
     #panel { width: 100%; max-height: 320px; overflow-y: auto; border-left: none; border-top: 1px solid #0a0a1e; }
