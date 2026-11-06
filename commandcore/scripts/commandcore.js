@@ -220,6 +220,7 @@
       filterCat = ''; filterStatus = ''; filterType = '';
       selCat.value = ''; selStatus.value = ''; selType.value = '';
       populateFilters();
+      if (window.CCSelect) window.CCSelect.syncAll();
       render();
     });
   });
@@ -256,6 +257,7 @@
     searchClear.classList.remove('visible');
     filterCat = ''; filterStatus = ''; filterType = '';
     selCat.value = ''; selStatus.value = ''; selType.value = '';
+    if (window.CCSelect) window.CCSelect.syncAll();   /* Filter-Comboboxen (cc-select.js) anzeigen lassen */
     favOnly = false; favToggle.classList.remove('active');
     favToggle.setAttribute('aria-pressed', 'false');
     render();
