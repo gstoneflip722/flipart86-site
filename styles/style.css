@@ -68,6 +68,11 @@ header {
 .logo-icon img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .logo-name { font-size: 17px; font-weight: 800; letter-spacing: -.2px; }
 .logo-name span { color: var(--green); }
+/* Neon-Gothic-Schriftzug (Phase 4.7) in Header und Footer */
+.logo-wordmark { line-height: 0; }
+.logo-wordmark img { display: block; height: 44px; width: auto; filter: drop-shadow(0 0 6px rgba(47,243,122,.28)); }
+.footer-logo-name.logo-wordmark img { height: 34px; }
+@media (max-width: 768px) { .logo-name.logo-wordmark img { height: 38px; } }
 .nav-links { display: flex; gap: 4px; align-items: center; }
 .nav-links a {
   color: rgba(238,241,238,.68); font-size: 14px; font-weight: 500;
@@ -1442,6 +1447,12 @@ dialog.gl-lb::backdrop { background: rgba(0,0,0,.9); }
   animation: hx-unveil 1.6s .6s cubic-bezier(.3,.7,.2,1) both;
 }
 .hx-title b { font-weight: 400; color: var(--green); }
+/* Neon-Gothic-Schriftzug (Phase 4.7): Größe folgt der bisherigen Titel-Schriftgröße (em);
+   negative Ränder gleichen den transparenten Glow-Rand des Bildes aus */
+.hx-title .hx-wordmark {
+  display: block; width: 5.4em; max-width: calc(100% + .19em); height: auto;
+  margin: -.12em 0 -.16em -.19em;
+}
 .hx-lead {
   max-width: 40ch; margin: clamp(12px, 1.4vw, 26px) 0 clamp(20px, 2vw, 36px);
   font-size: clamp(16px, 1.05vw, 21px); line-height: 1.55; color: var(--text);
