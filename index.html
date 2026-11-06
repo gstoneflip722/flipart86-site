@@ -22,8 +22,10 @@
 <link rel="icon" type="image/png" href="assets/logo-tile.png">
 <link rel="apple-touch-icon" href="assets/logo-tile.png">
 <link rel="stylesheet" href="styles/style.css">
+<link rel="stylesheet" href="styles/venom-goo.css">
 <link rel="preload" as="image" href="assets/web/hero-bg-001.webp" fetchpriority="high">
 <script src="scripts/lang.js" defer></script>
+<script src="scripts/venom-goo.js" defer></script>
 </head>
 <body>
 
@@ -57,7 +59,7 @@
       <a href="#" onclick="openImpressum('impressum'); return false;" data-i18n="nav_imprint">Impressum</a>
       <a href="#" onclick="openImpressum('kontakt'); return false;" data-i18n="nav_contact">Kontakt</a>
     </nav>
-    <a href="#community" class="nav-cta" data-i18n="nav_cta">Community beitreten</a>
+    <a href="#community" class="nav-cta" data-goo="primary" data-goo-id="nav" data-i18n="nav_cta">Community beitreten</a>
       <button class="mob-btn" id="mob-btn" aria-label="Menü öffnen" aria-expanded="false" aria-controls="mob-menu">
         <span></span><span></span><span></span>
       </button>
@@ -96,8 +98,8 @@
     <h1 class="hx-title" id="hx-title">Flip<b>Art86</b></h1>
     <p class="hx-lead" data-i18n="hero_lead">Digitale Kunst, Serien und eigene Tools aus einer Werkstatt.</p>
     <div class="hx-acts">
-      <a href="galerie.html" class="btn-primary" data-i18n="hero_btn_gallery">Galerie ansehen</a>
-      <a href="#tools" class="btn-ghost" data-i18n="hero_btn_tools">Tools entdecken</a>
+      <a href="galerie.html" class="btn-primary" data-goo="primary" data-goo-id="hero1" data-i18n="hero_btn_gallery">Galerie ansehen</a>
+      <a href="#tools" class="btn-ghost" data-goo="secondary" data-goo-id="hero2" data-i18n="hero_btn_tools">Tools entdecken</a>
     </div>
   </div>
 </section>
@@ -344,8 +346,8 @@
         </div>
       </div>
       <div class="drop-actions">
-        <a href="#community" class="btn-green-sm" data-i18n="drop_btn1">Drop verfolgen</a>
-        <a href="#vorschau" class="btn-ghost-sm" data-i18n="drop_btn2">Mehr erfahren</a>
+        <a href="#community" class="btn-green-sm" data-goo="primary" data-goo-id="drop1" data-i18n="drop_btn1">Drop verfolgen</a>
+        <a href="#vorschau" class="btn-ghost-sm" data-goo="secondary" data-goo-id="drop2" data-i18n="drop_btn2">Mehr erfahren</a>
       </div>
     </div>
   </div>
@@ -420,7 +422,7 @@
       <p class="cc-card-sub">KI-Befehlsbibliothek für ChatGPT, Claude und Codex</p>
       <p class="cc-card-desc">Durchsuchbare Command Library — suchen, filtern, favorisieren und per Klick kopieren. Immer aktuell.</p>
       <img class="cc-card-img" src="assets/web/commandcore/flipai-commandcore-ui.webp" alt="FlipAICommandCore Screenshot" loading="lazy" width="1912" height="1040">
-      <a class="cc-open-btn" href="commandcore/" target="_blank" rel="noopener noreferrer">Öffnen →</a>
+      <a class="cc-open-btn" href="commandcore/" target="_blank" rel="noopener noreferrer" data-goo="primary" data-goo-id="cc">Öffnen →</a>
     </div>
   </div>
 
@@ -435,7 +437,7 @@
       <p class="cc-card-sub" data-i18n="ec_card_sub">INTERAKTIVES PERIODENSYSTEM</p>
       <p class="cc-card-desc" data-i18n="ec_card_desc">Alle 118 Elemente — Echtzeit-Suche, Kategoriefilter, Detailansicht und Vergleichsmodus. Direkt im Browser.</p>
       <img class="cc-card-img" src="assets/web/elementcore/elementcore-ui.webp" alt="ElementCore Screenshot" loading="lazy" width="1912" height="1075">
-      <a class="cc-open-btn" href="elementcore/" target="_blank" rel="noopener noreferrer" data-i18n="ec_card_btn">Öffnen →</a>
+      <a class="cc-open-btn" href="elementcore/" target="_blank" rel="noopener noreferrer" data-goo="primary" data-goo-id="ec" data-i18n="ec_card_btn">Öffnen →</a>
     </div>
   </div>
 </section>
@@ -722,7 +724,7 @@ document.addEventListener('DOMContentLoaded', function() {
       <div class="imp-contact-block">
         <div class="imp-email-label" data-i18n="kontakt_email_label">E-Mail</div>
         <a href="mailto:gstoneflip722@gmail.com" class="imp-email-addr">gstoneflip722@gmail.com</a>
-        <a href="mailto:gstoneflip722@gmail.com" class="btn-primary imp-email-btn" data-i18n="kontakt_email_btn">E-Mail schreiben</a>
+        <a href="mailto:gstoneflip722@gmail.com" class="btn-primary imp-email-btn" data-goo="primary" data-goo-id="mail" data-i18n="kontakt_email_btn">E-Mail schreiben</a>
       </div>
       <div class="imp-stand" data-i18n="kontakt_stand">Stand: August 2026</div>
     </div>

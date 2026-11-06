@@ -1,0 +1,22 @@
+/* FlipArt86 – Venom-Goo-Buttons (Phase 4.5.5/4.5.6, Technik V4.2)
+   Gehört zu scripts/venom-goo.js. Die Klassen .vb / .vb-ready setzt das Skript erst,
+   wenn der Effekt tatsächlich aktiv ist – ohne Skript, auf Touch-Geräten oder bei
+   Fehlern bleiben die normalen Buttons unverändert. */
+.vb { position: relative; isolation: isolate; }
+.vb > canvas.vb-cv { position: absolute; pointer-events: none; z-index: -1; display: block; }
+.vb-ready {
+  background: transparent !important;
+  border-color: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+.vb-ready:hover { background: transparent !important; border-color: transparent !important; }
+.cc-open-btn.vb-ready { animation: none; }
+.vb-ready:focus-visible { outline: 2px solid var(--green, #2ff37a); outline-offset: 4px; border-radius: 12px; }
+
+/* Overlay-Ebene für die Fäden: fixiert, transparent, klickdurchlässig.
+   z-index 19 = über den Inhaltsabschnitten (z-index 1), unter Header (20) und Mobilmenü (9998). */
+.vg-overlay { position: fixed; left: 0; top: 0; pointer-events: none; z-index: 19; contain: strict; }
+/* Fadenebene innerhalb eines Dialogfensters (z. B. .imp-window, z-index 2): hinter Text und Bedienelementen,
+   über dem Fensterhintergrund; die Zeichnung wird per Skript auf die Fensterfläche begrenzt. */
+.vg-overlay.vg-layer { z-index: -1; }
