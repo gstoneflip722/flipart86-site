@@ -107,6 +107,8 @@ const FLIPART86_I18N = {
     gallery_intro:          'Ausgewählte Arbeiten, Serien und Experimente aus der Welt von FlipArt86.',
     gallery_empty:          'Noch keine Bilder vorhanden.',
     gallery_empty_sub:      'Bilder in <code>assets/gallery/</code> ablegen und in <code>galerie.html</code> im GALLERY-Array eintragen.',
+    gallery_rail:           'Serien',
+    gallery_works:          'Werke',
     // LIGHTBOX & ARIA
     lb_aria:                'Bildvorschau',
     lb_close:               'Schließen',
@@ -218,6 +220,8 @@ const FLIPART86_I18N = {
     gallery_intro:          'Selected works, series and experiments from the world of FlipArt86.',
     gallery_empty:          'No images yet.',
     gallery_empty_sub:      'Add images to <code>assets/gallery/</code> and register them in the GALLERY array in <code>galerie.html</code>.',
+    gallery_rail:           'Series',
+    gallery_works:          'works',
     // LIGHTBOX & ARIA
     lb_aria:                'Image preview',
     lb_close:               'Close',

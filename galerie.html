@@ -96,43 +96,55 @@
     <p class="section-sub gallery-intro" data-i18n="gallery_intro">Ausgewählte Arbeiten und Serien aus der Welt von FlipArt86.</p>
   </div>
 
-  <!-- FILTER -->
-  <div class="filter-bar gallery-filter-wrap">
-    <button class="filter-btn active" onclick="galleryFilter(this,'Digital Art')">DIGITAL ART</button>
-    <button class="filter-btn" onclick="galleryFilter(this,'Gnom-Serie 001')">GNOM-SERIE 001</button>
-    <button class="filter-btn" onclick="galleryFilter(this,'Gnom-Serie 002')">GNOM-SERIE 002</button>
-    <button class="filter-btn" onclick="galleryFilter(this,'Silent Resistance')">SILENT RESISTANCE</button>
-    <button class="filter-btn" onclick="galleryFilter(this,'Rastaman-Serie 001')">RASTAMAN-SERIE 001</button>
-    <button class="filter-btn" onclick="galleryFilter(this,'Prints')">PRINTS</button>
+  <div class="gl-room">
+
+    <!-- SERIEN-NAVIGATION: Seitenleiste (Desktop) / scrollbare Leiste (mobil) -->
+    <nav class="gl-rail" id="gl-rail" aria-label="Serien" data-i18n-aria="gallery_rail">
+      <button type="button" class="gl-rail-b" data-cat="Digital Art" aria-pressed="true"><strong>Digital Art</strong><span class="gl-n">10</span></button>
+      <button type="button" class="gl-rail-b" data-cat="Gnom-Serie 001" aria-pressed="false"><strong>Gnom-Serie 001</strong><span class="gl-n">10</span></button>
+      <button type="button" class="gl-rail-b" data-cat="Gnom-Serie 002" aria-pressed="false"><strong>Gnom-Serie 002</strong><span class="gl-n">10</span></button>
+      <button type="button" class="gl-rail-b" data-cat="Silent Resistance" aria-pressed="false"><strong>Silent Resistance</strong><span class="gl-n">10</span></button>
+      <button type="button" class="gl-rail-b" data-cat="Rastaman-Serie 001" aria-pressed="false"><strong>Rastaman-Serie 001</strong><span class="gl-n">10</span></button>
+      <button type="button" class="gl-rail-b" data-cat="Prints" aria-pressed="false"><strong>Prints</strong><span class="gl-n">8</span></button>
+    </nav>
+
+    <section class="gl-stage" aria-labelledby="gl-series">
+      <div class="gl-series-head">
+        <h2 class="gl-series-title" id="gl-series">Digital Art</h2>
+        <p class="gl-series-meta"><span id="gl-count">10</span> <span data-i18n="gallery_works">Werke</span></p>
+      </div>
+
+      <!-- GRID (Masonry) -->
+      <div class="gl-wall gallery-grid" id="gallery-grid"></div>
+
+      <!-- EMPTY STATE -->
+      <div class="gallery-empty" id="gallery-empty">
+        <div class="gallery-empty-inner">
+          <div class="gallery-empty-icon">◻</div>
+          <p data-i18n="gallery_empty">Noch keine Bilder vorhanden.</p>
+          <p class="gallery-empty-sub" data-i18n="gallery_empty_sub">Bilder in <code>assets/gallery/</code> ablegen und in <code>galerie.html</code> im GALLERY-Array eintragen.</p>
+        </div>
+      </div>
+    </section>
+
   </div>
-
-  <!-- GRID -->
-  <div class="gallery-grid" id="gallery-grid"></div>
-
-  <!-- EMPTY STATE -->
-  <div class="gallery-empty" id="gallery-empty">
-    <div class="gallery-empty-inner">
-      <div class="gallery-empty-icon">◻</div>
-      <p data-i18n="gallery_empty">Noch keine Bilder vorhanden.</p>
-      <p class="gallery-empty-sub" data-i18n="gallery_empty_sub">Bilder in <code>assets/gallery/</code> ablegen und in <code>galerie.html</code> im GALLERY-Array eintragen.</p>
-    </div>
-  </div>
-
 </main>
 
-<!-- LIGHTBOX -->
-<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Bildvorschau">
-  <div class="lb-backdrop" id="lb-backdrop"></div>
-  <button class="lb-close" id="lb-close" aria-label="Schließen">&#x2715;</button>
-  <button class="lb-nav lb-prev" id="lb-prev" aria-label="Vorheriges Bild">&#x2039;</button>
-  <button class="lb-nav lb-next" id="lb-next" aria-label="N&#228;chstes Bild">&#x203a;</button>
-  <div class="lb-inner">
-    <div class="lb-img-wrap">
-      <img class="lb-img" id="lb-img" src="" alt="">
-    </div>
-    <div class="lb-info" id="lb-info"></div>
+<!-- LIGHTBOX (natives <dialog>: Fokus-Trap, inerter Hintergrund, ESC) -->
+<dialog class="gl-lb" id="lightbox" aria-label="Bildvorschau">
+  <div class="gl-lb-stage" id="lb-stage">
+    <button type="button" class="gl-lb-btn gl-lb-close" id="lb-close" aria-label="Schließen">&#x2715;</button>
+    <figure class="gl-lb-frame"><img id="lb-img" alt=""></figure>
   </div>
-</div>
+  <div class="gl-lb-bar">
+    <div class="gl-lb-info" id="lb-info" aria-live="polite"></div>
+    <div class="gl-lb-tools">
+      <button type="button" class="gl-lb-btn gl-lb-prev" id="lb-prev" aria-label="Vorheriges Bild">&#x2039;</button>
+      <div class="gl-lb-count" id="lb-count" aria-live="polite"></div>
+      <button type="button" class="gl-lb-btn gl-lb-next" id="lb-next" aria-label="N&#228;chstes Bild">&#x203a;</button>
+    </div>
+  </div>
+</dialog>
 
 <!-- FOOTER -->
 <footer id="kontakt">
@@ -163,6 +175,8 @@
    src        – Pfad zur Bilddatei, relativ zu galerie.html
                 Beispiel: 'assets/gallery/gnom-001.jpg'
 
+   w, h       – Bildbreite/-höhe in Pixel (für Masonry-Layout ohne Layoutsprung)
+
    title      – Bildtitel (wird in Karte + Lightbox angezeigt)
 
    series     – Serienname, z. B. 'Gnom-Serie' (optional)
@@ -171,7 +185,7 @@
 
    cat        – Filterkategorie. Erlaubte Werte:
                 'Gnom-Serie 001' | 'Gnom-Serie 002' | 'Silent Resistance'
-                | 'Digital Art' | 'Prints'
+                | 'Rastaman-Serie 001' | 'Digital Art' | 'Prints'
 
    desc       – Kurzbeschreibung (optional, erscheint in der Karte)
 
@@ -186,6 +200,7 @@ var GALLERY = [
   ---------------------------------------------------------- */
   {
     src: 'assets/web/gallery/Gnom-Serie 001/Gnom_Serie_001-000.webp',
+    w: 2400, h: 1600,
     title: 'Toxic Gnome – Serie01',
     series: 'Gnom-Serie 001',
     year: 2025,
@@ -195,6 +210,7 @@ var GALLERY = [
   },
   {
     src: 'assets/web/gallery/Gnom-Serie 001/Gnom_Serie_001-001.webp',
+    w: 1536, h: 1024,
     title: 'Grey Neon Gnome – Stylized',
     series: 'Gnom-Serie 001',
     year: 2025,
@@ -204,6 +220,7 @@ var GALLERY = [
   },
   {
     src: 'assets/web/gallery/Gnom-Serie 001/Gnom_Serie_001-002.webp',
+    w: 1536, h: 1024,
     title: 'Infested Gnome – Serie02',
     series: 'Gnom-Serie 001',
     year: 2025,
@@ -213,6 +230,7 @@ var GALLERY = [
   },
   {
     src: 'assets/web/gallery/Gnom-Serie 001/Gnom_Serie_001-003.webp',
+    w: 1536, h: 1024,
     title: 'Cyberpunk Gnome – Serie03',
     series: 'Gnom-Serie 001',
     year: 2025,
@@ -222,6 +240,7 @@ var GALLERY = [
   },
   {
     src: 'assets/web/gallery/Gnom-Serie 001/Gnom_Serie_001-004.webp',
+    w: 1024, h: 1536,
     title: 'Glitched Gnome – AI Infection & System Failure - Serie04',
     series: 'Gnom-Serie 001',
     year: 2025,
@@ -231,6 +250,7 @@ var GALLERY = [
   },
   {
     src: 'assets/web/gallery/Gnom-Serie 001/Gnom_Serie_001-005.webp',
+    w: 1024, h: 1536,
     title: 'Glitched Entity – Serie05',
     series: 'Gnom-Serie 001',
     year: 2025,
@@ -240,6 +260,7 @@ var GALLERY = [
   },
   {
     src: 'assets/web/gallery/Gnom-Serie 001/Gnom_Serie_001-006.webp',
+    w: 1023, h: 1537,
     title: 'Deep Sea Survivor – Serie06',
     series: 'Gnom-Serie 001',
     year: 2025,
@@ -249,6 +270,7 @@ var GALLERY = [
   },
   {
     src: 'assets/web/gallery/Gnom-Serie 001/Gnom_Serie_001-007.webp',
+    w: 1024, h: 1536,
     title: 'Apocalypse Gnome – Serie07',
     series: 'Gnom-Serie 001',
     year: 2025,
@@ -258,6 +280,7 @@ var GALLERY = [
   },
   {
     src: 'assets/web/gallery/Gnom-Serie 001/Gnom_Serie_001-008.webp',
+    w: 1024, h: 1536,
     title: 'Mad Scientist Gnome – Serie08',
     series: 'Gnom-Serie 001',
     year: 2025,
@@ -267,6 +290,7 @@ var GALLERY = [
   },
   {
     src: 'assets/web/gallery/Gnom-Serie 001/Gnom_Serie_001-009.webp',
+    w: 1024, h: 1536,
     title: 'Dark Nature Gnome – Power Beyond - Serie09',
     series: 'Gnom-Serie 001',
     year: 2025,
@@ -280,6 +304,7 @@ var GALLERY = [
   ---------------------------------------------------------- */
   {
     src: 'assets/web/gallery/Silent Resistance-Serie/SILENT RESISTANCE-Serie-001-FlipArt86.webp',
+    w: 1024, h: 1024,
     title: 'Silent Resistance – 001',
     series: 'Silent Resistance',
     year: 2025,
@@ -289,6 +314,7 @@ var GALLERY = [
   },
   {
     src: 'assets/web/gallery/Silent Resistance-Serie/SILENT RESISTANCE-Serie-002-FlipArt86.webp',
+    w: 1024, h: 1024,
     title: 'Silent Resistance – 002',
     series: 'Silent Resistance',
     year: 2025,
@@ -298,6 +324,7 @@ var GALLERY = [
   },
   {
     src: 'assets/web/gallery/Silent Resistance-Serie/SILENT RESISTANCE-Serie-003-FlipArt86.webp',
+    w: 1024, h: 1024,
     title: 'Silent Resistance – 003',
     series: 'Silent Resistance',
     year: 2025,
@@ -307,6 +334,7 @@ var GALLERY = [
   },
   {
     src: 'assets/web/gallery/Silent Resistance-Serie/SILENT RESISTANCE-Serie-004-FlipArt86.webp',
+    w: 1024, h: 1024,
     title: 'Silent Resistance – 004',
     series: 'Silent Resistance',
     year: 2025,
@@ -316,6 +344,7 @@ var GALLERY = [
   },
   {
     src: 'assets/web/gallery/Silent Resistance-Serie/SILENT RESISTANCE-Serie-005-FlipArt86.webp',
+    w: 1024, h: 1024,
     title: 'Silent Resistance – 005',
     series: 'Silent Resistance',
     year: 2025,
@@ -325,6 +354,7 @@ var GALLERY = [
   },
   {
     src: 'assets/web/gallery/Silent Resistance-Serie/SILENT RESISTANCE-Serie-006-FlipArt86.webp',
+    w: 1024, h: 1024,
     title: 'Silent Resistance – 006',
     series: 'Silent Resistance',
     year: 2025,
@@ -334,6 +364,7 @@ var GALLERY = [
   },
   {
     src: 'assets/web/gallery/Silent Resistance-Serie/SILENT RESISTANCE-Serie-007-FlipArt86.webp',
+    w: 1024, h: 1536,
     title: 'Silent Resistance – 007',
     series: 'Silent Resistance',
     year: 2025,
@@ -343,6 +374,7 @@ var GALLERY = [
   },
   {
     src: 'assets/web/gallery/Silent Resistance-Serie/SILENT RESISTANCE-Serie-008-FlipArt86.webp',
+    w: 1024, h: 1536,
     title: 'Silent Resistance – 008',
     series: 'Silent Resistance',
     year: 2025,
@@ -352,6 +384,7 @@ var GALLERY = [
   },
   {
     src: 'assets/web/gallery/Silent Resistance-Serie/SILENT RESISTANCE-Serie-009-FlipArt86.webp',
+    w: 1024, h: 1536,
     title: 'Silent Resistance – 009',
     series: 'Silent Resistance',
     year: 2025,
@@ -361,6 +394,7 @@ var GALLERY = [
   },
   {
     src: 'assets/web/gallery/Silent Resistance-Serie/SILENT RESISTANCE-Serie-010-FlipArt86.webp',
+    w: 1024, h: 1536,
     title: 'Silent Resistance – 010',
     series: 'Silent Resistance',
     year: 2025,
@@ -374,6 +408,7 @@ var GALLERY = [
   ---------------------------------------------------------- */
   {
     src: 'assets/web/gallery/Prints/FlipArt86-Logo-001.webp',
+    w: 1007, h: 1013,
     title: 'FlipArt86 Logo – 001',
     series: 'FlipArt86-Logo-Print',
     year: 2025,
@@ -383,6 +418,7 @@ var GALLERY = [
   },
   {
     src: 'assets/web/gallery/Prints/FlipArt86-Logo-002.webp',
+    w: 1007, h: 1013,
     title: 'FlipArt86 Logo – 002',
     series: 'FlipArt86-Logo-Print',
     year: 2025,
@@ -392,6 +428,7 @@ var GALLERY = [
   },
   {
     src: 'assets/web/gallery/Prints/Flügelheld-001.webp',
+    w: 1292, h: 1456,
     title: 'Flügelheld – 001',
     series: 'Print',
     year: 2025,
@@ -401,6 +438,7 @@ var GALLERY = [
   },
   {
     src: 'assets/web/gallery/Prints/GutDingBrauchtWeile-001.webp',
+    w: 1024, h: 1024,
     title: 'Gut Ding Braucht Weile – 001',
     series: 'Print',
     year: 2025,
@@ -410,6 +448,7 @@ var GALLERY = [
   },
   {
     src: 'assets/web/gallery/Prints/Midnight Smile-001.webp',
+    w: 1024, h: 1536,
     title: 'Midnight Smile – 001',
     series: 'Print',
     year: 2025,
@@ -419,6 +458,7 @@ var GALLERY = [
   },
   {
     src: 'assets/web/gallery/Prints/Pinterest-001.webp',
+    w: 536, h: 1038,
     title: 'Pinterest – 001',
     series: 'Print',
     year: 2025,
@@ -432,6 +472,7 @@ var GALLERY = [
   ---------------------------------------------------------- */
   {
     src: 'assets/web/gallery/Rastaman-Serie 001/Rastaman-001.webp',
+    w: 1024, h: 1536,
     title: 'Rastaman – 001',
     series: 'Rastaman-Serie 001',
     year: 2025,
@@ -441,6 +482,7 @@ var GALLERY = [
   },
   {
     src: 'assets/web/gallery/Rastaman-Serie 001/Rastaman-002.webp',
+    w: 1024, h: 1536,
     title: 'Rastaman – 002',
     series: 'Rastaman-Serie 001',
     year: 2025,
@@ -450,6 +492,7 @@ var GALLERY = [
   },
   {
     src: 'assets/web/gallery/Rastaman-Serie 001/Rastaman-003.webp',
+    w: 1024, h: 1536,
     title: 'Rastaman – 003',
     series: 'Rastaman-Serie 001',
     year: 2025,
@@ -459,6 +502,7 @@ var GALLERY = [
   },
   {
     src: 'assets/web/gallery/Rastaman-Serie 001/Rastaman-004.webp',
+    w: 1024, h: 1536,
     title: 'Rastaman – 004',
     series: 'Rastaman-Serie 001',
     year: 2025,
@@ -468,6 +512,7 @@ var GALLERY = [
   },
   {
     src: 'assets/web/gallery/Rastaman-Serie 001/Rastaman-005.webp',
+    w: 1024, h: 1536,
     title: 'Rastaman – 005',
     series: 'Rastaman-Serie 001',
     year: 2025,
@@ -477,6 +522,7 @@ var GALLERY = [
   },
   {
     src: 'assets/web/gallery/Rastaman-Serie 001/Rastaman-006.webp',
+    w: 1024, h: 1536,
     title: 'Rastaman – 006',
     series: 'Rastaman-Serie 001',
     year: 2025,
@@ -486,6 +532,7 @@ var GALLERY = [
   },
   {
     src: 'assets/web/gallery/Rastaman-Serie 001/Rastaman-007.webp',
+    w: 1024, h: 1536,
     title: 'Rastaman – 007',
     series: 'Rastaman-Serie 001',
     year: 2025,
@@ -495,6 +542,7 @@ var GALLERY = [
   },
   {
     src: 'assets/web/gallery/Rastaman-Serie 001/Rastaman-008.webp',
+    w: 1024, h: 1536,
     title: 'Rastaman – 008',
     series: 'Rastaman-Serie 001',
     year: 2025,
@@ -504,6 +552,7 @@ var GALLERY = [
   },
   {
     src: 'assets/web/gallery/Rastaman-Serie 001/Rastaman-009.webp',
+    w: 1024, h: 1536,
     title: 'Rastaman – 009',
     series: 'Rastaman-Serie 001',
     year: 2025,
@@ -513,6 +562,7 @@ var GALLERY = [
   },
   {
     src: 'assets/web/gallery/Rastaman-Serie 001/Rastaman-010.webp',
+    w: 1024, h: 1536,
     title: 'Rastaman – 010',
     series: 'Rastaman-Serie 001',
     year: 2025,
@@ -522,6 +572,7 @@ var GALLERY = [
   },
   {
     src: 'assets/web/gallery/Prints/GStone-001.webp',
+    w: 829, h: 426,
     title: 'GStone – 001',
     series: 'Print',
     year: 2025,
@@ -531,6 +582,7 @@ var GALLERY = [
   },
   {
     src: 'assets/web/gallery/Prints/GStone-002.webp',
+    w: 1800, h: 2400,
     title: 'GStone – 002',
     series: 'Print',
     year: 2025,
@@ -544,6 +596,7 @@ var GALLERY = [
   ---------------------------------------------------------- */
   {
     src: 'assets/web/gallery/DigitalArt/FlipArt86-El Camino Verde-001.webp',
+    w: 1024, h: 1536,
     title: 'El Camino Verde',
     series: 'Digital Art',
     year: 2025,
@@ -553,6 +606,7 @@ var GALLERY = [
   },
   {
     src: 'assets/web/gallery/DigitalArt/FlipArt86-Moon-Forest-001.webp',
+    w: 1086, h: 1448,
     title: 'Moon Forest',
     series: 'Digital Art',
     year: 2025,
@@ -562,6 +616,7 @@ var GALLERY = [
   },
   {
     src: 'assets/web/gallery/DigitalArt/FlipArt86-Epic Picture-City-001.webp',
+    w: 1086, h: 1448,
     title: 'Epic Picture – City',
     series: 'Digital Art',
     year: 2025,
@@ -571,6 +626,7 @@ var GALLERY = [
   },
   {
     src: 'assets/web/gallery/DigitalArt/FlipArt86-Feuer im Kopf-001.webp',
+    w: 1600, h: 2400,
     title: 'Feuer im Kopf',
     series: 'Digital Art',
     year: 2025,
@@ -580,6 +636,7 @@ var GALLERY = [
   },
   {
     src: 'assets/web/gallery/DigitalArt/FlipArt86-Snow-Forest-001.webp',
+    w: 1600, h: 2400,
     title: 'Snow Forest',
     series: 'Digital Art',
     year: 2025,
@@ -589,6 +646,7 @@ var GALLERY = [
   },
   {
     src: 'assets/web/gallery/DigitalArt/FlipArt86-Epic Picture-Berg Meer-001-.webp',
+    w: 1739, h: 2400,
     title: 'Epic Picture – Berg & Meer',
     series: 'Digital Art',
     year: 2025,
@@ -598,6 +656,7 @@ var GALLERY = [
   },
   {
     src: 'assets/web/gallery/DigitalArt/FlipArt86-Apocalypse - Flames of Survival-001.webp',
+    w: 1596, h: 2400,
     title: 'Apocalypse – Flames of Survival',
     series: 'Digital Art',
     year: 2025,
@@ -607,6 +666,7 @@ var GALLERY = [
   },
   {
     src: 'assets/web/gallery/DigitalArt/FlipArt86-Epic Warzone Portrait-001.webp',
+    w: 1600, h: 2400,
     title: 'Epic Warzone Portrait',
     series: 'Digital Art',
     year: 2025,
@@ -616,6 +676,7 @@ var GALLERY = [
   },
   {
     src: 'assets/web/gallery/DigitalArt/FlipArt86-War Lord-Hero in Flames-001.webp',
+    w: 1574, h: 2400,
     title: 'War Lord – Hero in Flames',
     series: 'Digital Art',
     year: 2025,
@@ -625,6 +686,7 @@ var GALLERY = [
   },
   {
     src: 'assets/web/gallery/DigitalArt/FlipArt86-Gamingroom-001.webp',
+    w: 2400, h: 1600,
     title: 'Gamingroom',
     series: 'Digital Art',
     year: 2025,
@@ -638,6 +700,7 @@ var GALLERY = [
   ---------------------------------------------------------- */
   {
     src: 'assets/web/gallery/Gnom-Serie 002/Gnom-002 Blue Spirit Stil.webp',
+    w: 1915, h: 2400,
     title: 'Gnom 002 – Blue Spirit',
     series: 'Gnom-Serie 002',
     year: 2025,
@@ -647,6 +710,7 @@ var GALLERY = [
   },
   {
     src: 'assets/web/gallery/Gnom-Serie 002/Gnom-002-Cinematic Stil.webp',
+    w: 1024, h: 1024,
     title: 'Gnom 002 – Cinematic',
     series: 'Gnom-Serie 002',
     year: 2025,
@@ -656,6 +720,7 @@ var GALLERY = [
   },
   {
     src: 'assets/web/gallery/Gnom-Serie 002/Gnom-002-CyberStil.webp',
+    w: 1024, h: 1024,
     title: 'Gnom 002 – Cyber',
     series: 'Gnom-Serie 002',
     year: 2025,
@@ -665,6 +730,7 @@ var GALLERY = [
   },
   {
     src: 'assets/web/gallery/Gnom-Serie 002/Gnom-002-Dark Smoke Stil.webp',
+    w: 1122, h: 1402,
     title: 'Gnom 002 – Dark Smoke',
     series: 'Gnom-Serie 002',
     year: 2025,
@@ -674,6 +740,7 @@ var GALLERY = [
   },
   {
     src: 'assets/web/gallery/Gnom-Serie 002/Gnom-002-Film Stil.webp',
+    w: 1024, h: 1024,
     title: 'Gnom 002 – Film',
     series: 'Gnom-Serie 002',
     year: 2025,
@@ -683,6 +750,7 @@ var GALLERY = [
   },
   {
     src: 'assets/web/gallery/Gnom-Serie 002/Gnom-002-Graffiti Stil.webp',
+    w: 1024, h: 1024,
     title: 'Gnom 002 – Graffiti',
     series: 'Gnom-Serie 002',
     year: 2025,
@@ -692,6 +760,7 @@ var GALLERY = [
   },
   {
     src: 'assets/web/gallery/Gnom-Serie 002/Gnom-002-Grumpy Gnom Stil.webp',
+    w: 1920, h: 2400,
     title: 'Gnom 002 – Grumpy Gnom',
     series: 'Gnom-Serie 002',
     year: 2025,
@@ -701,6 +770,7 @@ var GALLERY = [
   },
   {
     src: 'assets/web/gallery/Gnom-Serie 002/Gnom-002-Karikatur Stil.webp',
+    w: 1024, h: 1024,
     title: 'Gnom 002 – Karikatur',
     series: 'Gnom-Serie 002',
     year: 2025,
@@ -710,6 +780,7 @@ var GALLERY = [
   },
   {
     src: 'assets/web/gallery/Gnom-Serie 002/Gnom-002-Rapper Stil.webp',
+    w: 1024, h: 1536,
     title: 'Gnom 002 – Rapper',
     series: 'Gnom-Serie 002',
     year: 2025,
@@ -719,6 +790,7 @@ var GALLERY = [
   },
   {
     src: 'assets/web/gallery/Gnom-Serie 002/Gnom-002-3d Stil.webp',
+    w: 1024, h: 1536,
     title: 'Gnom 002 – 3D',
     series: 'Gnom-Serie 002',
     year: 2025,
@@ -730,152 +802,274 @@ var GALLERY = [
 
 /* ---- Interner State ---- */
 var currentFiltered = [];
+var currentCat      = 'Digital Art';
 var currentIndex    = 0;
+var lastFocus       = null;
+
+var GL_ROW      = 4;   /* Masonry-Zeilenhöhe in px */
+var GL_MAXCOLS  = 6;   /* Spaltenbegrenzung (Ultrawide) */
+var GL_CATS = {
+  'digital-art': 'Digital Art', 'gnom-serie-001': 'Gnom-Serie 001', 'gnom-serie-002': 'Gnom-Serie 002',
+  'silent-resistance': 'Silent Resistance', 'rastaman-serie-001': 'Rastaman-Serie 001', 'prints': 'Prints'
+};
+
+document.documentElement.classList.add('js');
+
+var glWall  = document.getElementById('gallery-grid');
+var glEmpty = document.getElementById('gallery-empty');
+var glRail  = document.getElementById('gl-rail');
+var glDlg   = document.getElementById('lightbox');
+var glIO    = null;
+
+function glSlug(cat) {
+  for (var k in GL_CATS) { if (GL_CATS[k] === cat) return k; }
+  return '';
+}
+
+/* ---- Masonry-Layout: Spalten + Zeilen-Spans aus Bildmaßen (w/h) ---- */
+function layoutWall() {
+  var cards = glWall.children;
+  if (!cards.length) return;
+  var cs  = getComputedStyle(glWall);
+  var gap = parseFloat(cs.columnGap) || 0;
+  var min = parseFloat(cs.getPropertyValue('--gl-min')) || 280;
+  var W   = glWall.clientWidth;
+  if (!W) return;
+  var cols = Math.max(1, Math.min(GL_MAXCOLS, Math.floor((W + gap) / (min + gap))));
+  glWall.style.gridTemplateColumns = 'repeat(' + cols + ', minmax(0, 1fr))';
+  var col = (W - gap * (cols - 1)) / cols;
+  for (var i = 0; i < cards.length; i++) {
+    var it   = currentFiltered[+cards[i].getAttribute('data-i')];
+    if (!it || !it.w || !it.h) continue;
+    var span = (cols >= 3 && it.w / it.h > 1.3) ? 2 : 1;
+    var width = col * span + gap * (span - 1);
+    cards[i].style.gridColumn = 'span ' + span;
+    cards[i].style.gridRowEnd = 'span ' + Math.ceil((width * it.h / it.w + gap) / GL_ROW);
+  }
+}
 
 /* ---- Galerie rendern ---- */
 function renderGallery(items) {
-  var grid  = document.getElementById('gallery-grid');
-  var empty = document.getElementById('gallery-empty');
-  grid.innerHTML = '';
+  glWall.innerHTML = '';
+  if (glIO) glIO.disconnect();
 
   if (!items.length) {
-    empty.style.display = '';
+    glEmpty.style.display = '';
     return;
   }
-  empty.style.display = 'none';
+  glEmpty.style.display = 'none';
 
   items.forEach(function(item, i) {
-    var card = document.createElement('div');
-    card.className = 'gallery-card';
-    card.setAttribute('tabindex', '0');
-    card.setAttribute('role', 'button');
+    var card = document.createElement('button');
+    card.type = 'button';
+    card.className = 'gl-work';
+    card.setAttribute('data-i', i);
     card.setAttribute('aria-label', item.title || 'Galeriebild');
+    card.style.setProperty('--d', ((i % 6) * 45) + 'ms');
 
-    /* Bild */
-    var imgWrap = document.createElement('div');
-    imgWrap.className = 'gallery-card-img';
     var img = document.createElement('img');
     img.src = item.src;
     img.alt = item.title || '';
-    img.loading = 'lazy';
-    imgWrap.appendChild(img);
-    card.appendChild(imgWrap);
+    if (item.w && item.h) { img.width = item.w; img.height = item.h; }
+    img.decoding = 'async';
+    if (i > 7) img.loading = 'lazy';
+    card.appendChild(img);
 
-    /* Info */
-    var info = document.createElement('div');
-    info.className = 'gallery-card-info';
-    var metaHtml = '<div class="gc-meta">';
-    if (item.cat)  metaHtml += '<span class="gc-cat">'  + item.cat  + '</span>';
-    if (item.year) metaHtml += '<span class="gc-year">' + item.year + '</span>';
-    metaHtml += '</div>';
-    var bodyHtml = '';
-    if (item.title) bodyHtml += '<div class="gc-title">' + item.title + '</div>';
-    if (item.desc)  bodyHtml += '<div class="gc-desc">'  + item.desc  + '</div>';
-    var pinHtml = '';
-    if (item.pinterest) {
-      pinHtml = '<a class="gc-pinterest" href="' + item.pinterest +
-        '" target="_blank" rel="noopener" onclick="event.stopPropagation()">Auf Pinterest ansehen &#x2192;</a>';
+    if (item.title) {
+      var cap = document.createElement('span');
+      cap.className = 'gl-cap';
+      cap.textContent = item.title;
+      card.appendChild(cap);
     }
-    info.innerHTML = metaHtml + bodyHtml + pinHtml;
-    card.appendChild(info);
 
-    /* Events */
-    (function(idx) {
-      card.addEventListener('click', function() { openLightbox(idx); });
-      card.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openLightbox(idx); }
-      });
-    }(i));
-
-    grid.appendChild(card);
+    card.addEventListener('click', function() { lastFocus = card; openLightbox(i); });
+    glWall.appendChild(card);
   });
+
+  layoutWall();
+
+  /* Dezentes Einblenden beim Scrollen */
+  var cards = glWall.children;
+  if ('IntersectionObserver' in window) {
+    glIO = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) {
+        if (e.isIntersecting) { e.target.classList.add('in'); glIO.unobserve(e.target); }
+      });
+    }, { rootMargin: '0px 0px -4% 0px', threshold: 0.02 });
+    for (var k = 0; k < cards.length; k++) glIO.observe(cards[k]);
+  } else {
+    for (var j = 0; j < cards.length; j++) cards[j].classList.add('in');
+  }
 }
 
-/* ---- Filter ---- */
-function galleryFilter(btn, cat) {
-  document.querySelectorAll('.filter-btn').forEach(function(b) { b.classList.remove('active'); });
-  btn.classList.add('active');
+/* ---- Nach Serienwechsel zum Anfang der neuen Auswahl scrollen ----
+   Zielposition aus der tatsächlichen Header-Höhe (und bei der mobilen
+   Leiste deren Höhe). Gescrollt wird nur, wenn der Serienanfang über dem
+   sichtbaren Bereich liegt – nie nach unten, nie ans Ende. */
+function glScrollToSeriesStart() {
+  var head = document.getElementById('gl-series').parentNode;      /* Serienkopf */
+  var hdr  = document.querySelector('header');
+  var offset = (hdr ? hdr.getBoundingClientRect().height : 0);
+  if (getComputedStyle(glRail).flexDirection === 'row') offset += glRail.offsetHeight;  /* mobile Leiste klebt unter dem Header */
+  offset += 16;
+  var target = Math.max(0, Math.round(head.getBoundingClientRect().top + window.pageYOffset - offset));
+  if (window.pageYOffset <= target + 1) return;                     /* Anfang schon sichtbar */
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  window.scrollTo({ top: target, behavior: reduce ? 'auto' : 'smooth' });
+}
+
+/* ---- Serien-Auswahl ---- */
+function selectCategory(cat, updateHash, scrollToStart) {
+  var prevY = window.pageYOffset;   /* Scrollposition vor dem Neu-Rendern merken */
+  currentCat = cat;
   currentFiltered = GALLERY.filter(function(i) { return i.cat === cat; });
+  var btns = glRail.querySelectorAll('.gl-rail-b');
+  for (var b = 0; b < btns.length; b++) {
+    var on = btns[b].getAttribute('data-cat') === cat;
+    btns[b].setAttribute('aria-pressed', on ? 'true' : 'false');
+    if (on) {
+      /* Aktive Serie in der mobilen Leiste sichtbar halten (nur horizontal scrollen) */
+      if (glRail.scrollWidth > glRail.clientWidth) {
+        glRail.scrollLeft = btns[b].offsetLeft - (glRail.clientWidth - btns[b].offsetWidth) / 2;
+      }
+    }
+  }
+  document.getElementById('gl-series').textContent = cat;
+  document.getElementById('gl-count').textContent = currentFiltered.length;
   renderGallery(currentFiltered);
+  if (updateHash) {
+    try { history.replaceState(null, '', '#' + glSlug(cat)); } catch (e) {}
+  }
+  if (scrollToStart) {
+    /* Beim Leeren der Wand klemmt der Browser die Position kurz auf 0: zuerst
+       die alte Position wiederherstellen, dann (nach dem Layout) zum Serienanfang. */
+    window.scrollTo({ top: prevY, left: 0, behavior: 'instant' });
+    requestAnimationFrame(glScrollToSeriesStart);
+  }
 }
 
-/* ---- Lightbox ---- */
+/* Serien-Zähler aus den Daten (Quelle: GALLERY) */
+(function() {
+  var btns = glRail.querySelectorAll('.gl-rail-b');
+  for (var b = 0; b < btns.length; b++) {
+    (function(btn) {
+      var cat = btn.getAttribute('data-cat');
+      btn.querySelector('.gl-n').textContent = GALLERY.filter(function(i) { return i.cat === cat; }).length;
+      btn.addEventListener('click', function() {
+        if (cat === currentCat) return;           /* aktive Serie erneut: nichts tun */
+        selectCategory(cat, true, true);
+      });
+    }(btns[b]));
+  }
+}());
+
+/* ---- Lightbox (<dialog>) ---- */
 function openLightbox(idx) {
   currentIndex = idx;
   showLightboxItem(idx);
-  document.getElementById('lightbox').classList.add('open');
-  lockPageScroll('lightbox');
+  if (!glDlg.open) {
+    glDlg.showModal();
+    lockPageScroll('lightbox');
+  }
+  document.getElementById('lb-close').focus();
 }
 
 function closeLightbox() {
-  document.getElementById('lightbox').classList.remove('open');
+  if (glDlg.open) glDlg.close();
+}
+
+glDlg.addEventListener('close', function() {
   unlockPageScroll('lightbox');
+  if (lastFocus && document.contains(lastFocus)) lastFocus.focus();
+});
+
+function stepLightbox(n) {
+  var len = currentFiltered.length;
+  if (!len) return;
+  currentIndex = (currentIndex + n + len) % len;   /* Wrap-around */
+  showLightboxItem(currentIndex);
 }
 
 function showLightboxItem(idx) {
   var item = currentFiltered[idx];
   if (!item) return;
   var lbImg = document.getElementById('lb-img');
+  lbImg.classList.remove('is-in');
   lbImg.src = item.src;
   lbImg.alt = item.title || '';
+  if (item.w && item.h) { lbImg.width = item.w; lbImg.height = item.h; }
+  var show = function() { lbImg.classList.add('is-in'); };
+  if (lbImg.complete) { show(); } else { lbImg.onload = show; lbImg.onerror = show; }
 
   var sub = [];
   if (item.series) sub.push(item.series);
   if (item.year)   sub.push(item.year);
-  var infoHtml = '';
-  if (item.title) infoHtml += '<div class="lb-title">' + item.title + '</div>';
-  if (sub.length) infoHtml += '<div class="lb-sub">'   + sub.join(' · ') + '</div>';
-  if (item.pinterest) {
-    infoHtml += '<a class="lb-pinterest" href="' + item.pinterest +
-      '" target="_blank" rel="noopener">Auf Pinterest ansehen &#x2192;</a>';
+  var info = document.getElementById('lb-info');
+  info.innerHTML = '';
+  if (item.title) {
+    var t = document.createElement('div'); t.className = 'gl-lb-title'; t.textContent = item.title; info.appendChild(t);
   }
-  document.getElementById('lb-info').innerHTML = infoHtml;
-
-  var prev = document.getElementById('lb-prev');
-  var next = document.getElementById('lb-next');
-  prev.style.opacity = idx > 0 ? '1' : '0.18';
-  prev.disabled = idx <= 0;
-  next.style.opacity = idx < currentFiltered.length - 1 ? '1' : '0.18';
-  next.disabled = idx >= currentFiltered.length - 1;
+  if (sub.length) {
+    var s = document.createElement('div'); s.className = 'gl-lb-sub'; s.textContent = sub.join(' · '); info.appendChild(s);
+  }
+  if (item.desc) {
+    var d = document.createElement('div'); d.className = 'gl-lb-desc'; d.textContent = item.desc; info.appendChild(d);
+  }
+  if (item.pinterest) {
+    var a = document.createElement('a'); a.className = 'gl-lb-pin'; a.href = item.pinterest;
+    a.target = '_blank'; a.rel = 'noopener'; a.textContent = 'Pinterest →'; info.appendChild(a);
+  }
+  document.getElementById('lb-count').textContent = (idx + 1) + ' / ' + currentFiltered.length;
 }
 
 document.getElementById('lb-close').addEventListener('click', closeLightbox);
-document.getElementById('lb-backdrop').addEventListener('click', closeLightbox);
-document.getElementById('lb-prev').addEventListener('click', function() {
-  if (currentIndex > 0) { currentIndex--; showLightboxItem(currentIndex); }
+document.getElementById('lb-prev').addEventListener('click', function() { stepLightbox(-1); });
+document.getElementById('lb-next').addEventListener('click', function() { stepLightbox(1); });
+/* Klick neben das Bild schließt */
+document.getElementById('lb-stage').addEventListener('click', function(e) {
+  if (e.target === this) closeLightbox();
 });
-document.getElementById('lb-next').addEventListener('click', function() {
-  if (currentIndex < currentFiltered.length - 1) { currentIndex++; showLightboxItem(currentIndex); }
-});
-document.addEventListener('keydown', function(e) {
-  if (!document.getElementById('lightbox').classList.contains('open')) return;
-  if (e.key === 'Escape')      closeLightbox();
-  if (e.key === 'ArrowLeft'  && currentIndex > 0)                           { currentIndex--; showLightboxItem(currentIndex); }
-  if (e.key === 'ArrowRight' && currentIndex < currentFiltered.length - 1)  { currentIndex++; showLightboxItem(currentIndex); }
+/* Pfeiltasten (ESC schließt nativ über <dialog>) */
+glDlg.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft')  { e.preventDefault(); stepLightbox(-1); }
+  if (e.key === 'ArrowRight') { e.preventDefault(); stepLightbox(1); }
 });
 
-/* ---- Lightbox: Wischgeste (mobil, Pfeile sind dort ausgeblendet) ---- */
+/* ---- Lightbox: Wischgeste (mobil) ---- */
 var swipeStartX = null, swipeStartY = null;
-var lightboxEl = document.getElementById('lightbox');
-lightboxEl.addEventListener('touchstart', function(e) {
+glDlg.addEventListener('touchstart', function(e) {
   if (e.touches.length !== 1) { swipeStartX = null; return; }
   swipeStartX = e.touches[0].clientX;
   swipeStartY = e.touches[0].clientY;
 }, { passive: true });
-lightboxEl.addEventListener('touchend', function(e) {
+glDlg.addEventListener('touchend', function(e) {
   if (swipeStartX === null) return;
   var t  = e.changedTouches[0];
   var dx = t.clientX - swipeStartX;
   var dy = t.clientY - swipeStartY;
   swipeStartX = null;
   if (Math.abs(dx) < 50 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
-  if (dx < 0 && currentIndex < currentFiltered.length - 1) { currentIndex++; showLightboxItem(currentIndex); }
-  if (dx > 0 && currentIndex > 0)                          { currentIndex--; showLightboxItem(currentIndex); }
+  stepLightbox(dx < 0 ? 1 : -1);
 }, { passive: true });
 
+/* ---- Header-Höhe für die klebende Leiste, Layout bei Größenänderung ---- */
+function glSyncHead() {
+  var h = document.querySelector('header');
+  if (h) document.documentElement.style.setProperty('--gl-head', h.offsetHeight + 'px');
+}
+glSyncHead();
+if ('ResizeObserver' in window) {
+  new ResizeObserver(function() { glSyncHead(); layoutWall(); }).observe(glWall);
+} else {
+  window.addEventListener('resize', function() { glSyncHead(); layoutWall(); });
+}
+
 /* ---- Init ---- */
-currentFiltered = GALLERY.filter(function(i) { return i.cat === 'Digital Art'; });
-renderGallery(currentFiltered);
+(function() {
+  var slug = (location.hash || '').replace('#', '');
+  var cat  = GL_CATS[slug] || 'Digital Art';
+  selectCategory(cat, false);
+}());
 
 /* ============================================================
    SCROLL-LOCK (mobiles Menü + Lightbox)
