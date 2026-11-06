@@ -778,17 +778,95 @@
     body { height: auto; min-height: 100vh; overflow-y: auto; }
     #content { min-height: 500px; }
   }
+  #panel-close { display: none; }
+
+  /* ── Mobile / Tablet (<=1024px): single column, page scrolls ── */
   @media (max-width: 1024px) {
-    #app { flex-direction: column; overflow: auto; }
-    #panel { width: 100%; max-height: 320px; overflow-y: auto; border-left: none; border-top: 1px solid #0a0a1e; }
-    #table-area { min-width: 0; overflow-x: auto; }
+    html { height: auto; }
+    body {
+      height: auto; min-height: 100vh; min-height: 100dvh;
+      overflow-x: hidden; overflow-y: auto;
+      background-attachment: scroll;
+    }
+    #titlebar { height: auto; min-height: 44px; flex-wrap: wrap; padding: 4px 10px; row-gap: 2px; }
+    .back-link { display: inline-flex; align-items: center; min-height: 44px; padding-right: 6px; }
+    #titlebar .brand { min-width: 0; }
+
+    /* toolbar */
+    #toolbar { padding: 8px 10px; gap: 8px; }
+    #search-wrap { flex: 1 1 100%; max-width: none; min-width: 0; }
+    #search { min-height: 44px; font-size: 16px; padding: 8px 10px 8px 32px; }
+    #search-wrap svg { width: 15px; height: 15px; }
+    .cdd { flex: 1 1 calc(50% - 4px); min-width: 0; display: block; }
+    .cdd-btn { width: 100%; min-width: 0; min-height: 44px; font-size: 13px; }
+    .cdd-btn span:first-child { overflow: hidden; text-overflow: ellipsis; }
+    .tb-sep { display: none; }
+    .tb-btn { flex: 1 1 auto; min-height: 44px; min-width: 44px; padding: 6px 12px; font-size: 12px; }
+    .cdd-list { max-width: calc(100vw - 16px); max-height: 60vh; max-height: 60dvh; overflow-y: auto; }
+    .cdd-option { min-height: 44px; font-size: 14px; }
+
+    /* layout: grid on top, detail panel below */
+    #content { flex-direction: column; flex: none; min-height: 0; overflow: visible; }
+    #table-area {
+      flex: none; width: 100%; min-width: 0; min-height: 0;
+      overflow-x: auto; overflow-y: hidden;
+      -webkit-overflow-scrolling: touch; touch-action: pan-x pan-y; overscroll-behavior-x: contain;
+      padding: 8px;
+    }
+    #pt-grid { grid-template-columns: repeat(18, 54px); min-width: 0; width: max-content; gap: 3px; }
+    #legend { position: sticky; left: 0; width: calc(100vw - 16px); max-width: 100%; padding: 6px 8px; }
+    .leg-item { font-size: 11px; min-height: 32px; padding: 4px 10px; }
+
+    /* tiles: compact, no hover growth on touch */
+    .el { padding: 2px 3px 3px; border-radius: 6px; min-height: 54px; }
+    .el-num { font-size: 10px; padding-top: 1px; }
+    .el-sym { font-size: 18px; }
+    .el-name { font-size: 8px; margin-top: 2px; }
+    .el-mass { display: none; }
+    .el:hover, .el.selected { transform: none; }
+    .el.selected { outline: 2px solid var(--el-color, var(--accent)); outline-offset: -1px; }
+
+    /* detail panel under the grid */
+    #panel, #panel.hidden {
+      width: 100%; min-width: 0; max-height: none; overflow: visible;
+      border-left: none; border-top: 1px solid rgba(0,245,255,0.18);
+      box-shadow: none; transition: none; flex: none;
+    }
+    #panel-placeholder { flex: none; padding: 10px 14px !important; flex-direction: row !important; gap: 10px !important; }
+    #panel-placeholder > div:first-child { font-size: 18px !important; }
+    #panel-detail { flex: none !important; }
+    #panel-header { padding: 14px 56px 12px 16px; }
+    .panel-symbol { font-size: 48px; }
+    #panel-close {
+      display: flex; align-items: center; justify-content: center;
+      position: absolute; top: 4px; right: 6px; z-index: 2;
+      width: 44px; height: 44px;
+      background: rgba(0,245,255,0.08); border: 1px solid rgba(0,245,255,0.25);
+      border-radius: 8px; color: var(--accent); font-size: 18px; cursor: pointer;
+    }
+    #cmp-table { padding: 12px 10px; overflow-x: auto; position: relative; }
+    .cmp-grid { grid-template-columns: minmax(80px,1fr) minmax(80px,1fr) minmax(80px,1fr); }
+    .cmp-cell { overflow-wrap: anywhere; }
+
+    /* compare bar stays reachable */
+    #compare-bar { position: sticky; bottom: 0; z-index: 30; flex-wrap: wrap; padding: 8px 10px; }
+    .cmp-slot { min-width: 0; min-height: 44px; display: flex; align-items: center; justify-content: center; overflow-wrap: anywhere; }
+    .cmp-btn { min-height: 44px; min-width: 44px; }
+
+    /* footer */
+    #brand-footer { padding: 4px 12px 8px; }
+    #brand-footer .bf-text { font-size: 32px; }
+    #brand-footer .bf-logo { width: 56px; height: 56px; }
+  }
+  @media (hover: none) {
+    .el:hover { transform: none; box-shadow: none; z-index: auto; }
+    .el:hover::after { opacity: 0; }
+    .tb-btn:hover, .cdd-btn:hover { transform: none; }
   }
   @media (max-width: 600px) {
-    #titlebar { padding: 0 8px; }
-    .back-link { font-size: 0.7rem; }
-    .search-row { flex-wrap: wrap; gap: 6px; }
-    .search-row input, .search-row select { font-size: 0.75rem; }
-    #panel { max-height: 260px; }
+    #titlebar .logo { letter-spacing: 0.16em; }
+    #titlebar .brand-name { display: none; }
+    .cdd { flex-basis: 100%; }
   }
 
 </style>
@@ -873,7 +951,8 @@
       <div style="font-size:32px;opacity:0.15;">⬡</div>
       <div style="font-size:11px;color:var(--text-muted);" id="ph-text">Element anklicken</div>
     </div>
-    <div id="panel-detail" style="display:none;flex-direction:column;flex:1;">
+    <div id="panel-detail" style="display:none;flex-direction:column;flex:1;position:relative;">
+      <button id="panel-close" type="button" onclick="closeDetail()" aria-label="Schließen / Close">✕</button>
       <div id="panel-header">
         <div class="panel-symbol" id="p-sym"></div>
         <div class="panel-name" id="p-name"></div>
@@ -1250,6 +1329,22 @@ function onClickEl(el) {
   Object.values(cells).forEach(c => c.classList.remove('selected'));
   if (cells[el.n]) cells[el.n].classList.add('selected');
   showPanel(el);
+  scrollDetailIntoView();
+}
+
+/* Mobile: bring the detail panel (below the grid) into view */
+function scrollDetailIntoView() {
+  if (window.matchMedia('(max-width: 1024px)').matches) {
+    const p = document.getElementById('panel');
+    if (p && p.scrollIntoView) p.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
+/* Mobile close button: deselect and return to placeholder */
+function closeDetail() {
+  selectedEl = null;
+  Object.values(cells).forEach(c => c.classList.remove('selected'));
+  clearCompare();
 }
 
 function showPanel(el) {
@@ -1344,6 +1439,8 @@ function toggleCDD(id) {
     list.style.top  = (rect.bottom + 5) + 'px';
     list.style.left = rect.left + 'px';
     list.style.display = 'block';
+    const maxLeft = window.innerWidth - list.offsetWidth - 8;
+    list.style.left = Math.max(8, Math.min(rect.left, maxLeft)) + 'px';
     cdd.classList.add('open');
     btn.setAttribute('aria-expanded', 'true');
   } else {
@@ -1475,6 +1572,7 @@ function runCompare() {
   document.getElementById('panel-detail').style.display = 'flex';
   document.getElementById('panel-body').style.display = 'none';
   document.getElementById('panel-header').style.display = 'none';
+  scrollDetailIntoView();
 }
 
 function clearCompare() {
