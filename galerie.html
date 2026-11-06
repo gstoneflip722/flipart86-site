@@ -114,10 +114,37 @@
       <div class="gl-series-head">
         <h2 class="gl-series-title" id="gl-series">Digital Art</h2>
         <p class="gl-series-meta"><span id="gl-count">10</span> <span data-i18n="gallery_works">Werke</span></p>
+        <!-- ANSICHT: Raster / 3D-Karussell (wird per JS eingeblendet, wenn 3D unterstützt wird) -->
+        <div class="gl-view" id="gl-view" role="group" aria-label="Ansicht" data-i18n-aria="gallery_view" hidden>
+          <button type="button" class="gl-view-b" data-view="grid" aria-pressed="true" data-i18n="gallery_view_grid">Raster</button>
+          <button type="button" class="gl-view-b" data-view="carousel" aria-pressed="false" data-i18n="gallery_view_3d">3D-Karussell</button>
+        </div>
       </div>
 
       <!-- GRID (Masonry) -->
       <div class="gl-wall gallery-grid" id="gallery-grid"></div>
+
+      <!-- 3D-KARUSSELL (Phase 4.6, aus Carousel Demo V2; Daten = aktuelle Serie aus GALLERY) -->
+      <div class="gl-car" id="gl-car">
+        <div class="gl-car-stage" id="gl-car-stage" tabindex="0" role="region" aria-roledescription="Karussell"
+             aria-label="Serie als 3D-Karussell. Mit Pfeiltasten wechseln, Enter öffnet die Großansicht." data-i18n-aria="gallery_car_aria">
+          <div class="gl-car-spot" aria-hidden="true"></div>
+          <div class="gl-car-floor" aria-hidden="true"></div>
+          <div class="gl-car-ring" id="gl-car-ring"></div>
+        </div>
+        <div class="gl-car-foot">
+          <div class="gl-car-title" id="gl-car-title"></div>
+          <div class="gl-car-controls">
+            <button type="button" class="gl-car-btn" id="gl-car-prev" aria-label="Vorheriges Werk" data-i18n-aria="gallery_car_prev">&#x2039;</button>
+            <div class="gl-car-count" id="gl-car-count" aria-hidden="true"></div>
+            <button type="button" class="gl-car-btn" id="gl-car-next" aria-label="N&#228;chstes Werk" data-i18n-aria="gallery_car_next">&#x203a;</button>
+            <button type="button" class="gl-car-btn" id="gl-car-zoom" aria-label="Gro&#223;ansicht &#246;ffnen" data-i18n-aria="gallery_car_zoom">&#x2922;</button>
+            <button type="button" class="gl-car-btn gl-car-txt" id="gl-car-auto" aria-pressed="true">Autoplay</button>
+          </div>
+          <p class="gl-car-hint" data-i18n="gallery_car_hint">Ziehen oder wischen · Pfeiltasten · Werk anklicken zum Zentrieren · Zentriertes Werk öffnet die Großansicht</p>
+        </div>
+        <div class="gl-car-sr" id="gl-car-live" aria-live="polite"></div>
+      </div>
 
       <!-- EMPTY STATE -->
       <div class="gallery-empty" id="gallery-empty">
@@ -807,6 +834,10 @@ var currentFiltered = [];
 var currentCat      = 'Digital Art';
 var currentIndex    = 0;
 var lastFocus       = null;
+/* Aktive Ansicht ('grid' | 'carousel'); verwaltet von scripts/gallery-carousel.js.
+   Im Karussell lädt das (ausgeblendete) Raster seine Bilder erst bei Bedarf. */
+var glView          = 'grid';
+try { if (localStorage.getItem('flipart86_gallery_view') === 'carousel') glView = 'carousel'; } catch (e) {}
 
 var GL_ROW      = 4;   /* Masonry-Zeilenhöhe in px */
 var GL_MAXCOLS  = 6;   /* Spaltenbegrenzung (Ultrawide) */
@@ -874,7 +905,7 @@ function renderGallery(items) {
     img.alt = item.title || '';
     if (item.w && item.h) { img.width = item.w; img.height = item.h; }
     img.decoding = 'async';
-    if (i > 7) img.loading = 'lazy';
+    if (i > 7 || glView === 'carousel') img.loading = 'lazy';
     card.appendChild(img);
 
     if (item.title) {
@@ -939,6 +970,7 @@ function selectCategory(cat, updateHash, scrollToStart) {
   document.getElementById('gl-series').textContent = cat;
   document.getElementById('gl-count').textContent = currentFiltered.length;
   renderGallery(currentFiltered);
+  if (window.GLCarousel) window.GLCarousel.setItems(currentFiltered);   /* 3D-Karussell folgt der Serie */
   if (updateHash) {
     try { history.replaceState(null, '', '#' + glSlug(cat)); } catch (e) {}
   }
@@ -1200,6 +1232,7 @@ function syncMobLang() {
 })();
 
 </script>
+<script src="scripts/gallery-carousel.js"></script>
 
 </body>
 </html>

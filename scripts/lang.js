@@ -109,6 +109,18 @@ const FLIPART86_I18N = {
     gallery_empty_sub:      'Bilder in <code>assets/gallery/</code> ablegen und in <code>galerie.html</code> im GALLERY-Array eintragen.',
     gallery_rail:           'Serien',
     gallery_works:          'Werke',
+    gallery_view:           'Ansicht',
+    gallery_view_grid:      'Raster',
+    gallery_view_3d:        '3D-Karussell',
+    gallery_car_aria:       'Serie als 3D-Karussell. Mit Pfeiltasten wechseln, Enter öffnet die Großansicht.',
+    gallery_car_role:       'Karussell',
+    gallery_car_slide:      'Folie',
+    gallery_car_of:         'von',
+    gallery_car_prev:       'Vorheriges Werk',
+    gallery_car_next:       'Nächstes Werk',
+    gallery_car_zoom:       'Großansicht öffnen',
+    gallery_car_auto_off:   'Autoplay ist wegen reduzierter Bewegung deaktiviert',
+    gallery_car_hint:       'Ziehen oder wischen · Pfeiltasten · Werk anklicken zum Zentrieren · Zentriertes Werk öffnet die Großansicht',
     // LIGHTBOX & ARIA
     lb_aria:                'Bildvorschau',
     lb_close:               'Schließen',
@@ -222,6 +234,18 @@ const FLIPART86_I18N = {
     gallery_empty_sub:      'Add images to <code>assets/gallery/</code> and register them in the GALLERY array in <code>galerie.html</code>.',
     gallery_rail:           'Series',
     gallery_works:          'works',
+    gallery_view:           'View',
+    gallery_view_grid:      'Grid',
+    gallery_view_3d:        '3D carousel',
+    gallery_car_aria:       'Series as 3D carousel. Use the arrow keys to browse, Enter opens the full view.',
+    gallery_car_role:       'carousel',
+    gallery_car_slide:      'slide',
+    gallery_car_of:         'of',
+    gallery_car_prev:       'Previous work',
+    gallery_car_next:       'Next work',
+    gallery_car_zoom:       'Open full view',
+    gallery_car_auto_off:   'Autoplay is disabled because reduced motion is enabled',
+    gallery_car_hint:       'Drag or swipe · arrow keys · click a work to center it · click the centered work to open the full view',
     // LIGHTBOX & ARIA
     lb_aria:                'Image preview',
     lb_close:               'Close',
@@ -296,6 +320,9 @@ function flipLangApply(lang) {
 
   /* 7. Expose current lang globally for JS modules (e.g. gallery) */
   window.FLIPART86_LANG = lang;
+
+  /* 8. Notify page modules (e.g. gallery carousel) about the language change */
+  try { document.dispatchEvent(new CustomEvent('flipart86:lang', { detail: { lang: lang } })); } catch(e) {}
 }
 
 /**
