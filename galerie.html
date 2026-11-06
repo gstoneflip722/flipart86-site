@@ -114,10 +114,10 @@
       <div class="gl-series-head">
         <h2 class="gl-series-title" id="gl-series">Digital Art</h2>
         <p class="gl-series-meta"><span id="gl-count">10</span> <span data-i18n="gallery_works">Werke</span></p>
-        <!-- ANSICHT: Raster / 3D-Karussell (wird per JS eingeblendet, wenn 3D unterstützt wird) -->
+        <!-- ANSICHT: 3D-Carousel (Standard) / Rasteransicht (wird per JS eingeblendet, wenn 3D unterstützt wird) -->
         <div class="gl-view" id="gl-view" role="group" aria-label="Ansicht" data-i18n-aria="gallery_view" hidden>
-          <button type="button" class="gl-view-b" data-view="grid" aria-pressed="true" data-i18n="gallery_view_grid">Raster</button>
-          <button type="button" class="gl-view-b" data-view="carousel" aria-pressed="false" data-i18n="gallery_view_3d">3D-Karussell</button>
+          <button type="button" class="gl-view-b" data-view="carousel" aria-pressed="true" data-i18n="gallery_view_3d">3D-Carousel</button>
+          <button type="button" class="gl-view-b" data-view="grid" aria-pressed="false" data-i18n="gallery_view_grid">Rasteransicht</button>
         </div>
       </div>
 
@@ -834,10 +834,10 @@ var currentFiltered = [];
 var currentCat      = 'Digital Art';
 var currentIndex    = 0;
 var lastFocus       = null;
-/* Aktive Ansicht ('grid' | 'carousel'); verwaltet von scripts/gallery-carousel.js.
-   Im Karussell lädt das (ausgeblendete) Raster seine Bilder erst bei Bedarf. */
-var glView          = 'grid';
-try { if (localStorage.getItem('flipart86_gallery_view') === 'carousel') glView = 'carousel'; } catch (e) {}
+/* Aktive Ansicht ('carousel' | 'grid'); verwaltet von scripts/gallery-carousel.js.
+   Standard ist das 3D-Karussell (Phase 4.6.1). Solange es aktiv ist, lädt das
+   ausgeblendete Raster seine Bilder erst bei Bedarf. */
+var glView          = 'carousel';
 
 var GL_ROW      = 4;   /* Masonry-Zeilenhöhe in px */
 var GL_MAXCOLS  = 6;   /* Spaltenbegrenzung (Ultrawide) */

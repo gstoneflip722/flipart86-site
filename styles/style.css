@@ -761,8 +761,9 @@ dialog.gl-lb::backdrop { background: rgba(0,0,0,.9); }
 }
 .gl-view[hidden] { display: none; }
 .gl-view-b {
-  min-height: 40px; padding: 0 16px; border: 0; border-radius: 999px;
+  min-height: 44px; padding: 0 16px; border: 0; border-radius: 999px;
   background: none; color: var(--text2); cursor: pointer;
+  touch-action: manipulation; -webkit-tap-highlight-color: transparent;
   font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 600;
   letter-spacing: .1em; text-transform: uppercase;
   transition: color .18s, background .18s, box-shadow .18s;
@@ -770,13 +771,13 @@ dialog.gl-lb::backdrop { background: rgba(0,0,0,.9); }
 .gl-view-b:hover { color: var(--text); }
 .gl-view-b[aria-pressed="true"] {
   color: #effff5; background: rgba(47,243,122,.13);
-  box-shadow: inset 0 0 0 1px rgba(47,243,122,.45);
+  box-shadow: inset 0 0 0 1px rgba(47,243,122,.45), 0 0 18px rgba(47,243,122,.14);
 }
 .gl-view-b:disabled { opacity: .4; cursor: not-allowed; }
 .gl-view-b:focus-visible,
 .gl-car-btn:focus-visible { outline: 2px solid var(--green); outline-offset: 3px; }
 
-/* Ansichtswechsel: Raster bleibt Standard */
+/* Ansichtswechsel: 3D-Karussell ist Standard (Phase 4.6.1), Klasse is-3d per JS */
 .gl-car { display: none; --cw: 220px; --ch: 330px; }
 .gl-stage.is-3d .gl-car { display: block; }
 .gl-stage.is-3d .gl-wall { display: none; }
@@ -863,8 +864,10 @@ dialog.gl-lb::backdrop { background: rgba(0,0,0,.9); }
   }
 }
 @media (max-width: 600px) {
-  .gl-view { margin-left: 0; }
-  .gl-view-b { padding: 0 12px; }
+  /* Umschalter: volle Breite, zwei gleich große Touch-Flächen */
+  .gl-view { display: flex; width: 100%; margin-left: 0; }
+  .gl-view[hidden] { display: none; }
+  .gl-view-b { flex: 1 1 0; min-height: 46px; padding: 0 10px; }
   .gl-car-controls { gap: 8px; }
   .gl-car-hint { font-size: 11.5px; }
 }

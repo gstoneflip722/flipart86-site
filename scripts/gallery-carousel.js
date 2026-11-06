@@ -11,6 +11,7 @@
    - Großansicht: bestehende Galerie-Lightbox (openLightbox).
    - Variable Werkanzahl je Serie, Kartengröße aus der Bühnenbreite.
    - DE/EN über scripts/lang.js (Ereignis 'flipart86:lang').
+   - Standardansicht (Phase 4.6.1): 3D-Karussell; Rasteransicht per Umschalter.
    - Fallback: ohne CSS-3D-Unterstützung bleibt nur das Raster.
    Benötigt die globalen Funktionen/Variablen aus galerie.html:
    openLightbox, currentFiltered, currentIndex, lastFocus, glView.
@@ -44,8 +45,11 @@
   var theta = 0, vel = 0, glide = false, target = null;
   var dragging = false, hovered = false, focused = false, inView = true;
   var autoplay = !reduced.matches, resumeAt = 0, userAction = false, activeIdx = -1, R = 377;
-  var pref = 'grid';
-  try { if (localStorage.getItem(VIEW_KEY) === 'carousel') pref = 'carousel'; } catch (e) {}
+  /* Phase 4.6.1: Das Karussell ist bei jedem Aufruf Standard. Die gewählte Ansicht gilt
+     nur für den aktuellen Seitenaufruf (bleibt beim Serienwechsel erhalten) und wird
+     nicht gespeichert. Ein Wert aus Phase 4.6 wird entfernt. */
+  var pref = 'carousel';
+  try { localStorage.removeItem(VIEW_KEY); } catch (e) {}
 
   /* Übersetzung aus scripts/lang.js (deutsche Fallbacks, solange lang.js noch nicht geladen ist) */
   function T(key, fb) {
@@ -314,7 +318,7 @@
   /* ---- Ansicht: Raster / 3D-Karussell ---- */
   var viewBtns = viewSw.querySelectorAll('.gl-view-b');
   function setView(v, save) {
-    if (save) { pref = v; try { localStorage.setItem(VIEW_KEY, v); } catch (e) {} }
+    if (save) pref = v;
     var can3d = items.length >= CFG.minItems;
     var want3d = v === 'carousel' && can3d;
     active3d = want3d;
