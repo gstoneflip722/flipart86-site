@@ -107,6 +107,7 @@
       <button type="button" class="gl-rail-b" data-cat="Gnom-Serie 002" aria-pressed="false"><strong>Gnom-Serie 002</strong><span class="gl-n">10</span></button>
       <button type="button" class="gl-rail-b" data-cat="Silent Resistance" aria-pressed="false"><strong>Silent Resistance</strong><span class="gl-n">10</span></button>
       <button type="button" class="gl-rail-b" data-cat="Rastaman-Serie 001" aria-pressed="false"><strong>Rastaman-Serie 001</strong><span class="gl-n">10</span></button>
+      <button type="button" class="gl-rail-b" data-cat="Survival-Serie 001" aria-pressed="false"><strong>Survival-Serie 001</strong><span class="gl-n">10</span></button>
       <button type="button" class="gl-rail-b" data-cat="Prints" aria-pressed="false"><strong>Prints</strong><span class="gl-n">8</span></button>
     </nav>
 
@@ -214,7 +215,7 @@
 
    cat        – Filterkategorie. Erlaubte Werte:
                 'Gnom-Serie 001' | 'Gnom-Serie 002' | 'Silent Resistance'
-                | 'Rastaman-Serie 001' | 'Digital Art' | 'Prints'
+                | 'Rastaman-Serie 001' | 'Survival-Serie 001' | 'Digital Art' | 'Prints'
 
    desc       – Kurzbeschreibung (optional, erscheint in der Karte)
 
@@ -428,6 +429,111 @@ var GALLERY = [
     series: 'Silent Resistance',
     year: 2025,
     cat: 'Silent Resistance',
+    desc: '',
+    pinterest: null
+  },
+
+  /* ----------------------------------------------------------
+     SURVIVAL-SERIE 001
+     Neue Bilder: assets/web/gallery/Survival-Serie 001/<dateiname>.webp
+  ---------------------------------------------------------- */
+  {
+    src: 'assets/web/gallery/Survival-Serie 001/Survival-Serie_001_Nebelstille.webp',
+    w: 1024, h: 1024,
+    title: 'Nebelstille',
+    series: 'Survival-Serie 001',
+    year: 2026,
+    cat: 'Survival-Serie 001',
+    desc: '',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/Survival-Serie 001/Survival-Serie_002_Sturmfront.webp',
+    w: 1024, h: 1024,
+    title: 'Sturmfront',
+    series: 'Survival-Serie 001',
+    year: 2026,
+    cat: 'Survival-Serie 001',
+    desc: '',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/Survival-Serie 001/Survival-Serie_003_Glutroter_Herbst.webp',
+    w: 1024, h: 1024,
+    title: 'Glutroter Herbst',
+    series: 'Survival-Serie 001',
+    year: 2026,
+    cat: 'Survival-Serie 001',
+    desc: '',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/Survival-Serie 001/Survival-Serie_004_Eisige_Stille.webp',
+    w: 1024, h: 1024,
+    title: 'Eisige Stille',
+    series: 'Survival-Serie 001',
+    year: 2026,
+    cat: 'Survival-Serie 001',
+    desc: '',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/Survival-Serie 001/Survival-Serie_005_Gruener_Nebel.webp',
+    w: 1024, h: 1024,
+    title: 'Grüner Nebel',
+    series: 'Survival-Serie 001',
+    year: 2026,
+    cat: 'Survival-Serie 001',
+    desc: '',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/Survival-Serie 001/Survival-Serie_006_Feuerwache.webp',
+    w: 1024, h: 1024,
+    title: 'Feuerwache',
+    series: 'Survival-Serie 001',
+    year: 2026,
+    cat: 'Survival-Serie 001',
+    desc: '',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/Survival-Serie 001/Survival-Serie_007_Nordlicht.webp',
+    w: 1024, h: 1024,
+    title: 'Nordlicht',
+    series: 'Survival-Serie 001',
+    year: 2026,
+    cat: 'Survival-Serie 001',
+    desc: '',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/Survival-Serie 001/Survival-Serie_008_Verlassener_Aussenposten.webp',
+    w: 1024, h: 1024,
+    title: 'Verlassener Außenposten',
+    series: 'Survival-Serie 001',
+    year: 2026,
+    cat: 'Survival-Serie 001',
+    desc: '',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/Survival-Serie 001/Survival-Serie_009_Mondlager.webp',
+    w: 1024, h: 1024,
+    title: 'Mondlager',
+    series: 'Survival-Serie 001',
+    year: 2026,
+    cat: 'Survival-Serie 001',
+    desc: '',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/Survival-Serie 001/Survival-Serie_010_Schattenwald.webp',
+    w: 1024, h: 1024,
+    title: 'Schattenwald',
+    series: 'Survival-Serie 001',
+    year: 2026,
+    cat: 'Survival-Serie 001',
     desc: '',
     pinterest: null
   },
@@ -843,7 +949,7 @@ var GL_ROW      = 4;   /* Masonry-Zeilenhöhe in px */
 var GL_MAXCOLS  = 6;   /* Spaltenbegrenzung (Ultrawide) */
 var GL_CATS = {
   'digital-art': 'Digital Art', 'gnom-serie-001': 'Gnom-Serie 001', 'gnom-serie-002': 'Gnom-Serie 002',
-  'silent-resistance': 'Silent Resistance', 'rastaman-serie-001': 'Rastaman-Serie 001', 'prints': 'Prints'
+  'silent-resistance': 'Silent Resistance', 'rastaman-serie-001': 'Rastaman-Serie 001', 'survival-serie-001': 'Survival-Serie 001', 'prints': 'Prints'
 };
 
 document.documentElement.classList.add('js');
@@ -963,7 +1069,8 @@ function selectCategory(cat, updateHash, scrollToStart) {
     if (on) {
       /* Aktive Serie in der mobilen Leiste sichtbar halten (nur horizontal scrollen) */
       if (glRail.scrollWidth > glRail.clientWidth) {
-        glRail.scrollLeft = btns[b].offsetLeft - (glRail.clientWidth - btns[b].offsetWidth) / 2;
+        var rr = glRail.getBoundingClientRect(), br = btns[b].getBoundingClientRect();
+        glRail.scrollLeft += (br.left - rr.left) - (rr.width - br.width) / 2;
       }
     }
   }
