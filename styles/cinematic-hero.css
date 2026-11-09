@@ -1,0 +1,14 @@
+/* FlipArt86 Cinematic Hero V1.1 – Website-Ebene.
+   Wird vom Adapter nur geladen, wenn die Animation tatsaechlich startet.
+   Das Canvas liegt im bestehenden .hx-frame zwischen Hero-Bild und Bloom-Ebene und
+   uebernimmt damit Groesse, Bildausschnitt, Masken und Zoom-Animation von Hero V2.1. */
+.hx-frame > .hx-cinematic {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  display: block; pointer-events: none;
+  opacity: 0; transition: opacity 1.2s ease;
+}
+.hx-frame.ch-ready > .hx-cinematic { opacity: 1; }
+.hx-frame.ch-no-webgl > .hx-cinematic { display: none; }
+@media (prefers-reduced-motion: reduce) {
+  .hx-frame > .hx-cinematic { display: none; }
+}
