@@ -108,6 +108,7 @@
       <button type="button" class="gl-rail-b" data-cat="Silent Resistance" aria-pressed="false"><strong>Silent Resistance</strong><span class="gl-n">10</span></button>
       <button type="button" class="gl-rail-b" data-cat="Rastaman-Serie 001" aria-pressed="false"><strong>Rastaman-Serie 001</strong><span class="gl-n">10</span></button>
       <button type="button" class="gl-rail-b" data-cat="Survival-Serie 001" aria-pressed="false"><strong>Survival-Serie 001</strong><span class="gl-n">10</span></button>
+      <button type="button" class="gl-rail-b" data-cat="Worldmap-Serie 001" aria-pressed="false"><strong>Worldmap-Serie 001</strong><span class="gl-n">10</span></button>
       <button type="button" class="gl-rail-b" data-cat="Prints" aria-pressed="false"><strong>Prints</strong><span class="gl-n">15</span></button>
     </nav>
 
@@ -215,7 +216,7 @@
 
    cat        – Filterkategorie. Erlaubte Werte:
                 'Gnom-Serie 001' | 'Gnom-Serie 002' | 'Silent Resistance'
-                | 'Rastaman-Serie 001' | 'Survival-Serie 001' | 'Digital Art' | 'Prints'
+                | 'Rastaman-Serie 001' | 'Survival-Serie 001' | 'Worldmap-Serie 001' | 'Digital Art' | 'Prints'
 
    desc       – Kurzbeschreibung (optional, erscheint in der Karte)
 
@@ -534,6 +535,111 @@ var GALLERY = [
     series: 'Survival-Serie 001',
     year: 2026,
     cat: 'Survival-Serie 001',
+    desc: '',
+    pinterest: null
+  },
+
+  /* ----------------------------------------------------------
+     WORLDMAP-SERIE 001
+     Neue Bilder: assets/web/gallery/Worldmap-Serie 001/<dateiname>.webp
+  ---------------------------------------------------------- */
+  {
+    src: 'assets/web/gallery/Worldmap-Serie 001/Worldmap-Serie_001_Neon-Weltkarte_Netzwerk.webp',
+    w: 1024, h: 576,
+    title: 'Neon-Weltkarte mit Netzwerkverbindungen',
+    series: 'Worldmap-Serie 001',
+    year: 2026,
+    cat: 'Worldmap-Serie 001',
+    desc: '',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/Worldmap-Serie 001/Worldmap-Serie_002_Gluehbirnenhologramm.webp',
+    w: 1024, h: 576,
+    title: 'Weltkugel im Glühbirnenhologramm',
+    series: 'Worldmap-Serie 001',
+    year: 2026,
+    cat: 'Worldmap-Serie 001',
+    desc: '',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/Worldmap-Serie 001/Worldmap-Serie_003_Lichtverbindungen.webp',
+    w: 1024, h: 576,
+    title: 'Neon-Weltkarte mit Lichtverbindungen',
+    series: 'Worldmap-Serie 001',
+    year: 2026,
+    cat: 'Worldmap-Serie 001',
+    desc: '',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/Worldmap-Serie 001/Worldmap-Serie_004_Landschaften.webp',
+    w: 1024, h: 576,
+    title: 'Leuchtende Weltkarte mit Landschaften',
+    series: 'Worldmap-Serie 001',
+    year: 2026,
+    cat: 'Worldmap-Serie 001',
+    desc: '',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/Worldmap-Serie 001/Worldmap-Serie_005_Steampunk-Globus.webp',
+    w: 1024, h: 576,
+    title: 'Steampunk-Globus mit leuchtender Weltkarte',
+    series: 'Worldmap-Serie 001',
+    year: 2026,
+    cat: 'Worldmap-Serie 001',
+    desc: '',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/Worldmap-Serie 001/Worldmap-Serie_006_Glasflasche.webp',
+    w: 1024, h: 576,
+    title: 'Leuchtende Weltkarte in der Glasflasche',
+    series: 'Worldmap-Serie 001',
+    year: 2026,
+    cat: 'Worldmap-Serie 001',
+    desc: '',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/Worldmap-Serie 001/Worldmap-Serie_007_Mosaiklandschaft.webp',
+    w: 1024, h: 576,
+    title: 'Weltkarten-Mosaiklandschaft',
+    series: 'Worldmap-Serie 001',
+    year: 2026,
+    cat: 'Worldmap-Serie 001',
+    desc: '',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/Worldmap-Serie 001/Worldmap-Serie_008_Sci-Fi-Weltatlas.webp',
+    w: 1024, h: 576,
+    title: 'Neonblauer Sci-Fi-Weltatlas mit Satellit',
+    series: 'Worldmap-Serie 001',
+    year: 2026,
+    cat: 'Worldmap-Serie 001',
+    desc: '',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/Worldmap-Serie 001/Worldmap-Serie_009_Leuchtende_Weltkarte.webp',
+    w: 1024, h: 576,
+    title: 'Leuchtende Weltkarte',
+    series: 'Worldmap-Serie 001',
+    year: 2026,
+    cat: 'Worldmap-Serie 001',
+    desc: '',
+    pinterest: null
+  },
+  {
+    src: 'assets/web/gallery/Worldmap-Serie 001/Worldmap-Serie_010_Neon-Cyan-Weltkarte.webp',
+    w: 1024, h: 683,
+    title: 'Neon-Cyan-Weltkarte',
+    series: 'Worldmap-Serie 001',
+    year: 2026,
+    cat: 'Worldmap-Serie 001',
     desc: '',
     pinterest: null
   },
@@ -1019,7 +1125,7 @@ var GL_ROW      = 4;   /* Masonry-Zeilenhöhe in px */
 var GL_MAXCOLS  = 6;   /* Spaltenbegrenzung (Ultrawide) */
 var GL_CATS = {
   'digital-art': 'Digital Art', 'gnom-serie-001': 'Gnom-Serie 001', 'gnom-serie-002': 'Gnom-Serie 002',
-  'silent-resistance': 'Silent Resistance', 'rastaman-serie-001': 'Rastaman-Serie 001', 'survival-serie-001': 'Survival-Serie 001', 'prints': 'Prints'
+  'silent-resistance': 'Silent Resistance', 'rastaman-serie-001': 'Rastaman-Serie 001', 'survival-serie-001': 'Survival-Serie 001', 'worldmap-serie-001': 'Worldmap-Serie 001', 'prints': 'Prints'
 };
 
 document.documentElement.classList.add('js');
