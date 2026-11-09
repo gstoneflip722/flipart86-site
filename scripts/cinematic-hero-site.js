@@ -1,5 +1,5 @@
 /*!
- * FlipArt86 Cinematic Hero V1.1 – Website-Adapter
+ * FlipArt86 Cinematic Hero V1.2 – Website-Adapter
  *
  * Einzige Einbindung in index.html:  <script src="scripts/cinematic-hero-site.js" defer></script>
  *
@@ -30,7 +30,7 @@
     assetBase: 'assets/cinematic-hero/',
     mapExt: '.webp',
     imageSrc: 'assets/web/hero-bg-001.webp',
-    preset: 'flipart86V11',
+    preset: 'flipart86V12',
     initTimeoutMs: 12000,
     idleTimeoutMs: 1500
   };

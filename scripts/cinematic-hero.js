@@ -1,10 +1,14 @@
 /*!
- * FlipArt86 Cinematic Hero – WebGL2-Renderer (Prototyp V1.1 – Cinematic Depth)
+ * FlipArt86 Cinematic Hero – WebGL2-Renderer (V1.2 – Visible Motion Enhancement)
  *
- * Zwei Looks im selben Renderer:
+ * Drei Looks im selben Renderer:
  *   look 'v10' – exakt der gesicherte V1.0-Shaderpfad (Referenz/Vergleich)
  *   look 'v11' – Cinematic Depth: Tiefenebenen, Randlicht, Glanz auf Graten,
  *                Nebel zwischen den Schaedeln, kleinere Laserimpulse, PC ohne Ueberstrahlung
+ *   look 'v12' – V1.1 + sichtbare Bewegung: wandernde Glanzbaender und Lichtreflexe auf den Schaedeln
+ *                (je Schaedel eigene Phase), Nebelschleier vor/zwischen den Schaedeln, RGB-Lauflicht
+ *                auf den Luefterringen, rotierende Lichtreflexe auf den Rotoren, wandernde Innenbeleuchtung,
+ *                Glanzstreifen auf Glas/Metall. Rein additive Lichtebenen: keine Verformung, keine Pixelrotation.
  *
  * Ein einziger Fullscreen-Pass rendert das UNVERAENDERTE Original plus
  * vier maskierte Effektebenen:
@@ -28,15 +32,18 @@
     subtle:    { skull: 0.35, fog: 0.15, laser: 0.20, rgb: 0.20, parallax: 0.00, speed: 1.0 },
     cinematic: { skull: 0.75, fog: 0.25, laser: 0.40, rgb: 0.25, parallax: 0.15, speed: 0.8 },
     intense:   { skull: 0.90, fog: 0.55, laser: 0.75, rgb: 0.60, parallax: 0.35, speed: 1.0 },
-    flipart86V11: { skull: 0.75, fog: 0.25, laser: 0.40, rgb: 0.25, parallax: 0.15, speed: 0.8 }
+    flipart86V11: { skull: 0.75, fog: 0.25, laser: 0.40, rgb: 0.25, parallax: 0.15, speed: 0.8 },
+    flipart86V12: { skull: 0.80, fog: 0.28, laser: 0.40, rgb: 0.30, parallax: 0.15, speed: 0.8 }
   };
   // Presets, die zusaetzlich einen Look festlegen (die anderen behalten den aktuellen Look)
-  var PRESET_LOOK = { flipart86V11: 'v11' };
-  var PRESET_LABEL = { subtle: 'Subtle', cinematic: 'Cinematic', intense: 'Intense', flipart86V11: 'FlipArt86 Cinematic V1.1' };
-  var DEFAULT_PRESET = 'flipart86V11';
-  var DEFAULT_LOOK = 'v11';
+  var PRESET_LOOK = { flipart86V11: 'v11', flipart86V12: 'v12' };
+  var PRESET_LABEL = { subtle: 'Subtle', cinematic: 'Cinematic', intense: 'Intense', flipart86V11: 'FlipArt86 Cinematic V1.1', flipart86V12: 'FlipArt86 Cinematic V1.2' };
+  var DEFAULT_PRESET = 'flipart86V12';
+  var DEFAULT_LOOK = 'v12';
+  var LOOK_ID = { v10: 0, v11: 1, v12: 2 };
   // Interne Effektkurve V1.1 (Slider-Wert -> Shader-Staerke), visuell abgestimmt
   var CURVE_V11 = { skull: 1.0, fog: 1.0, laser: 1.0, rgb: 1.3 };   // RGB: Rolloff + Kernschutz erlauben mehr Pulsweite ohne Ueberstrahlung
+  var CURVE_V12 = { skull: 1.0, fog: 1.0, laser: 1.0, rgb: 1.3 };
   var CYCLE = 16; // Sekunden: kompletter Cinematic-Zyklus (Skull/Laser/RGB laufen darin exakt periodisch)
 
   // Pro Schaedel: [Phase im 16-s-Zyklus, Umlaufrichtung Licht, Sweep-Winkel (Grad), Gewicht]
@@ -76,6 +83,16 @@
     { scale: 3.8, per: 12, T: 22, depth: 1.00 }
   ];
 
+  // ---- V1.2 Visible Motion
+  // Glanzband je Schaedel: eigene Periode (8,0-10,7 s) und Phase aus der V1.1-Reihenfolge; das Band quert den
+  // Schaedel in 55 % der Periode (Stirn -> Wangenknochen -> Zaehne) und ruht dann. Lichtrichtung kreist dauerhaft.
+  var V12_BAND_ACTIVE = 0.55;
+  // Luefternaben (Bildpixel): untere Luefter liegen perspektivisch 12-19 px ueber der Ringmitte
+  var FAN_HUB = [[1442, 487], [1438, 563], [1433, 643], [1172.5, 647.5], [1257.5, 677.5], [1352.5, 704]];
+  var FAN_SPIN_RPS = [0.45, 0.5, 0.42, -0.48, -0.44, -0.5];   // Umdrehungen/s der Rotor-Lichtreflexe
+  var FOG4 = { T: 18, per: 8 };                               // Nebelschleier vor den Schaedeln (nahtloser Loop)
+  var PC_SCAN_T = 7, PC_SHEEN_T = 11;                         // Innenlicht-Scan, Glanzstreifen auf dem Glas (s)
+
   var LASER_T = [8, 8, 16];          // L1, L2, L3+L4 (durchgehender Pfad hinter dem PC)
   var LASER_PHASE = [0.0, 0.4, 0.15];
   var L3_GAP = 507;                  // px Weg hinter dem PC (L3-Ende x=1028 -> L4-Start x=1535)
@@ -99,6 +116,9 @@
     'uniform vec4 uLas[4];',
     'uniform vec4 uFan[6]; uniform float uFanAng[6];',
     'uniform vec4 uRgb;',
+    'uniform vec4 uSkD[12];',
+    'uniform vec4 uFog4, uPcA;',
+    'uniform vec2 uHub[6]; uniform float uSpin[6];',
     'out vec4 outColor;',
     'const float PI = 3.14159265;',
     'float luma(vec3 c){ return dot(c, vec3(0.2126, 0.7152, 0.0722)); }',
@@ -216,7 +236,8 @@
     '    col = mix(col, fogCol, f * 0.7) + fogCol * f * 0.45;',
     '  }',
     '  } else {',                             // ===== V1.1 Cinematic Depth =====
-    '  vec3 dt = texture(uDetail, uv).rgb;',   // R Grat/Glanz, G Abstand zur Silhouette (px/10), B atmosph. Tiefe
+    '  vec3 dt = texture(uDetail, uv).rgb;',
+    '  bool v12 = uLook == 2;',   // R Grat/Glanz, G Abstand zur Silhouette (px/10), B atmosph. Tiefe
     // ---------------- 1. Skull Lighting V1.1
     '  if (uSkullAmt > 0.0 && fx.r > 0.002) {',
     '    int id = int(texelFetch(uRelief, ip, 0).b * 255.0 / 16.0 + 0.5);',
@@ -245,7 +266,7 @@
     '      float e = B.x;',
     '      float layerI = front + 0.62 * midL + 0.38 * back;',
     '      float glint = dt.r * (0.25 + 0.75 * pool) * e;',              // Zaehne, Wangenknochen, Brauen
-    '      float L = pool * e * (0.75 + 0.45 * forehead) + relief * 1.4 * (0.3 + 0.7 * e) + glint * (1.5 * front + 0.5 * midL);',
+    '      float L = pool * e * (0.75 + 0.45 * forehead) * (v12 ? 0.7 : 1.0) + relief * 1.4 * (0.3 + 0.7 * e) + glint * (1.5 * front + 0.5 * midL);',
     '      float k = uSkullAmt * fx.r;',
     '      vec3 soft = textureLod(uImg, uv, 1.0 + 2.0 * depth).rgb;',   // weichere Lichtbasis fuer Mitte/Hintergrund
     '      vec3 litBase = mix(base, soft, 1.0 - front);',
@@ -253,6 +274,18 @@
     '      col += k * gate * feather * layerI * L * litBase;',
     '      col += k * hiGate * layerI * (rim * (0.55 * front + 0.35 * midL + 0.2 * back) * (0.35 + 0.65 * e)',
     '             + spec * pool * e * front * 0.5 + glint * front * 0.35) * vec3(0.55, 1.0, 0.62) * lum * 1.6;',
+    '      if (v12) {',
+    '        vec4 D = uSkD[id - 1]; vec2 sd = uSkC[id - 1].xy;',
+    '        float band = exp(-pow((dot(local, sd) - D.x) / 0.16, 2.0)) * D.w;',
+    '        vec3 L2 = normalize(vec3(D.y, D.z, 0.55));',
+    '        float facing = clamp(dot(N, L2) - 0.3, 0.0, 1.0);',
+    '        float sp2 = pow(max(dot(N, normalize(L2 + vec3(0.0, 0.0, 1.0))), 0.0), mix(36.0, 12.0, depth));',
+    '        float bone = smoothstep(0.07, 0.26, lum);',
+    '        float lay2 = (front + 0.7 * midL + 0.4 * back) * mix(0.3, 1.0, 1.0 - smoothstep(0.5, 0.85, max(max(base.r, base.g), base.b)));',
+    '        float refl = band * (0.55 * facing + 1.8 * dt.r + 0.2) + sp2 * (0.3 + 1.2 * dt.r);',
+    '        col += k * bone * feather * lay2 * refl * 0.75 * litBase;',
+    '        col += k * hiGate * bone * lay2 * (band * dt.r + sp2 * dt.r * 0.7) * vec3(0.6, 1.0, 0.68) * lum * 1.1;',
+    '      }',
     '    }',
     '  }',
     // ---------------- 3. Laser Pulse V1.1
@@ -298,6 +331,35 @@
     '    float k = uRgbAmt * fx.g * (1.0 - smoothstep(0.8, 0.97, max(max(base.r, base.g), base.b)));',  // gesaettigte LED-Kerne nicht weiter aufhellen
     '    vec3 add = base * gness * k * (0.5 * pulse + 0.9 * fanHl) + vec3(0.6, 1.0, 0.75) * glint * k * 0.35',
     '             + k * gness * vec3(0.0, 0.08, 0.22) * base.g * uRgb.z;',
+    '    if (v12) {',
+    '      float kb = k * uPcA.w;',
+    '      add -= base * gness * k * 0.3 * pulse;',
+    '      float chase = 0.0, rotor = 0.0;',
+    '      for (int j = 0; j < 6; j++) {',
+    '        vec4 F = uFan[j];',
+    '        vec2 e = (px - F.xy) / F.zw; float r = length(e);',
+    '        if (r < 1.4) {',
+    '          float ring = smoothstep(1.3, 1.0, r) * smoothstep(0.4, 0.78, r);',
+    '          float th = atan(e.y, e.x) - uFanAng[j] * 2.0;',
+    '          float d1 = abs(mod(th + PI, 2.0 * PI) - PI), d2 = abs(mod(th, 2.0 * PI) - PI);',
+    '          chase += ring * (exp(-d1 * d1 / 0.08) + 0.7 * exp(-d2 * d2 / 0.08));',
+    '        }',
+    '        vec2 h = (px - uHub[j]) / (F.zw * 0.82); float rh = length(h);',
+    '        if (rh < 1.0) {',
+    '          float ah = atan(h.y, h.x) - uSpin[j], bl = 0.0;',
+    '          for (int b = 0; b < 3; b++) { float db = abs(mod(ah + float(b) * 2.0944 + PI, 2.0 * PI) - PI); bl += exp(-db * db / 0.025); }',
+    '          rotor += bl * smoothstep(0.22, 0.4, rh) * (1.0 - smoothstep(0.78, 1.0, rh));',
+    '        }',
+    '      }',
+    '      float scan = exp(-pow((px.y - uPcA.x) / 55.0, 2.0)) * (1.0 - floorK);',
+    '      float gx = px.x - uPcA.y + (px.y - 560.0) * 0.45;',
+    '      float sheen = exp(-gx * gx / 1800.0) * smoothstep(0.85, 1.0, fx.g);',
+    '      float hue = 0.5 + 0.5 * sin(uPcA.z + px.y / 90.0);',
+    '      vec3 rgbC = mix(vec3(0.45, 1.0, 0.6), vec3(0.25, 0.9, 1.0), hue * 0.6);',
+    '      add += kb * (base * gness * (1.3 * chase + 0.9 * scan) + rgbC * chase * gness * 0.2',
+    '             + base * rotor * 1.6 * smoothstep(0.03, 0.2, lum) + vec3(0.5, 1.0, 0.7) * rotor * 0.05',
+    '             + vec3(0.55, 1.0, 0.72) * sheen * (0.1 + 0.9 * dt.r * smoothstep(0.02, 0.25, lum)));',
+    '    }',
     '    vec3 head = max(1.0 - col, vec3(1e-3)) * 0.7;',       // Highlight-Rolloff: hoechstens 70 % des Restabstands zu Weiss
     '    col = col + head * (1.0 - exp(-max(add, 0.0) / head)) + min(add, 0.0);',  // kleine Zugaben ~linear, grosse komprimiert
     '  }',
@@ -323,6 +385,14 @@
     '    float f = clamp(dens * uFogAmt * 2.3, 0.0, 0.8) * mix(0.45, 1.0, fx.b);',
     '    float trans = smoothstep(0.15, 0.6, luma(scatN));',            // helles Licht dahinter scheint durch
     '    col = mix(col, fogCol, f * (0.62 - 0.25 * trans)) + fogCol * f * (0.38 + 0.3 * trans);',
+    '    if (v12) {',
+    '      vec2 qw = vec2(q0.x * 2.6 + uFog4.x, q0.y * 6.0 + uFog4.y);',
+    '      qw.y += 0.45 * sin(q0.x * 4.0 + uFog4.z);',
+    '      float nw = fbm(qw, uFog4.w);',
+    '      float region = (1.0 - smoothstep(0.5, 0.66, uv.x)) * smoothstep(0.0, 0.12, uv.y) * (1.0 - smoothstep(0.8, 0.95, uv.y));',
+    '      float fw = smoothstep(0.44, 0.76, nw) * region * uFogAmt * mix(0.55, 1.0, atm) * mix(0.35, 1.0, smoothstep(0.02, 0.12, lum));',
+    '      col = mix(col, fogCol * 1.15, fw * 0.6) + fogCol * fw * 0.6;',
+    '    }',
     '  }',
     '  }',
     '  outColor = vec4(min(col, vec3(1.0)), 1.0);',
@@ -436,6 +506,11 @@
     this._fogBr = new Float32Array([1, 1, 1]);
     this._rgbPhase = 0;
     this._glintX = 0;
+    this._skD = new Float32Array(MAX_SK * 4);    // V1.2
+    this._fog4 = new Float32Array(4);
+    this._pcA = new Float32Array(4);
+    this._spin = new Float32Array(6);
+    this._hub = new Float32Array(12);
 
     this._tick = this._tick.bind(this);
   }
@@ -443,7 +518,7 @@
   CinematicHero.PRESETS = PRESETS;
   CinematicHero.PRESET_LOOK = PRESET_LOOK;
   CinematicHero.PRESET_LABEL = PRESET_LABEL;
-  CinematicHero.VERSION = '1.1';
+  CinematicHero.VERSION = '1.2';
   CinematicHero.CYCLE = CYCLE;
 
   CinematicHero.prototype.on = function (fn) { this._listeners.push(fn); };
@@ -564,7 +639,8 @@
 
     var names = ['uImg', 'uFx', 'uRelief', 'uLaser', 'uRes', 'uImgSize', 'uFocus', 'uSkullAmt', 'uFogAmt',
       'uLaserAmt', 'uRgbAmt', 'uFogPhase', 'uBefore', 'uFogOct', 'uSkA', 'uSkB', 'uSkC', 'uFogL', 'uLas',
-      'uFan', 'uFanAng', 'uRgb', 'uDetail', 'uLook', 'uFogBr', 'uRgbPhase', 'uGlintX'];
+      'uFan', 'uFanAng', 'uRgb', 'uDetail', 'uLook', 'uFogBr', 'uRgbPhase', 'uGlintX',
+      'uSkD', 'uFog4', 'uPcA', 'uHub', 'uSpin'];
     this.u = {};
     for (var i = 0; i < names.length; i++) this.u[names[i]] = gl.getUniformLocation(prog, names[i]);
 
@@ -629,6 +705,8 @@
     gl.uniform4fv(this.u.uSkA, this._skA);
     gl.uniform4fv(this.u.uSkC, this._skC);
     gl.uniform4fv(this.u.uFan, this._fan);
+    for (var h = 0; h < 6; h++) this._hub.set(FAN_HUB[h], h * 2);
+    gl.uniform2fv(this.u.uHub, this._hub);
     this._laserLen = SD.lasers.map(function (l) { return l.lengthPx; });
   };
 
@@ -678,12 +756,12 @@
   // Effektive Staerken (Smartphone reduziert, Parallaxe nur mit Maus)
   CinematicHero.prototype.effective = function () {
     var p = this.params, m = this.mobile;
-    var c = this.look === 'v11' ? CURVE_V11 : { skull: 1, fog: 1, laser: 1, rgb: 1 };
+    var c = this.look === 'v12' ? CURVE_V12 : (this.look === 'v11' ? CURVE_V11 : { skull: 1, fog: 1, laser: 1, rgb: 1 });
     return {
       skull: p.skull * (m ? 0.9 : 1) * c.skull,
       fog: p.fog * (m ? 0.7 : 1) * c.fog,
       laser: p.laser * (m ? 0.85 : 1) * c.laser,
-      rgb: p.rgb * (m ? 0.8 : 1) * c.rgb,
+      rgb: p.rgb * (m ? (this.look === 'v12' ? 1.0 : 0.8) : 1) * c.rgb,       // V1.2: PC auf Smartphones nicht abschwaechen
       parallax: this.parallaxEnabled ? p.parallax : 0
     };
   };
@@ -695,7 +773,7 @@
     var i;
     for (i = 0; i < SD.skulls.length && i < MAX_SK; i++) {
       var id = SD.skulls[i].id;
-      if (this.look === 'v11') {
+      if (this.look !== 'v10') {
         var c11 = SKULL_CFG_V11[id] || [i * 0.618 % 1, 1];
         var dep = SD.skulls[i].depth;
         var u11 = fract(t / CYCLE - c11[0]);
@@ -706,6 +784,17 @@
         this._skB[i * 4 + 1] = 0.72 * Math.cos(a11) + mx * pk;
         this._skB[i * 4 + 2] = -0.30 + 0.40 * Math.sin(a11) + 0.10 * Math.sin(2 * a11) + my * pk * 0.7;
         this._skB[i * 4 + 3] = 0;
+        if (this.look === 'v12') {
+          var oi = SKULL_ORDER_V11.indexOf(id), ph = oi < 0 ? i / 11 : oi / 11;
+          var bt = 8 + (oi % 4) * 0.9;                                     // 8,0 / 8,9 / 9,8 / 10,7 s
+          var ub = fract(t / bt + ph * 0.83);
+          var act = ub < V12_BAND_ACTIVE ? ub / V12_BAND_ACTIVE : -1;
+          this._skD[i * 4] = act < 0 ? 9 : -1.4 + 2.8 * act;
+          this._skD[i * 4 + 3] = act < 0 ? 0 : Math.pow(Math.sin(Math.PI * act), 1.5);
+          var la = TAU * (t / (11 + (oi % 3) * 1.5) * c11[1] + ph);
+          this._skD[i * 4 + 1] = 0.8 * Math.cos(la) + mx * pk;
+          this._skD[i * 4 + 2] = -0.3 + 0.45 * Math.sin(la) + my * pk * 0.7;
+        }
         continue;
       }
       var cfg = SKULL_CFG[id] || [0, 1, 45, 0.8];
@@ -758,6 +847,18 @@
       var dir = i < 3 ? 1 : -1;
       this._fanAng[i] = (TAU * (t / 8 * dir + i * 0.23)) % TAU;
     }
+    // V1.2: Rotor-Reflexe, Innenlicht-Scan, Glas-Glanz, Nebelschleier
+    for (i = 0; i < 6; i++) this._spin[i] = (TAU * (t * FAN_SPIN_RPS[i] + i * 0.37)) % TAU;
+    var us = fract(t / PC_SCAN_T);
+    this._pcA[0] = 820 - 520 * us;                                      // y: Boden -> Deckel
+    var ug = fract(t / PC_SHEEN_T + 0.2);
+    this._pcA[1] = ug < 0.7 ? 980 + 760 * (ug / 0.7) : -2000;           // x: links -> rechts, dann Pause
+    this._pcA[2] = (TAU * t / 6) % TAU;
+    this._pcA[3] = this.mobile ? 1.3 : 1.0;                              // Smartphone: PC-Bewegung deutlicher
+    this._fog4[0] = -fract(t / FOG4.T) * FOG4.per + mx * 0.2;
+    this._fog4[1] = 0.25 * Math.sin(TAU * t / FOG4.T) + my * 0.08;
+    this._fog4[2] = (TAU * t / 13) % TAU;
+    this._fog4[3] = FOG4.per;
     return eff;
   };
 
@@ -769,7 +870,7 @@
     gl.uniform2f(u.uRes, this.canvas.width, this.canvas.height);
     gl.uniform2f(u.uFocus, fc[0], fc[1]);
     gl.uniform1i(u.uBefore, this.before ? 1 : 0);
-    gl.uniform1i(u.uLook, this.look === 'v11' ? 1 : 0);
+    gl.uniform1i(u.uLook, LOOK_ID[this.look]);
     gl.uniform3fv(u.uFogBr, this._fogBr);
     gl.uniform1f(u.uRgbPhase, this._rgbPhase);
     gl.uniform1f(u.uGlintX, this._glintX);
@@ -784,6 +885,12 @@
     gl.uniform4fv(u.uLas, this._las);
     gl.uniform1fv(u.uFanAng, this._fanAng);
     gl.uniform4fv(u.uRgb, this._rgb);
+    if (this.look === 'v12') {
+      gl.uniform4fv(u.uSkD, this._skD);
+      gl.uniform4fv(u.uFog4, this._fog4);
+      gl.uniform4fv(u.uPcA, this._pcA);
+      gl.uniform1fv(u.uSpin, this._spin);
+    }
     gl.drawArrays(gl.TRIANGLES, 0, 3);
     this.frame++;
   };
@@ -894,7 +1001,7 @@
     this.preset = found;
   };
   CinematicHero.prototype.setLook = function (look) {
-    if (look !== 'v10' && look !== 'v11') throw new Error('Unbekannter Look: ' + look);
+    if (!(look in LOOK_ID)) throw new Error('Unbekannter Look: ' + look);
     this.look = look;
     this._detectPreset();
     if (this.initialized) this.render();
@@ -985,7 +1092,13 @@
       skulls: skulls, fog: fog, lasers: lasers,
       rgb: { pulse: round4(this._rgb[0]), reflection: round4(this._rgb[1]), hue: round4(this._rgb[2]), fanAngles: fans,
         wavePhase: round4(this._rgbPhase), glintX: Math.round(this._glintX * 10) / 10 },
-      fogBreath: [round4(this._fogBr[0]), round4(this._fogBr[1]), round4(this._fogBr[2])]
+      fogBreath: [round4(this._fogBr[0]), round4(this._fogBr[1]), round4(this._fogBr[2])],
+      v12: this.look === 'v12' && this.initialized ? {
+        skullBands: SD.skulls.map(function (s, k) { return { id: s.id, pos: round4(this._skD[k * 4]), strength: round4(this._skD[k * 4 + 3]),
+          light: [round4(this._skD[k * 4 + 1]), round4(this._skD[k * 4 + 2])] }; }, this),
+        rotorAngles: Array.prototype.map.call(this._spin, round4), pcScanY: round4(this._pcA[0]), glassSheenX: round4(this._pcA[1]),
+        pcBoost: this._pcA[3], fogVeil: [round4(this._fog4[0]), round4(this._fog4[1])]
+      } : null
     };
   };
 
