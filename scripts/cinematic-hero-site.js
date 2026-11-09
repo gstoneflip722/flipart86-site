@@ -110,7 +110,7 @@
         img.insertAdjacentElement('afterend', canvas);       // unter der Bloom-Ebene, ueber dem Bild
         engine = new window.CinematicHeroEngine(frame, {
           assetBase: CONFIG.assetBase, mapExt: CONFIG.mapExt, imageSrc: CONFIG.imageSrc,
-          powerPreference: 'default', maxDprDesktop: 2, maxDprMobile: 1
+          powerPreference: 'default', maxDprDesktop: 2, maxDprMobile: 2
         });
         var timeout = new Promise(function (resolve) {
           setTimeout(function () { resolve('timeout'); }, CONFIG.initTimeoutMs);
